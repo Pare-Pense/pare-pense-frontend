@@ -26,9 +26,15 @@ importers:
       '@angular/router':
         specifier: ^21.2.0
         version: 21.2.14(@angular/common@21.2.14(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))(@angular/platform-browser@21.2.14(@angular/common@21.2.14(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@lucide/angular':
+        specifier: ^1.16.0
+        version: 1.16.0(@angular/common@21.2.14(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))
       '@primeuix/themes':
         specifier: ^2.0.3
         version: 2.0.3
+      primelocale:
+        specifier: ^2.3.2
+        version: 2.3.2
       primeng:
         specifier: ^21.1.8
         version: 21.1.8(65dbcd33abc180767482238712a335e6)
@@ -801,6 +807,12 @@ packages:
     resolution: {integrity: sha512-qwosvPyl+zpUlp3gRb7UcJ3H8S28XHCzkv0Y0EgQToXjQP91ZD67EHSCDmaLjtKhe+GVIW5om1KUpzVLA0l6pg==}
     cpu: [x64]
     os: [win32]
+
+  '@lucide/angular@1.16.0':
+    resolution: {integrity: sha512-jszfiRHn8uuESXHT0aGExBWtGRr35L3nj+dovP05gvrwV8Mnk4jEU45v2kVvcrNe5GBcrKiFJWyoFX2qFfW0nA==}
+    peerDependencies:
+      '@angular/common': 17.x - 21.x
+      '@angular/core': 17.x - 21.x
 
   '@modelcontextprotocol/sdk@1.26.0':
     resolution: {integrity: sha512-Y5RmPncpiDtTXDbLKswIJzTqu2hyBKxTNsgKqKclDbhIgg1wgtf1fRuvxgTnRfcnxtvvgbIEcqUOzZrJ6iSReg==}
@@ -2507,6 +2519,10 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  primelocale@2.3.2:
+    resolution: {integrity: sha512-V6cujJRKAbEjUfpC2zvqqJ+27hGZJo94UbbN43IkrnMnNyBQWH82gf33wfX3aEkLXVJJp7MN7Ua+wu0u/tf1ww==}
+    engines: {node: '>=18.0.0', npm: '>=8.6.0'}
+
   primeng@21.1.8:
     resolution: {integrity: sha512-LvbecXxfcjbHqINa9Z3GxGKwyeWAaBCKZIJHoxZsSSUVnaz+mzqVHhvz/GAT2CC5EQhKxqex+8tm/OubErDTRg==}
     peerDependencies:
@@ -3701,6 +3717,12 @@ snapshots:
 
   '@lmdb/lmdb-win32-x64@3.5.1':
     optional: true
+
+  '@lucide/angular@1.16.0(@angular/common@21.2.14(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))':
+    dependencies:
+      '@angular/common': 21.2.14(@angular/core@21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 21.2.14(@angular/compiler@21.2.14)(rxjs@7.8.2)
+      tslib: 2.8.1
 
   '@modelcontextprotocol/sdk@1.26.0(zod@4.3.6)':
     dependencies:
@@ -5265,6 +5287,8 @@ snapshots:
       prettier: 3.8.3
 
   prettier@3.8.3: {}
+
+  primelocale@2.3.2: {}
 
   primeng@21.1.8(65dbcd33abc180767482238712a335e6):
     dependencies:
