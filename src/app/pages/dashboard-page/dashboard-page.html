@@ -19,7 +19,9 @@
           <p>Despesas</p>
           <svg lucideTrendingUp class="text-red-400"></svg>
         </div>
-        <h2 class="text-color-emphasis text-xl font-bold">R$ 8.300,00</h2>
+        <h2 class="text-color-emphasis text-xl font-bold">
+          {{ valorDespesas() | fmtReal }}
+        </h2>
       </div>
 
       <div class="flex-1 rounded-xl bg-white p-3 shadow-md">
@@ -27,14 +29,14 @@
           <p>Receitas</p>
           <svg lucideTrendingUp class="text-green-500"></svg>
         </div>
-        <h2 class="text-color-emphasis text-xl font-bold">R$ 8.300,00</h2>
+        <h2 class="text-color-emphasis text-xl font-bold">{{ valorReceitas() | fmtReal }}</h2>
       </div>
     </div>
 
     <div class="flex flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
       <div class="flex items-start justify-between">
         <p>Limite mensal</p>
-        <h2 class="text-color-emphasis text-xl font-bold">R$ 10.000,00</h2>
+        <h2 class="text-color-emphasis text-xl font-bold">{{ valorLimiteMensal() | fmtReal }}</h2>
       </div>
       <p-progressbar [value]="80" />
     </div>
@@ -48,21 +50,30 @@
   <div class="flex w-full flex-col items-stretch gap-4 px-4">
     <!-- selecionador de periodo -->
     <div class="rounded-border flex justify-between bg-white p-2 shadow">
-      @if (true) {
-        <div class="flex flex-1 justify-start">
-          <p-button severity="contrast" label="Semanal" text="true" />
-        </div>
-        <div class="flex flex-1 justify-center">
-          <p-button severity="contrast" label="Mensal" />
-        </div>
-        <div class="flex flex-1 justify-end">
-          <p-button severity="contrast" label="Anual" text="true" />
-        </div>
-      } @else {
-        <p-button severity="contrast" label="Semanal" text="true" />
-        <p-button severity="contrast" label="Mensal" />
-        <p-button severity="contrast" label="Anual" text="true" />
-      }
+      <div class="flex flex-1 justify-start">
+        <p-button
+          severity="contrast"
+          label="Semanal"
+          [text]="periodoIdx() != 0"
+          (onClick)="setPeriodoIdx(0)"
+        />
+      </div>
+      <div class="flex flex-1 justify-center">
+        <p-button
+          severity="contrast"
+          label="Mensal"
+          [text]="periodoIdx() != 1"
+          (onClick)="setPeriodoIdx(1)"
+        />
+      </div>
+      <div class="flex flex-1 justify-end">
+        <p-button
+          severity="contrast"
+          label="Anual"
+          [text]="periodoIdx() != 2"
+          (onClick)="setPeriodoIdx(2)"
+        />
+      </div>
     </div>
 
     <!-- lista de categorias -->
@@ -79,7 +90,7 @@
           <div class="flex-1">
             <p class="text-color-emphasis text-lg">{{ categoria }}</p>
           </div>
-          <h3 class="text-color-emphasis font-bold">R$ 200,00</h3>
+          <h3 class="text-color-emphasis font-bold">{{ 200 | fmtReal }}</h3>
         </div>
       }
     </div>
