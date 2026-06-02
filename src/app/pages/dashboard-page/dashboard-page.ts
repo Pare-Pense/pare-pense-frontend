@@ -3,13 +3,13 @@ import { TabsModule } from 'primeng/tabs';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { SpeedDialModule } from 'primeng/speeddial';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucideUser, LucideBell, LucideTrendingUp, LucidePizza } from '@lucide/angular';
+import { LucideUser, LucideBell, LucideTrendingUp, LucidePizza, LucidePlus } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { DespesaService } from '../../services/despesa-service';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
+import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -18,13 +18,14 @@ import { lastValueFrom } from 'rxjs';
     AvatarModule,
     LucideUser,
     LucideBell,
-    ButtonModule,
-    ProgressBarModule,
     LucideTrendingUp,
     LucidePizza,
-    SpeedDialModule,
+    LucidePlus,
+    ButtonModule,
+    ProgressBarModule,
     FmtRealPipe,
     ProgressSpinnerModule,
+    NavBottom,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',

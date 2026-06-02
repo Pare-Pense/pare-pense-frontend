@@ -49,10 +49,10 @@
 
   <!-- separador redondo entre azul e resto do conteudo -->
   <div class="fundo-primary h-4 w-full">
-    <div class="h-full rounded-t-full bg-white"></div>
+    <div class="fundo-secao h-full rounded-t-full"></div>
   </div>
 
-  <div class="flex w-full flex-col items-stretch gap-4 px-4">
+  <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <!-- selecionador de periodo -->
     <div class="rounded-border flex justify-between bg-white p-2 shadow">
       <div class="flex flex-1 justify-start">
@@ -88,7 +88,7 @@
         categoria of ['Alimentação', 'Lazer', 'Transporte', 'Teste 1', 'Teste 2', 'Teste 3'];
         track categoria
       ) {
-        <div class="flex items-center gap-2 rounded-xl p-4 shadow">
+        <div class="flex items-center gap-2 rounded-xl bg-white p-4 shadow">
           <div class="bg-primary text-primary-contrast rounded-xl p-2">
             <svg lucidePizza></svg>
           </div>
@@ -99,9 +99,20 @@
         </div>
       }
     </div>
-  </div>
 
-  <div class="fixed right-4 bottom-4 z-10">
-    <p-speeddial />
+    <!-- espaço para nav inferior -->
+    <div class="h-nav-bottom-pad"></div>
   </div>
+</div>
+
+<app-nav-bottom />
+
+<!-- botão de + -->
+<div class="pointer-events-none fixed bottom-0 z-10 flex w-screen flex-col">
+  <div class="flex justify-end p-4">
+    <button pButton rounded="true" severity="primary" class="pointer-events-auto">
+      <svg pButtonIcon lucidePlus></svg>
+    </button>
+  </div>
+  <div class="h-nav-bottom"></div>
 </div>

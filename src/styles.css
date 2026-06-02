@@ -9,3 +9,11 @@
 :root {
   @apply text-color;
 }
+
+.h-nav-bottom {
+  @apply h-14;
+}
+
+.h-nav-bottom-pad {
+  @apply h-16;
+}
