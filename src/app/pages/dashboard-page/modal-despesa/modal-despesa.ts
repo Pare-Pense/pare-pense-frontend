@@ -1,4 +1,4 @@
-import { Component, model } from '@angular/core';
+import { Component, model, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -32,6 +32,8 @@ export class ModalDespesa {
   public visible = model(false);
   protected categorias = ['Alimentação', 'Lazer', 'Transporte', 'Compras', 'Contas', 'Outros'];
 
+  protected isDespesa = signal(true);
+
   protected valNome?: string;
   protected valCategoria?: string;
   protected valData?: Date;
@@ -42,6 +44,7 @@ export class ModalDespesa {
     this.valCategoria = undefined;
     this.valData = undefined;
     this.valValor = undefined;
+    this.isDespesa.set(true);
   }
 
   protected onSubmit() {
