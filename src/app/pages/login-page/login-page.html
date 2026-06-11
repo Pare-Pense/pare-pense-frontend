@@ -1,0 +1,58 @@
+<div class="fundo-primary flex flex-col items-center">
+  <div class="flex h-screen w-screen flex-col justify-center gap-4 p-4">
+    <!-- Header -->
+    <div class="flex flex-col items-center gap-2">
+      <div class="bg-primary text-primary-contrast rounded-xl p-4">
+        <svg lucideWallet class="size-10"></svg>
+      </div>
+
+      <h2 class="text-2xl font-bold">Bem-Vindo!</h2>
+
+      <p class="pr-1 pl-1 text-center text-sm">
+        Faça login para acessar sua conta e gerenciar suas finanças
+      </p>
+    </div>
+
+    <!-- Card inputs -->
+    <div class="flex flex-col items-center gap-4 rounded-xl bg-white p-4 shadow">
+      <p-inputGroup>
+        <p-inputgroup-addon>
+          <svg lucideMail></svg>
+        </p-inputgroup-addon>
+
+        <p-floatlabel variant="on">
+          <input id="email" pInputText [(ngModel)]="email" />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </p-inputGroup>
+
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <svg lucideLockKeyhole></svg>
+        </p-inputgroup-addon>
+
+        <p-floatlabel variant="on">
+          <p-password
+            id="senha"
+            [toggleMask]="true"
+            autocomplete="off"
+            [feedback]="false"
+            [(ngModel)]="senha"
+            [pt]="{
+              maskIcon: { class: '!z-10' },
+              unmaskIcon: { class: '!z-10' },
+            }"
+          />
+          <label for="senha">Senha</label>
+        </p-floatlabel>
+      </p-inputgroup>
+
+      <button pButton class="bg-primary mt-3 w-full">Entrar</button>
+    </div>
+
+    <p class="text-center text-sm">
+      Ainda não tem uma conta?
+      <a class="text-blue-600" routerLink="/criarConta">Criar conta</a>
+    </p>
+  </div>
+</div>
