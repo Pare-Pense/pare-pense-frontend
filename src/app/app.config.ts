@@ -5,6 +5,8 @@ import { definePreset, palette } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import { pt_BR as primeLocaleBR } from 'primelocale/js/pt_BR.js';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth/auth-interceptor';
 
 import { routes } from './app.routes';
 
@@ -16,6 +18,7 @@ const MyPreset = definePreset(Aura, {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     providePrimeNG({
