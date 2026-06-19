@@ -92,7 +92,11 @@
         type="submit"
         [disabled]="loginForm.invalid || loading()"
       >
-        Entrar
+        @if (loading()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+        } @else {
+          Entrar
+        }
       </button>
     </form>
 

@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Form, FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth/auth-service';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-login-page',
@@ -26,6 +27,7 @@ import { MessageModule } from 'primeng/message';
     PasswordModule,
     RouterLink,
     MessageModule,
+    ProgressSpinner,
   ],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
@@ -59,6 +61,8 @@ export class LoginPage {
           form.controls['email'].setErrors({ custom: msg });
         } else if (msg === 'Senha inválida') {
           form.controls['senha'].setErrors({ custom: msg });
+        } else {
+          form.controls['email'].setErrors({ custom: msg ?? 'Erro ao fazer login' });
         }
         console.error('Erro ao fazer login!', msg);
       },
