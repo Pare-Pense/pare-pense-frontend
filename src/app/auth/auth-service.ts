@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   token: string;
@@ -15,7 +16,7 @@ interface LoginResponse {
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private url = 'http://localhost:3000';
+  private readonly url = environment.API_URL;
 
   login(email: string, senha: string) {
     return this.http
