@@ -11,6 +11,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { RouterLink } from '@angular/router';
+import { ModalDespesa } from './modal-despesa/modal-despesa';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -28,6 +29,7 @@ import { RouterLink } from '@angular/router';
     ProgressSpinnerModule,
     NavBottom,
     RouterLink,
+    ModalDespesa,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
@@ -47,7 +49,13 @@ export class DashboardPage {
     (this.queryDespesas.data() ?? []).map((x) => x.valor).reduce((a, b) => a + b, 0),
   );
 
+  protected modalDespesaVisible = signal(false);
+
   setPeriodoIdx(idx: number) {
     this.periodoIdx.set(idx);
+  }
+
+  openModalAddDespesa() {
+    this.modalDespesaVisible.set(true);
   }
 }
