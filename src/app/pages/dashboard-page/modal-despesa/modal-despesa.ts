@@ -32,12 +32,13 @@ export class ModalDespesa {
   public visible = model(false);
   protected categorias = ['Alimentação', 'Lazer', 'Transporte', 'Compras', 'Contas', 'Outros'];
 
-  protected isDespesa = signal(true);
-
+  public isDespesa = model(true);
+  public isEditMode = model(false);
   protected valNome?: string;
   protected valCategoria?: string;
   protected valData?: Date;
   protected valValor?: number;
+
 
   protected onDialogHide() {
     this.valNome = undefined;
