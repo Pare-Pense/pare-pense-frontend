@@ -115,9 +115,6 @@ export class IncomesPage {
 
   periodoSelecionado = signal<Periodo>('week');
 
-  protected periodoIdx = signal(1);
-  protected valorReceitas = signal(500);
-  protected valorLimiteMensal = signal(10000);
   protected modalReceitaVisible = signal(false);
   protected isEditMode = signal(false);
   protected isDespesa = signal(true);
@@ -125,10 +122,6 @@ export class IncomesPage {
   graficoAtual = computed(() => {
     return this.receitasMockGrafico[this.periodoSelecionado()] ?? [];
   });
-
-  setPeriodoIdx(idx: number) {
-    this.periodoIdx.set(idx);
-  }
 
   excluirReceita(id: number) {
     this.receitas = this.receitas.filter(receita => receita.id !== id);
