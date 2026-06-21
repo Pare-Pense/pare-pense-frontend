@@ -7,9 +7,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {
   LucideUser,
   LucideBell,
-  LucideTrendingUp,
-  LucidePizza,
-  LucidePlus,
   LucidePencil,
   LucideTrash2,
 } from '@lucide/angular';
@@ -29,9 +26,6 @@ type Periodo = 'week' | 'month' | 'year';
     AvatarModule,
     LucideUser,
     LucideBell,
-    LucideTrendingUp,
-    LucidePizza,
-    LucidePlus,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
