@@ -118,7 +118,7 @@ export class IncomesPage {
   protected periodoIdx = signal(1);
   protected valorReceitas = signal(500);
   protected valorLimiteMensal = signal(10000);
-  protected modalDespesaVisible = signal(false);
+  protected modalReceitaVisible = signal(false);
   protected isEditMode = signal(false);
   protected isDespesa = signal(true);
 
@@ -134,9 +134,9 @@ export class IncomesPage {
     this.receitas = this.receitas.filter(receita => receita.id !== id);
   }
 
-  openModalDespesa() {
+  openModalReceita() {
     this.isEditMode.set(true);
-    this.modalDespesaVisible.set(true);
+    this.modalReceitaVisible.set(true);
     this.isDespesa.set(false);
   }
 }
