@@ -39,7 +39,6 @@ export class ModalDespesa {
   protected valData?: Date;
   protected valValor?: number;
 
-
   protected onDialogHide() {
     this.valNome = undefined;
     this.valCategoria = undefined;

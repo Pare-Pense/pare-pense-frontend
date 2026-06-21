@@ -19,17 +19,19 @@
         optionLabel="label"
         optionValue="value"
         [ngModel]="periodoSelecionado()"
-        (ngModelChange)="periodoSelecionado.set($event)">
+        (ngModelChange)="periodoSelecionado.set($event)"
+      >
       </p-select>
     </div>
 
-    <div class="chart-card flex flex-col gap-2 rounded-xl w-full h-[350px] bg-white p-3 shadow-md">
-    <ngx-charts-line-chart
-      [results]="graficoAtual()"
-      [autoScale]="true"
-      [xAxis]="true"
-      [yAxis]="true">
-    </ngx-charts-line-chart>
+    <div class="chart-card flex h-[350px] w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
+      <ngx-charts-line-chart
+        [results]="graficoAtual()"
+        [autoScale]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+      >
+      </ngx-charts-line-chart>
     </div>
   </div>
 
@@ -40,7 +42,6 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-
       @for (receita of receitas; track receita.id) {
         <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
           <!-- infos -->
@@ -61,26 +62,26 @@
             <div class="flex gap-2">
               <button
                 pButton
-                class="rounded-full flex items-center justify-center p-2"
+                class="flex items-center justify-center rounded-full p-2"
                 size="small"
                 severity="danger"
-                (click)="excluirReceita(receita.id)">
+                (click)="excluirReceita(receita.id)"
+              >
                 <svg lucideTrash2></svg>
               </button>
               <button
                 pButton
-                class="rounded-full flex items-center justify-center p-2"
+                class="flex items-center justify-center rounded-full p-2"
                 size="small"
                 severity="secondary"
-                (click)="openModalReceita()">
+                (click)="openModalReceita()"
+              >
                 <svg lucidePencil></svg>
               </button>
-
             </div>
           </div>
         </div>
       }
-
     </div>
 
     <div class="h-nav-bottom-pad"></div>
@@ -89,4 +90,8 @@
 
 <app-nav-bottom />
 
-<app-modal-despesa [(visible)]="modalReceitaVisible" [isEditMode]="isEditMode" [(isDespesa)]="isDespesa" />
+<app-modal-despesa
+  [(visible)]="modalReceitaVisible"
+  [isEditMode]="isEditMode"
+  [(isDespesa)]="isDespesa"
+/>

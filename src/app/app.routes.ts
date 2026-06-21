@@ -20,6 +20,5 @@ export const routes: Routes = [
   {
     path: 'receitas',
     component: IncomesPage,
-  }
-
+  },
 ];

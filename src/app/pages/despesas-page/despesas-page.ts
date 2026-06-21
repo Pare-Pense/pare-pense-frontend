@@ -47,7 +47,6 @@ type Periodo = 'week' | 'month' | 'year';
   styleUrl: './despesas-page.css',
 })
 export class ExpensesPage {
-
   categorias = [
     { label: 'Alimentação', value: 'alimentacao' },
     { label: 'Lazer', value: 'lazer' },
@@ -65,7 +64,7 @@ export class ExpensesPage {
       week: [
         {
           name: 'Alimentação',
-            series: [
+          series: [
             { name: 'Seg', value: 50 },
             { name: 'Ter', value: 80 },
             { name: 'Qua', value: 30 },
@@ -212,7 +211,7 @@ export class ExpensesPage {
     },
   };
 
-  despesasPorCategoria =  signal({
+  despesasPorCategoria = signal({
     alimentacao: [
       { id: 1, nome: 'Feira', valor: 200, data: '20/06/2026' },
       { id: 2, nome: 'Compra semanal', valor: 150, data: '18/06/2026' },
@@ -250,13 +249,12 @@ export class ExpensesPage {
     return this.despesasPorCategoria()[this.categoriaSelecionada()] ?? [];
   });
 
-
   excluirDespesa(id: number) {
     const categoria = this.categoriaSelecionada();
 
-    this.despesasPorCategoria.update(state => ({
+    this.despesasPorCategoria.update((state) => ({
       ...state,
-      [categoria]: state[categoria].filter(d => d.id !== id)
+      [categoria]: state[categoria].filter((d) => d.id !== id),
     }));
   }
 

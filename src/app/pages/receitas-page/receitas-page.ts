@@ -4,12 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import {
-  LucideUser,
-  LucideBell,
-  LucidePencil,
-  LucideTrash2,
-} from '@lucide/angular';
+import { LucideUser, LucideBell, LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { LineChartModule } from '@swimlane/ngx-charts';
@@ -42,7 +37,6 @@ type Periodo = 'week' | 'month' | 'year';
   styleUrl: './receitas-page.css',
 })
 export class IncomesPage {
-
   periodos = [
     { label: 'Nos últimos 7 dias', value: 'week' },
     { label: 'No último mês', value: 'month' },
@@ -118,7 +112,7 @@ export class IncomesPage {
   });
 
   excluirReceita(id: number) {
-    this.receitas = this.receitas.filter(receita => receita.id !== id);
+    this.receitas = this.receitas.filter((receita) => receita.id !== id);
   }
 
   openModalReceita() {
