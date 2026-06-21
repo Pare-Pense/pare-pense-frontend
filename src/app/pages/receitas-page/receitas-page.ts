@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -110,7 +110,7 @@ export class IncomesPage {
   periodoSelecionado = signal<Periodo>('week');
 
   protected modalReceitaVisible = signal(false);
-  protected isEditMode = signal(false);
+  public isEditMode = false;
   protected isDespesa = signal(true);
 
   graficoAtual = computed(() => {
@@ -122,7 +122,7 @@ export class IncomesPage {
   }
 
   openModalReceita() {
-    this.isEditMode.set(true);
+    this.isEditMode = true;
     this.modalReceitaVisible.set(true);
     this.isDespesa.set(false);
   }

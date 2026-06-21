@@ -1,4 +1,4 @@
-import { Component, model, signal } from '@angular/core';
+import { Component, Input, model, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -33,7 +33,7 @@ export class ModalDespesa {
   protected categorias = ['Alimentação', 'Lazer', 'Transporte', 'Compras', 'Contas', 'Outros'];
 
   public isDespesa = model(true);
-  public isEditMode = model(false);
+  @Input() isEditMode = false;
   protected valNome?: string;
   protected valCategoria?: string;
   protected valData?: Date;

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -237,7 +237,7 @@ export class ExpensesPage {
 
   protected valorReceitas = signal(500);
   protected modalDespesaVisible = signal(false);
-  protected isEditMode = signal(false);
+  public isEditMode = false;
 
   graficoAtual = computed(() => {
     const categoria = this.categoriaSelecionada();
@@ -261,7 +261,7 @@ export class ExpensesPage {
   }
 
   openModalDespesa() {
-    this.isEditMode.set(true);
+    this.isEditMode = true;
     this.modalDespesaVisible.set(true);
   }
 }

@@ -14,11 +14,11 @@ export const routes: Routes = [
     component: LoginPage,
   },
   {
-    path: 'expenses',
+    path: 'despesas',
     component: ExpensesPage,
   },
   {
-    path: 'incomes',
+    path: 'receitas',
     component: IncomesPage,
   }
 
