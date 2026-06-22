@@ -1,0 +1,108 @@
+<div class="flex flex-col items-center">
+  <!-- area do fundo azul -->
+  <div class="fundo-primary flex w-full flex-col gap-4 p-4">
+    <!-- top bar -->
+    <div class="flex items-center gap-2">
+      <p>Despesas</p>
+      <div class="flex-1"></div>
+      <button pButton rounded="true" severity="primary">
+        <svg pButtonIcon lucideBell></svg>
+      </button>
+      <button pButton rounded="true" severity="secondary">
+        <svg pButtonIcon lucideUser></svg>
+      </button>
+    </div>
+
+    <div class="flex flex-row gap-2">
+      <p-select
+        [options]="categorias"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="categoriaSelecionada()"
+        (ngModelChange)="categoriaSelecionada.set($event)"
+      >
+      </p-select>
+
+      <p-select
+        [options]="periodos"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="periodoSelecionado()"
+        (ngModelChange)="periodoSelecionado.set($event)"
+      >
+      </p-select>
+    </div>
+
+    <div class="chart-card flex h-[350px] w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
+      <ngx-charts-line-chart
+        [results]="graficoAtual()"
+        [autoScale]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+      >
+      </ngx-charts-line-chart>
+    </div>
+  </div>
+
+  <!-- separador redondo entre azul e resto do conteudo -->
+  <div class="fundo-primary h-4 w-full">
+    <div class="fundo-secao h-full rounded-t-full"></div>
+  </div>
+
+  <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
+    <div class="flex flex-col gap-4">
+      @for (despesa of despesasAtuais(); track despesa.id) {
+        <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
+          <!-- ícone -->
+          <div class="bg-primary text-primary-contrast rounded-xl p-2">
+            <svg lucidePizza></svg>
+          </div>
+
+          <!-- infos -->
+          <div class="flex-1">
+            <p class="text-color-emphasis text-lg font-semibold">
+              {{ despesa.nome }}
+            </p>
+            <p class="text-sm text-gray-500">
+              {{ despesa.data }}
+            </p>
+          </div>
+
+          <!-- valor -->
+          <div class="flex flex-col items-end gap-2">
+            <h3 class="text-color-emphasis font-bold">
+              {{ despesa.valor | fmtReal }}
+            </h3>
+
+            <div class="flex gap-2">
+              <button
+                pButton
+                class="flex items-center justify-center rounded-full p-2"
+                size="small"
+                severity="danger"
+                (click)="excluirDespesa(despesa.id)"
+              >
+                <svg lucideTrash2></svg>
+              </button>
+              <button
+                pButton
+                class="flex items-center justify-center rounded-full p-2"
+                size="small"
+                severity="secondary"
+                (click)="openModalDespesa()"
+              >
+                <svg lucidePencil></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="h-nav-bottom-pad"></div>
+  </div>
+</div>
+
+<app-nav-bottom />
+
+<app-modal-despesa [(visible)]="modalDespesaVisible" [isEditMode]="isEditMode" />

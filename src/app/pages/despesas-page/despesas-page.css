@@ -1,0 +1,11 @@
+.fundo-primary {
+  background-color: #83d4ff;
+}
+
+.fundo-secao {
+  background-color: #f0f8ff;
+}
+
+ngx-charts-line-chart {
+  overflow-x: scroll;
+}
