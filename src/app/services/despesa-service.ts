@@ -1,9 +1,19 @@
-import { Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-export type Categoria = 'ALIMENTACAO' | 'LAZER' | 'TRANSPORTE' | 'COMPRAS' | 'CONTAS' | 'OUTROS';
+export const CATEGORIA_NOMES = {
+  ALIMENTACAO: 'Alimentação',
+  LAZER: 'Lazer',
+  TRANSPORTE: 'Transporte',
+  COMPRAS: 'Compras',
+  CONTAS: 'Contas',
+  OUTROS: 'Outros',
+} as const;
+export type Categoria = keyof typeof CATEGORIA_NOMES;
 
-export interface Despesa {
+export interface DespesaDTO {
   id: string;
   nome: string;
   categoria: Categoria;
@@ -12,30 +22,40 @@ export interface Despesa {
   valor: number;
 }
 
-const DESPESA_MOCK: Despesa = {
-  id: '123-uuid',
-  nome: 'Delivery',
-  categoria: 'ALIMENTACAO',
-  data: '2026-05-18',
-  valor: 51.01,
-  horario: '19:30',
-};
-
-const MOCK_DELAY = 500;
+export interface GastosCategoriaDTO {
+  id: Categoria;
+  nome: string;
+  valor: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class DespesaService {
-  public recuperarDespesa(idUsuario: string, idDespesa: string): Observable<Despesa> {
-    return of({ ...DESPESA_MOCK, id: idUsuario + idDespesa }).pipe(delay(MOCK_DELAY));
+  private http = inject(HttpClient);
+  private readonly url = environment.API_URL;
+
+  public recuperarDespesa(idUsuario: string, idDespesa: string): Observable<DespesaDTO> {
+    return this.http.get<DespesaDTO>(`${this.url}/despesas/${idUsuario}/${idDespesa}`);
   }
 
-  public recuperarDespesasAll(idUsuario: string): Observable<Despesa[]> {
-    return of([DESPESA_MOCK]).pipe(delay(MOCK_DELAY));
+  public recuperarDespesasAll(idUsuario: string): Observable<DespesaDTO[]> {
+    return this.http.get<DespesaDTO[]>(`${this.url}/despesas/${idUsuario}`);
   }
 
-  public recuperarDespesasPeriodo(idUsuario: string, periodo: string): Observable<Despesa[]> {
-    return this.recuperarDespesasAll(idUsuario);
+  public recuperarGastosCategoria(idUsuario: string, periodo: 'anual' | 'mensal' | 'semanal') {
+    return this.http.get<any[]>(`${this.url}/despesas/media/${idUsuario}/${periodo}`).pipe(
+      map((obj) => {
+        const valores = Object.keys(CATEGORIA_NOMES).map((k) => ({
+          id: k,
+          nome: CATEGORIA_NOMES[k as Categoria],
+          valor: 0,
+        }));
+        for (const x of obj) {
+          valores.find((val) => val.id === x.categoria)!.valor = x._avg.valor;
+        }
+        return valores;
+      }),
+    );
   }
 }

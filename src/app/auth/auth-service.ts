@@ -51,4 +51,8 @@ export class AuthService {
       return null;
     }
   }
+
+  getUsuarioId() {
+    return this.getUsuario()?.id;
+  }
 }
