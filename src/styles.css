@@ -8,6 +8,11 @@
 
 :root {
   @apply text-color;
+
+  --p-progressspinner-color-one: currentColor;
+  --p-progressspinner-color-two: currentColor;
+  --p-progressspinner-color-three: currentColor;
+  --p-progressspinner-color-four: currentColor;
 }
 
 .h-nav-bottom {

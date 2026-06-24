@@ -10,6 +10,7 @@ import { DespesaService } from '../../services/despesa-service';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
+import { RouterLink } from '@angular/router';
 import { ModalDespesa } from './modal-despesa/modal-despesa';
 
 @Component({
@@ -27,6 +28,7 @@ import { ModalDespesa } from './modal-despesa/modal-despesa';
     FmtRealPipe,
     ProgressSpinnerModule,
     NavBottom,
+    RouterLink,
     ModalDespesa,
   ],
   templateUrl: './dashboard-page.html',

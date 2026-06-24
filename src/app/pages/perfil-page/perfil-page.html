@@ -1,0 +1,9 @@
+<div class="flex min-h-screen w-screen flex-col items-center justify-center gap-4 px-4">
+  <a routerLink="/home" class="absolute top-0 left-0 p-2">
+    <svg lucideChevronLeft></svg>
+  </a>
+
+  <h2 class="text-2xl font-bold">Olá {{ usuario?.nome }}</h2>
+
+  <button pButton severity="danger" (click)="this.logout()">Logout</button>
+</div>
