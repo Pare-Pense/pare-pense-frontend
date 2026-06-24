@@ -18,6 +18,7 @@
       class="flex flex-col items-center gap-4 rounded-xl bg-white p-4 shadow"
       #loginForm="ngForm"
       (ngSubmit)="onSubmit(loginForm)"
+      (input)="onAnyInput()"
     >
       <div class="flex w-full flex-col">
         <p-inputGroup>
@@ -86,9 +87,15 @@
         }
       </div>
 
+      @if (formError()) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formError() }}
+        </p-message>
+      }
+
       <button
         pButton
-        class="bg-primary mt-3 w-full"
+        class="bg-primary w-full"
         type="submit"
         [disabled]="loginForm.invalid || loading()"
       >
