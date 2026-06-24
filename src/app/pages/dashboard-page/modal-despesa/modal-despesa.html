@@ -94,6 +94,9 @@
   </div>
 
   <div class="flex justify-end gap-4">
-    <p-button [label]="isEditMode() ? 'Salvar alterações' : 'Adicionar'" (click)="this.onSubmit()" />
+    <p-button
+      [label]="isEditMode() ? 'Salvar alterações' : 'Adicionar'"
+      (click)="this.onSubmit()"
+    />
   </div>
 </p-dialog>

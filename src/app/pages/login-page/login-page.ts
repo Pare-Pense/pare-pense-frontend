@@ -40,8 +40,10 @@ export class LoginPage {
   email: string = '';
   senha: string = '';
   loading = signal(false);
+  formError = signal('');
 
   onSubmit(form: NgForm) {
+    this.formError.set('');
     this.loading.set(true);
     this.authService.login(this.email, this.senha).subscribe({
       next: () => {
@@ -57,15 +59,15 @@ export class LoginPage {
             if (form.controls[detail.campo])
               form.controls[detail.campo].setErrors({ custom: detail.mensagem });
           }
-        } else if (msg === 'Usuário não encontrado') {
-          form.controls['email'].setErrors({ custom: msg });
-        } else if (msg === 'Senha inválida') {
-          form.controls['senha'].setErrors({ custom: msg });
         } else {
-          form.controls['email'].setErrors({ custom: msg ?? 'Erro ao fazer login' });
+          this.formError.set(msg ?? 'Erro ao fazer login');
         }
         console.error('Erro ao fazer login!', msg);
       },
     });
+  }
+
+  onAnyInput() {
+    this.formError.set('');
   }
 }
