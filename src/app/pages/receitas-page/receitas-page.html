@@ -24,7 +24,7 @@
       </p-select>
     </div>
 
-    <div class="chart-card flex h-[350px] w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
+    <div class="chart-card flex h-87.5 w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
       <ngx-charts-line-chart
         [results]="graficoAtual()"
         [autoScale]="true"
@@ -88,7 +88,7 @@
   </div>
 </div>
 
-<app-nav-bottom />
+<app-nav-bottom active="receitas" />
 
 <app-modal-despesa
   [(visible)]="modalReceitaVisible"

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NavBottomButton } from './button';
 
 @Component({
@@ -6,4 +6,6 @@ import { NavBottomButton } from './button';
   imports: [NavBottomButton],
   templateUrl: './nav-bottom.html',
 })
-export class NavBottom {}
+export class NavBottom {
+  public active = input.required<'home' | 'despesas' | 'receitas'>();
+}

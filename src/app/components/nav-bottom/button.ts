@@ -1,4 +1,5 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { Router } from '@angular/router';
 import { LucideHouse, LucideAtom, LucideGlasses, LucideDynamicIcon } from '@lucide/angular';
 
 @Component({
@@ -9,6 +10,8 @@ import { LucideHouse, LucideAtom, LucideGlasses, LucideDynamicIcon } from '@luci
 export class NavBottomButton {
   public checked = input(false);
   public icon = input.required<'house' | 'atom' | 'glasses'>();
+  public url = input.required<string>();
+  private router = inject(Router);
 
   protected iconProp = computed(() => {
     switch (this.icon()) {
@@ -20,4 +23,8 @@ export class NavBottomButton {
         return LucideGlasses;
     }
   });
+
+  onClick() {
+    this.router.navigateByUrl(this.url());
+  }
 }
