@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export type Categoria = 'ALIMENTACAO' | 'LAZER' | 'TRANSPORTE' | 'COMPRAS' | 'CONTAS' | 'OUTROS';
 
@@ -8,8 +10,16 @@ export interface Despesa {
   nome: string;
   categoria: Categoria;
   data: string;
-  horario: string;
   valor: number;
+  idUsuario: string;
+}
+
+export interface CadastroDespesa {
+  nome: string;
+  categoria: Categoria | undefined;
+  data: Date;
+  valor: number;
+  idUsuario: string;
 }
 
 const DESPESA_MOCK: Despesa = {
@@ -18,7 +28,7 @@ const DESPESA_MOCK: Despesa = {
   categoria: 'ALIMENTACAO',
   data: '2026-05-18',
   valor: 51.01,
-  horario: '19:30',
+  idUsuario: '132-uuid',
 };
 
 const MOCK_DELAY = 500;
@@ -27,6 +37,9 @@ const MOCK_DELAY = 500;
   providedIn: 'root',
 })
 export class DespesaService {
+  private http = inject(HttpClient);
+  private readonly url = `${environment.API_URL}/despesas`;
+
   public recuperarDespesa(idUsuario: string, idDespesa: string): Observable<Despesa> {
     return of({ ...DESPESA_MOCK, id: idUsuario + idDespesa }).pipe(delay(MOCK_DELAY));
   }
@@ -37,5 +50,9 @@ export class DespesaService {
 
   public recuperarDespesasPeriodo(idUsuario: string, periodo: string): Observable<Despesa[]> {
     return this.recuperarDespesasAll(idUsuario);
+  }
+
+  public cadastrarDespesa(despesa: CadastroDespesa): Observable<Despesa> {
+    return this.http.post<Despesa>(`${this.url}/cadastrarDespesa`, despesa);
   }
 }
