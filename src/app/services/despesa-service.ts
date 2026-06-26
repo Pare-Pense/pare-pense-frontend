@@ -13,13 +13,21 @@ export const CATEGORIA_NOMES = {
 } as const;
 export type Categoria = keyof typeof CATEGORIA_NOMES;
 
-export interface DespesaDTO {
+export interface Despesa {
   id: string;
   nome: string;
   categoria: Categoria;
   data: string;
-  horario: string;
   valor: number;
+  idUsuario: string;
+}
+
+export interface CadastroDespesa {
+  nome: string;
+  categoria: Categoria | undefined;
+  data: Date;
+  valor: number;
+  idUsuario: string;
 }
 
 export interface GastosCategoriaDTO {
@@ -33,18 +41,18 @@ export interface GastosCategoriaDTO {
 })
 export class DespesaService {
   private http = inject(HttpClient);
-  private readonly url = environment.API_URL;
+  private readonly url = `${environment.API_URL}/despesas`;
 
-  public recuperarDespesa(idUsuario: string, idDespesa: string): Observable<DespesaDTO> {
-    return this.http.get<DespesaDTO>(`${this.url}/despesas/${idUsuario}/${idDespesa}`);
+  public recuperarDespesa(idUsuario: string, idDespesa: string): Observable<Despesa> {
+    return this.http.get<Despesa>(`${this.url}/${idUsuario}/${idDespesa}`);
   }
 
-  public recuperarDespesasAll(idUsuario: string): Observable<DespesaDTO[]> {
-    return this.http.get<DespesaDTO[]>(`${this.url}/despesas/${idUsuario}`);
+  public recuperarDespesasAll(idUsuario: string): Observable<Despesa[]> {
+    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}`);
   }
 
   public recuperarGastosCategoria(idUsuario: string, periodo: 'anual' | 'mensal' | 'semanal') {
-    return this.http.get<any[]>(`${this.url}/despesas/media/${idUsuario}/${periodo}`).pipe(
+    return this.http.get<any[]>(`${this.url}/media/${idUsuario}/${periodo}`).pipe(
       map((obj) => {
         const valores = Object.keys(CATEGORIA_NOMES).map((k) => ({
           id: k,
@@ -57,5 +65,9 @@ export class DespesaService {
         return valores;
       }),
     );
+  }
+
+  public cadastrarDespesa(despesa: CadastroDespesa): Observable<Despesa> {
+    return this.http.post<Despesa>(`${this.url}/cadastrarDespesa`, despesa);
   }
 }
