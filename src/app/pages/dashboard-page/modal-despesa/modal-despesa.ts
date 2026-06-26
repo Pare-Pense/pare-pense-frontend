@@ -1,15 +1,19 @@
-import { Component, input, model } from '@angular/core';
+import { Component, inject, input, model, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { SelectModule } from 'primeng/select';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { LucideDollarSign } from '@lucide/angular';
+import { Categoria, DespesaService } from '../../../services/despesa-service';
+import { AuthService } from '../../../auth/auth-service';
+import { ReceitaService } from '../../../services/receita-service';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-modal-despesa',
@@ -25,10 +29,15 @@ import { LucideDollarSign } from '@lucide/angular';
     IconFieldModule,
     InputIconModule,
     LucideDollarSign,
+    ProgressSpinner,
   ],
   templateUrl: 'modal-despesa.html',
 })
 export class ModalDespesa {
+  private authService = inject(AuthService);
+  private despesaService = inject(DespesaService);
+  private receitaService = inject(ReceitaService);
+  public loading = signal(false);
   public visible = model(false);
   protected categorias = ['Alimentação', 'Lazer', 'Transporte', 'Compras', 'Contas', 'Outros'];
 
@@ -47,7 +56,78 @@ export class ModalDespesa {
     this.isDespesa.set(true);
   }
 
-  protected onSubmit() {
-    this.visible.set(false);
+  protected onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+
+    const transacao = {
+      nome: this.valNome!,
+      categoria: this.isDespesa() ? this.stringToCategoria(this.valCategoria!) : undefined,
+      data: this.valData!,
+      valor: this.valValor!,
+      idUsuario: this.authService.getUsuarioId()!,
+    };
+
+    this.loading.set(true);
+
+    if (this.isDespesa()) {
+      this.despesaService.cadastrarDespesa(transacao).subscribe({
+        next: () => {
+          this.loading.set(false);
+          alert('Despesa cadastrada com sucesso!');
+          this.visible.set(false);
+          form.resetForm();
+        },
+
+        error: (err) => {
+          this.loading.set(false);
+          const msg: string | undefined = err?.error?.erro;
+          if (msg === 'Dados inválidos') {
+            for (const detail of err.error.detalhes) {
+              if (form.controls[detail.campo]) {
+                form.controls[detail.campo].setErrors({ custom: detail.mensagem });
+              }
+            }
+          }
+          console.error('Erro ao cadastrar despesa!', msg);
+        },
+      });
+    } else {
+      this.receitaService.cadastrarReceita(transacao).subscribe({
+        next: () => {
+          this.loading.set(false);
+          alert('Receita cadastrada com sucesso!');
+          this.visible.set(false);
+          form.resetForm();
+        },
+
+        error: (err) => {
+          this.loading.set(false);
+          const msg: string | undefined = err?.error?.erro;
+          if (msg === 'Dados inválidos') {
+            for (const detail of err.error.detalhes) {
+              if (form.controls[detail.campo]) {
+                form.controls[detail.campo].setErrors({ custom: detail.mensagem });
+              }
+            }
+          }
+          console.error('Erro ao cadastrar receita!', msg);
+        },
+      });
+    }
+  }
+
+  private stringToCategoria(valor: string) {
+    const res = {
+      Alimentação: 'ALIMENTACAO',
+      Lazer: 'LAZER',
+      Transporte: 'TRANSPORTE',
+      Compras: 'COMPRAS',
+      Contas: 'CONTAS',
+      Outros: 'OUTROS',
+    };
+
+    return res[valor as keyof typeof res] as Categoria;
   }
 }
