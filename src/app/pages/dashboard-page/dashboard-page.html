@@ -98,6 +98,11 @@
       @if (queryGastos.isPending()) {
         <p-progressspinner class="h-6 w-6" strokeWidth="8" />
       } @else if (queryGastos.data(); as data) {
+        <div class="flex justify-between px-2 font-bold">
+          <span>Categoria</span>
+          <span>Gasto Total</span>
+        </div>
+
         <!-- categoria cell -->
         @for (gasto of data; track gasto.id) {
           <div
