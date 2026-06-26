@@ -14,6 +14,7 @@ import { Categoria, DespesaService } from '../../../services/despesa-service';
 import { AuthService } from '../../../auth/auth-service';
 import { ReceitaService } from '../../../services/receita-service';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { QueryClient } from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'app-modal-despesa',
@@ -37,6 +38,7 @@ export class ModalDespesa {
   private authService = inject(AuthService);
   private despesaService = inject(DespesaService);
   private receitaService = inject(ReceitaService);
+  private queryClient = inject(QueryClient);
   public loading = signal(false);
   public visible = model(false);
   protected categorias = ['Alimentação', 'Lazer', 'Transporte', 'Compras', 'Contas', 'Outros'];
@@ -78,6 +80,7 @@ export class ModalDespesa {
           alert('Despesa cadastrada com sucesso!');
           this.visible.set(false);
           form.resetForm();
+          this.invalidar();
         },
 
         error: (err) => {
@@ -100,6 +103,7 @@ export class ModalDespesa {
           alert('Receita cadastrada com sucesso!');
           this.visible.set(false);
           form.resetForm();
+          this.invalidar();
         },
 
         error: (err) => {
@@ -129,5 +133,14 @@ export class ModalDespesa {
     };
 
     return res[valor as keyof typeof res] as Categoria;
+  }
+
+  private invalidar() {
+    this.queryClient.invalidateQueries({ queryKey: ['usuario', 'sumario'] });
+    if (this.isDespesa()) {
+      this.queryClient.invalidateQueries({ queryKey: ['despesas'] });
+    } else {
+      this.queryClient.invalidateQueries({ queryKey: ['receitas'] });
+    }
   }
 }
