@@ -4,7 +4,18 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucideUser, LucideBell, LucidePizza, LucidePlus } from '@lucide/angular';
+import {
+  LucideUser,
+  LucideBell,
+  LucidePizza,
+  LucidePlus,
+  LucideParasol,
+  LucideDynamicIcon,
+  LucideCarFront,
+  LucideShoppingCart,
+  LucideReceipt,
+  LucideLayers,
+} from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { DespesaService } from '../../services/despesa-service';
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -21,9 +32,9 @@ import { DecimalPipe } from '@angular/common';
   imports: [
     TabsModule,
     AvatarModule,
+    LucideDynamicIcon,
     LucideUser,
     LucideBell,
-    LucidePizza,
     LucidePlus,
     ButtonModule,
     ProgressBarModule,
@@ -83,5 +94,23 @@ export class DashboardPage {
         periodo: this.periodoStr(),
       },
     });
+  }
+
+  iconParaCategoria(categoria: string) {
+    switch (categoria) {
+      case 'ALIMENTACAO':
+        return LucidePizza;
+      case 'LAZER':
+        return LucideParasol;
+      case 'TRANSPORTE':
+        return LucideCarFront;
+      case 'COMPRAS':
+        return LucideShoppingCart;
+      case 'CONTAS':
+        return LucideReceipt;
+      case 'OUTROS':
+      default:
+        return LucideLayers;
+    }
   }
 }

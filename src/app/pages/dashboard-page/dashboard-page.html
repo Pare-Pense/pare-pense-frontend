@@ -105,7 +105,7 @@
             (click)="this.clickCategoria(gasto.id)"
           >
             <div class="bg-primary text-primary-contrast rounded-xl p-2">
-              <svg lucidePizza></svg>
+              <svg [lucideIcon]="this.iconParaCategoria(gasto.id)"></svg>
             </div>
             <div class="flex-1">
               <p class="text-color-emphasis text-lg">{{ gasto.nome }}</p>
@@ -117,7 +117,7 @@
     </div>
 
     <!-- espaço para nav inferior -->
-    <div class="h-nav-bottom-pad"></div>
+    <div class="h-nav-bottom-pad mt-4"></div>
   </div>
 </div>
 
