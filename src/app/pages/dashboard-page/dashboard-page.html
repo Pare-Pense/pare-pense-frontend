@@ -22,7 +22,7 @@
           @if (querySumario.isPending()) {
             <p-progressspinner class="h-6 w-6" strokeWidth="8" />
           } @else if (querySumario.data(); as data) {
-            {{ +data.totalDespesas | fmtReal }}
+            {{ data.totalDespesas | fmtReal }}
           }
         </h2>
       </div>
@@ -35,7 +35,7 @@
           @if (querySumario.isPending()) {
             <p-progressspinner class="h-6 w-6" strokeWidth="8" />
           } @else if (querySumario.data(); as data) {
-            {{ +data.totalReceitas | fmtReal }}
+            {{ data.totalReceitas | fmtReal }}
           }
         </h2>
       </div>
@@ -49,7 +49,12 @@
           <p>Limite mensal</p>
           <h2 class="text-color-emphasis text-xl font-bold">{{ +data.limiteMensal | fmtReal }}</h2>
         </div>
-        <p-progressbar [value]="+data.limiteUsadoPorc" />
+        <div class="flex flex-col gap-1">
+          <p-progressbar [value]="data.limiteUsadoPorc">
+            <ng-template #content></ng-template>
+          </p-progressbar>
+          <span class="text-xs">{{ data.limiteUsadoPorc | number: '1.0-1' }}% utilizado</span>
+        </div>
       }
     </div>
   </div>

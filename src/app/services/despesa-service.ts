@@ -60,7 +60,7 @@ export class DespesaService {
           valor: 0,
         }));
         for (const x of obj) {
-          valores.find((val) => val.id === x.categoria)!.valor = x._avg.valor;
+          valores.find((val) => val.id === x.categoria)!.valor = x.valor;
         }
         return valores;
       }),

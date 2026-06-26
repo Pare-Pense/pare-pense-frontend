@@ -14,9 +14,9 @@ export interface UsuarioDTO {
 export interface SumarioUsuarioDTO {
   limiteMensal: string;
   rendaMensal: string;
-  totalDespesas: string;
-  totalReceitas: string;
-  limiteUsadoPorc: string;
+  totalDespesas: number;
+  totalReceitas: number;
+  limiteUsadoPorc: number;
 }
 
 @Injectable({

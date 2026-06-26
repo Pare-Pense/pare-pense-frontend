@@ -14,6 +14,7 @@ import { RouterLink } from '@angular/router';
 import { ModalDespesa } from './modal-despesa/modal-despesa';
 import { AuthService } from '../../auth/auth-service';
 import { UsuarioService } from '../../services/usuario-service';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -31,6 +32,7 @@ import { UsuarioService } from '../../services/usuario-service';
     NavBottom,
     RouterLink,
     ModalDespesa,
+    DecimalPipe,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
