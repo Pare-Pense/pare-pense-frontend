@@ -3,7 +3,16 @@ import { inject, Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type Categoria = 'ALIMENTACAO' | 'LAZER' | 'TRANSPORTE' | 'COMPRAS' | 'CONTAS' | 'OUTROS';
+export const CATEGORIAS = {
+  ALIMENTACAO: 'ALIMENTACAO',
+  LAZER: 'LAZER',
+  TRANSPORTE: 'TRANSPORTE',
+  COMPRAS: 'COMPRAS',
+  CONTAS: 'CONTAS',
+  OUTROS: 'OUTROS',
+} as const;
+
+export type Categoria = keyof typeof CATEGORIAS;
 
 export interface Despesa {
   id: string;
@@ -52,7 +61,20 @@ export class DespesaService {
     return this.recuperarDespesasAll(idUsuario);
   }
 
+  public recuperarDespesasPeriodoECategoria(idUsuario: string, periodo: string, categoria:Categoria): Observable<Despesa[]> {
+    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`,{
+      params: {
+        categoria,
+      },
+      }
+    );
+  }  
+
   public cadastrarDespesa(despesa: CadastroDespesa): Observable<Despesa> {
     return this.http.post<Despesa>(`${this.url}/cadastrarDespesa`, despesa);
+  }
+
+  public deletarDespesa(idUsuario: string, idDespesa: string){
+    return this.http.delete(`${this.url}/${idUsuario}/${idDespesa}`)
   }
 }
