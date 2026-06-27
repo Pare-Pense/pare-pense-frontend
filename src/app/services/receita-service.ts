@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export interface Receita {
   id: string;
   nome: string;
-  data: Date;
+  data: string;
   valor: number;
   idUsuario: string;
 }
@@ -27,5 +27,22 @@ export class ReceitaService {
 
   public cadastrarReceita(receita: CadastroReceita): Observable<Receita> {
     return this.http.post<Receita>(`${this.url}/cadastrarReceita`, receita);
+  }
+
+  public recuperarReceitasAll(idUsuario: string): Observable<Receita[]> {
+    return this.http.get<Receita[]>(`${this.url}/${idUsuario}`)
+  }
+
+  public recuperarReceitasPorPeriodo(
+    idUsuario: string,
+    periodo: 'semanal' | 'mensal' | 'anual'
+  ): Observable<Receita[]> {
+    return this.http.get<Receita[]>(
+      `${this.url}/${idUsuario}/${periodo}`
+    );
+  }
+
+  public deletarReceita(idUsuario: string, idReceita: string){
+    return this.http.delete(`${this.url}/${idUsuario}/${idReceita}`)
   }
 }

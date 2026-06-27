@@ -42,7 +42,7 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-      @for (receita of receitas; track receita.id) {
+      @for (receita of receitas(); track receita.id) {
         <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
           <!-- infos -->
           <div class="flex-1">
@@ -50,7 +50,7 @@
               {{ receita.nome }}
             </p>
             <p class="text-sm text-gray-500">
-              {{ receita.data }}
+              {{ formatarData(receita.data) }}
             </p>
           </div>
 
