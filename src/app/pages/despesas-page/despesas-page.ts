@@ -18,7 +18,7 @@ import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
 import { injectMutation, injectQuery, injectQueryClient } from '@tanstack/angular-query-experimental';
-import { Categoria, CATEGORIAS, DespesaService } from '../../services/despesa-service';
+import { Categoria, CATEGORIAS, Despesa, DespesaService } from '../../services/despesa-service';
 import { AuthService } from '../../auth/auth-service';
 import { lastValueFrom } from 'rxjs';
 
@@ -142,7 +142,7 @@ export class ExpensesPage {
     });
   }
 
-  openModalDespesa() {
+  openModalDespesa(despesa: Despesa) {
     this.isEditMode = true;
     this.modalDespesaVisible.set(true);
   }

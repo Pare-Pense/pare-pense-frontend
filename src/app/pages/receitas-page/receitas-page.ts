@@ -129,7 +129,7 @@ export class IncomesPage{
     ];
   });
 
-  openModalReceita() {
+  openModalReceita(receita:Receita) {
     this.isEditMode = true;
     this.modalReceitaVisible.set(true);
     this.isDespesa.set(false);

@@ -51,7 +51,11 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-      @for (despesa of despesas(); track despesa.id) {
+      @if (queryDespesas.isPending()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      }
+      @else{
+        @for (despesa of despesas(); track despesa.id) {
         <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
           <!-- ícone -->
           <div class="bg-primary text-primary-contrast rounded-xl p-2">
@@ -89,13 +93,15 @@
                 class="flex items-center justify-center rounded-full p-2"
                 size="small"
                 severity="secondary"
-                (click)="openModalDespesa()"
+                (click)="openModalDespesa(despesa)"
               >
                 <svg lucidePencil></svg>
               </button>
             </div>
           </div>
         </div>
+      }
+
       }
     </div>
 

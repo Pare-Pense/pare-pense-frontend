@@ -42,7 +42,11 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-      @for (receita of receitas(); track receita.id) {
+      @if (queryReceitas.isPending()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      }
+      @else{
+        @for (receita of receitas(); track receita.id) {
         <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
           <!-- infos -->
           <div class="flex-1">
@@ -74,13 +78,14 @@
                 class="flex items-center justify-center rounded-full p-2"
                 size="small"
                 severity="secondary"
-                (click)="openModalReceita()"
+                (click)="openModalReceita(receita)"
               >
                 <svg lucidePencil></svg>
               </button>
             </div>
           </div>
         </div>
+        }
       }
     </div>
 
