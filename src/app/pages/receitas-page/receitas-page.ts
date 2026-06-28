@@ -13,12 +13,10 @@ import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
 import { Receita, ReceitaService } from '../../services/receita-service';
 import { AuthService } from '../../auth/auth-service';
-import {
-  injectMutation,
-  injectQuery,
-  injectQueryClient,
-} from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
 
@@ -40,17 +38,21 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
     ModalDespesa,
     LucidePencil,
     LucideTrash2,
+    ConfirmDialogModule,
   ],
   templateUrl: './receitas-page.html',
   styleUrl: './receitas-page.css',
+  providers: [ConfirmationService],
 })
 export class IncomesPage {
   private receitaService = inject(ReceitaService);
   private authService = inject(AuthService);
+  private queryClient = inject(QueryClient);
+  private confirmationService = inject(ConfirmationService);
+
   protected modalReceitaVisible = signal(false);
   public isEditMode = false;
   protected isDespesa = signal(true);
-  private queryClient = injectQueryClient();
   periodoSelecionado = signal<Periodo>('semanal');
 
   periodos = [
@@ -92,9 +94,25 @@ export class IncomesPage {
 
     if (!idUsuario) return;
 
-    this.deleteReceitaMutation.mutate({
-      idUsuario,
-      idReceita,
+    this.confirmationService.confirm({
+      header: 'Alerta',
+      message: 'Tem certeza que quer deletar esta receita?',
+      closable: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Deletar',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.deleteReceitaMutation.mutate({
+          idUsuario,
+          idReceita,
+        });
+      },
     });
   }
 

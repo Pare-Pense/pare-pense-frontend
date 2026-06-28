@@ -11,11 +11,7 @@ import { LineChartModule } from '@swimlane/ngx-charts';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
-import {
-  injectMutation,
-  injectQuery,
-  injectQueryClient,
-} from '@tanstack/angular-query-experimental';
+import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import {
   Categoria,
   CATEGORIA_NOMES,
@@ -24,6 +20,8 @@ import {
 } from '../../services/despesa-service';
 import { AuthService } from '../../auth/auth-service';
 import { lastValueFrom } from 'rxjs';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
 
@@ -46,16 +44,20 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
     ModalDespesa,
     LucidePencil,
     LucideTrash2,
+    ConfirmDialogModule,
   ],
   templateUrl: './despesas-page.html',
   styleUrl: './despesas-page.css',
+  providers: [ConfirmationService],
 })
 export class ExpensesPage {
   private despesaService = inject(DespesaService);
   private authService = inject(AuthService);
+  private queryClient = inject(QueryClient);
+  private confirmationService = inject(ConfirmationService);
+
   public isEditMode = false;
   protected isDespesa = signal(true);
-  private queryClient = injectQueryClient();
   periodoSelecionado = signal<Periodo>('semanal');
   categoriaSelecionada = signal<Categoria>('ALIMENTACAO');
   protected modalDespesaVisible = signal(false);
@@ -129,9 +131,25 @@ export class ExpensesPage {
 
     if (!idUsuario) return;
 
-    this.deleteDespesaMutation.mutate({
-      idUsuario,
-      idDespesa,
+    this.confirmationService.confirm({
+      header: 'Alerta',
+      message: 'Tem certeza que quer deletar esta despesa?',
+      closable: false,
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Deletar',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.deleteDespesaMutation.mutate({
+          idUsuario,
+          idDespesa,
+        });
+      },
     });
   }
 
