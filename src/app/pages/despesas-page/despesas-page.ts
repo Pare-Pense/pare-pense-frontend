@@ -18,7 +18,7 @@ import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
 import { injectMutation, injectQuery, injectQueryClient } from '@tanstack/angular-query-experimental';
-import { Categoria, CATEGORIAS, Despesa, DespesaService } from '../../services/despesa-service';
+import { Categoria, CATEGORIA_NOMES, Despesa, DespesaService } from '../../services/despesa-service';
 import { AuthService } from '../../auth/auth-service';
 import { lastValueFrom } from 'rxjs';
 
@@ -58,9 +58,9 @@ export class ExpensesPage {
   categoriaSelecionada = signal<Categoria>('ALIMENTACAO');
   protected modalDespesaVisible = signal(false);
   
-  categorias = Object.values(CATEGORIAS).map((cat) => ({
-    label: this.formatarLabel(cat),
-    value: cat,
+  categorias = Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
+    label,
+    value: key as Categoria,
   }));
 
   formatarLabel(cat: string) {
