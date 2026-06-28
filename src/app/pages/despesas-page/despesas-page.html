@@ -54,6 +54,12 @@
       @if (queryDespesas.isPending()) {
         <p-progressspinner class="h-6 w-6" strokeWidth="8" />
       } @else {
+        @if (despesas().length === 0) {
+          <div class="mt-2 text-center text-lg font-medium">
+            <p>Nenhuma despesa no periodo selecionado.</p>
+          </div>
+        }
+
         @for (despesa of despesas(); track despesa.id) {
           <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
             <!-- ícone -->

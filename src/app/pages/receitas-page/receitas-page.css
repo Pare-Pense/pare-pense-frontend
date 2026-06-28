@@ -9,3 +9,9 @@
 ngx-charts-line-chart {
   overflow-x: scroll;
 }
+
+:host {
+  background-color: #f0f8ff;
+  min-height: 100svh;
+  display: block;
+}

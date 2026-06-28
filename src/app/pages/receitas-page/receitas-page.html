@@ -45,6 +45,12 @@
       @if (queryReceitas.isPending()) {
         <p-progressspinner class="h-6 w-6" strokeWidth="8" />
       } @else {
+        @if (receitas().length === 0) {
+          <div class="mt-2 text-center text-lg font-medium">
+            <p>Nenhuma receita no periodo selecionado.</p>
+          </div>
+        }
+
         @for (receita of receitas(); track receita.id) {
           <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
             <!-- infos -->
