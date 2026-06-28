@@ -68,20 +68,23 @@ export class DespesaService {
     );
   }
 
-  public recuperarDespesasPeriodoECategoria(idUsuario: string, periodo: string, categoria:Categoria): Observable<Despesa[]> {
-    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`,{
+  public recuperarDespesasPeriodoECategoria(
+    idUsuario: string,
+    periodo: string,
+    categoria: Categoria,
+  ): Observable<Despesa[]> {
+    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`, {
       params: {
         categoria,
       },
-      }
-    );
-  }  
+    });
+  }
 
   public cadastrarDespesa(despesa: CadastroDespesa): Observable<Despesa> {
     return this.http.post<Despesa>(`${this.url}/cadastrarDespesa`, despesa);
   }
 
-  public deletarDespesa(idUsuario: string, idDespesa: string){
-    return this.http.delete(`${this.url}/${idUsuario}/${idDespesa}`)
+  public deletarDespesa(idUsuario: string, idDespesa: string) {
+    return this.http.delete(`${this.url}/${idUsuario}/${idDespesa}`);
   }
 }

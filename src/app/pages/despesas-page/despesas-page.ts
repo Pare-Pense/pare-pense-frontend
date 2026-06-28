@@ -4,21 +4,24 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import {
-  LucideUser,
-  LucideBell,
-  LucidePizza,
-  LucidePencil,
-  LucideTrash2,
-} from '@lucide/angular';
+import { LucideUser, LucideBell, LucidePizza, LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { LineChartModule } from '@swimlane/ngx-charts';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
-import { injectMutation, injectQuery, injectQueryClient } from '@tanstack/angular-query-experimental';
-import { Categoria, CATEGORIA_NOMES, Despesa, DespesaService } from '../../services/despesa-service';
+import {
+  injectMutation,
+  injectQuery,
+  injectQueryClient,
+} from '@tanstack/angular-query-experimental';
+import {
+  Categoria,
+  CATEGORIA_NOMES,
+  Despesa,
+  DespesaService,
+} from '../../services/despesa-service';
 import { AuthService } from '../../auth/auth-service';
 import { lastValueFrom } from 'rxjs';
 
@@ -48,7 +51,6 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
   styleUrl: './despesas-page.css',
 })
 export class ExpensesPage {
-
   private despesaService = inject(DespesaService);
   private authService = inject(AuthService);
   public isEditMode = false;
@@ -57,7 +59,7 @@ export class ExpensesPage {
   periodoSelecionado = signal<Periodo>('semanal');
   categoriaSelecionada = signal<Categoria>('ALIMENTACAO');
   protected modalDespesaVisible = signal(false);
-  
+
   categorias = Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
     label,
     value: key as Categoria,
@@ -68,11 +70,11 @@ export class ExpensesPage {
   }
 
   periodos = [
-      { label: 'Nos últimos 7 dias', value: 'semanal' },
-      { label: 'No último mês', value: 'mensal' },
-      { label: 'No último ano', value: 'anual' },
+    { label: 'Nos últimos 7 dias', value: 'semanal' },
+    { label: 'No último mês', value: 'mensal' },
+    { label: 'No último ano', value: 'anual' },
   ];
-  
+
   queryDespesas = injectQuery(() => {
     const idUsuario = this.authService.getUsuarioId();
     const categoria = this.categoriaSelecionada();
@@ -82,11 +84,7 @@ export class ExpensesPage {
       queryKey: ['despesas', idUsuario, categoria, periodo],
       queryFn: () =>
         lastValueFrom(
-          this.despesaService.recuperarDespesasPeriodoECategoria(
-            idUsuario!,
-            periodo,
-            categoria
-          )
+          this.despesaService.recuperarDespesasPeriodoECategoria(idUsuario!, periodo, categoria),
         ),
       enabled: !!idUsuario,
     };
@@ -94,15 +92,13 @@ export class ExpensesPage {
 
   deleteDespesaMutation = injectMutation(() => ({
     mutationFn: ({ idUsuario, idDespesa }: { idUsuario: string; idDespesa: string }) =>
-      lastValueFrom(
-        this.despesaService.deletarDespesa(idUsuario, idDespesa)
-      ),
-  
-      onSuccess: () => {
-        this.queryClient.invalidateQueries({ queryKey: ['despesas'] });
-      },
+      lastValueFrom(this.despesaService.deletarDespesa(idUsuario, idDespesa)),
+
+    onSuccess: () => {
+      this.queryClient.invalidateQueries({ queryKey: ['despesas'] });
+    },
   }));
-  
+
   despesas = computed(() => this.queryDespesas.data() ?? []);
 
   graficoAtual = computed(() => {
@@ -113,10 +109,7 @@ export class ExpensesPage {
     for (const d of despesas) {
       const key = new Date(d.data).toISOString().split('T')[0];
 
-      agrupado.set(
-        key,
-        (agrupado.get(key) || 0) + Number(d.valor)
-      );
+      agrupado.set(key, (agrupado.get(key) || 0) + Number(d.valor));
     }
 
     const series = Array.from(agrupado.entries())
@@ -138,7 +131,7 @@ export class ExpensesPage {
 
     this.deleteDespesaMutation.mutate({
       idUsuario,
-      idDespesa
+      idDespesa,
     });
   }
 

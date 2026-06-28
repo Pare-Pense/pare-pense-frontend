@@ -30,19 +30,17 @@ export class ReceitaService {
   }
 
   public recuperarReceitasAll(idUsuario: string): Observable<Receita[]> {
-    return this.http.get<Receita[]>(`${this.url}/${idUsuario}`)
+    return this.http.get<Receita[]>(`${this.url}/${idUsuario}`);
   }
 
   public recuperarReceitasPorPeriodo(
     idUsuario: string,
-    periodo: 'semanal' | 'mensal' | 'anual'
+    periodo: 'semanal' | 'mensal' | 'anual',
   ): Observable<Receita[]> {
-    return this.http.get<Receita[]>(
-      `${this.url}/${idUsuario}/${periodo}`
-    );
+    return this.http.get<Receita[]>(`${this.url}/${idUsuario}/${periodo}`);
   }
 
-  public deletarReceita(idUsuario: string, idReceita: string){
-    return this.http.delete(`${this.url}/${idUsuario}/${idReceita}`)
+  public deletarReceita(idUsuario: string, idReceita: string) {
+    return this.http.delete(`${this.url}/${idUsuario}/${idReceita}`);
   }
 }

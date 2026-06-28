@@ -13,7 +13,11 @@ import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
 import { Receita, ReceitaService } from '../../services/receita-service';
 import { AuthService } from '../../auth/auth-service';
-import { injectMutation, injectQuery, injectQueryClient } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+  injectQueryClient,
+} from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
@@ -40,8 +44,7 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
   templateUrl: './receitas-page.html',
   styleUrl: './receitas-page.css',
 })
-export class IncomesPage{
-
+export class IncomesPage {
   private receitaService = inject(ReceitaService);
   private authService = inject(AuthService);
   protected modalReceitaVisible = signal(false);
@@ -57,33 +60,27 @@ export class IncomesPage{
   ];
 
   queryReceitas = injectQuery(() => {
-  const idUsuario = this.authService.getUsuarioId();
-  const periodo = this.periodoSelecionado();
+    const idUsuario = this.authService.getUsuarioId();
+    const periodo = this.periodoSelecionado();
 
-  return {
-    queryKey: ['receitas', idUsuario, periodo],
-    queryFn: () =>
-      lastValueFrom(
-        this.receitaService.recuperarReceitasPorPeriodo(
-          idUsuario!,
-          periodo === 'semanal'
-            ? 'semanal'
-            : periodo === 'mensal'
-            ? 'mensal'
-            : 'anual'
-        )
-      ),
-    enabled: !!idUsuario,
+    return {
+      queryKey: ['receitas', idUsuario, periodo],
+      queryFn: () =>
+        lastValueFrom(
+          this.receitaService.recuperarReceitasPorPeriodo(
+            idUsuario!,
+            periodo === 'semanal' ? 'semanal' : periodo === 'mensal' ? 'mensal' : 'anual',
+          ),
+        ),
+      enabled: !!idUsuario,
     };
   });
 
   receitas = computed(() => this.queryReceitas.data() ?? []);
 
   deleteReceitaMutation = injectMutation(() => ({
-  mutationFn: ({ idUsuario, idReceita }: { idUsuario: string; idReceita: string }) =>
-    lastValueFrom(
-      this.receitaService.deletarReceita(idUsuario, idReceita)
-    ),
+    mutationFn: ({ idUsuario, idReceita }: { idUsuario: string; idReceita: string }) =>
+      lastValueFrom(this.receitaService.deletarReceita(idUsuario, idReceita)),
 
     onSuccess: () => {
       this.queryClient.invalidateQueries({ queryKey: ['receitas'] });
@@ -97,7 +94,7 @@ export class IncomesPage{
 
     this.deleteReceitaMutation.mutate({
       idUsuario,
-      idReceita
+      idReceita,
     });
   }
 
@@ -106,15 +103,12 @@ export class IncomesPage{
 
     const agrupado = new Map<string, number>();
 
-    receitas.forEach(r => {
+    receitas.forEach((r) => {
       const data = new Date(r.data);
 
-      const key = data.toISOString().split('T')[0]; 
+      const key = data.toISOString().split('T')[0];
 
-      agrupado.set(
-        key,
-        (agrupado.get(key) || 0) + Number(r.valor)
-      );
+      agrupado.set(key, (agrupado.get(key) || 0) + Number(r.valor));
     });
 
     const series = Array.from(agrupado.entries())
@@ -124,12 +118,12 @@ export class IncomesPage{
     return [
       {
         name: 'Receitas',
-        series
-      }
+        series,
+      },
     ];
   });
 
-  openModalReceita(receita:Receita) {
+  openModalReceita(receita: Receita) {
     this.isEditMode = true;
     this.modalReceitaVisible.set(true);
     this.isDespesa.set(false);
