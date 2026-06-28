@@ -11,6 +11,7 @@ export const CATEGORIA_NOMES = {
   CONTAS: 'Contas',
   OUTROS: 'Outros',
 } as const;
+
 export type Categoria = keyof typeof CATEGORIA_NOMES;
 
 export interface Despesa {
@@ -67,7 +68,23 @@ export class DespesaService {
     );
   }
 
+  public recuperarDespesasPeriodoECategoria(
+    idUsuario: string,
+    periodo: string,
+    categoria: Categoria,
+  ): Observable<Despesa[]> {
+    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`, {
+      params: {
+        categoria,
+      },
+    });
+  }
+
   public cadastrarDespesa(despesa: CadastroDespesa): Observable<Despesa> {
     return this.http.post<Despesa>(`${this.url}/cadastrarDespesa`, despesa);
+  }
+
+  public deletarDespesa(idUsuario: string, idDespesa: string) {
+    return this.http.delete(`${this.url}/${idUsuario}/${idDespesa}`);
   }
 }

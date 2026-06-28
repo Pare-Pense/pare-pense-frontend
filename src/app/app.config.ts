@@ -7,6 +7,7 @@ import { pt_BR as primeLocaleBR } from 'primelocale/js/pt_BR.js';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/auth-interceptor';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
 
@@ -35,5 +36,6 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideTanStackQuery(new QueryClient()),
+    provideAnimations(),
   ],
 };

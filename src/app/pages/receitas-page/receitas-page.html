@@ -42,45 +42,55 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-      @for (receita of receitas; track receita.id) {
-        <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
-          <!-- infos -->
-          <div class="flex-1">
-            <p class="text-color-emphasis text-lg font-semibold">
-              {{ receita.nome }}
-            </p>
-            <p class="text-sm text-gray-500">
-              {{ receita.data }}
-            </p>
+      @if (queryReceitas.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else {
+        @if (receitas().length === 0) {
+          <div class="mt-2 text-center text-lg font-medium">
+            <p>Nenhuma receita no periodo selecionado.</p>
           </div>
+        }
 
-          <!-- valor -->
-          <div class="flex flex-col items-end gap-2">
-            <h3 class="text-color-emphasis font-bold">
-              {{ receita.valor | fmtReal }}
-            </h3>
-            <div class="flex gap-2">
-              <button
-                pButton
-                class="flex items-center justify-center rounded-full p-2"
-                size="small"
-                severity="danger"
-                (click)="excluirReceita(receita.id)"
-              >
-                <svg lucideTrash2></svg>
-              </button>
-              <button
-                pButton
-                class="flex items-center justify-center rounded-full p-2"
-                size="small"
-                severity="secondary"
-                (click)="openModalReceita()"
-              >
-                <svg lucidePencil></svg>
-              </button>
+        @for (receita of receitas(); track receita.id) {
+          <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
+            <!-- infos -->
+            <div class="flex-1">
+              <p class="text-color-emphasis text-lg font-semibold">
+                {{ receita.nome }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(receita.data) }}
+              </p>
+            </div>
+
+            <!-- valor -->
+            <div class="flex flex-col items-end gap-2">
+              <h3 class="text-color-emphasis font-bold">
+                {{ receita.valor | fmtReal }}
+              </h3>
+              <div class="flex gap-2">
+                <button
+                  pButton
+                  class="flex items-center justify-center rounded-full p-2"
+                  size="small"
+                  severity="danger"
+                  (click)="excluirReceita(receita.id)"
+                >
+                  <svg lucideTrash2></svg>
+                </button>
+                <button
+                  pButton
+                  class="flex items-center justify-center rounded-full p-2"
+                  size="small"
+                  severity="secondary"
+                  (click)="openModalReceita(receita)"
+                >
+                  <svg lucidePencil></svg>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        }
       }
     </div>
 
@@ -95,3 +105,5 @@
   [isEditMode]="isEditMode"
   [(isDespesa)]="isDespesa"
 />
+
+<p-confirmdialog />
