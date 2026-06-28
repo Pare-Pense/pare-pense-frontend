@@ -14,41 +14,98 @@
     </div>
 
     <!-- Card inputs -->
-    <div class="flex flex-col items-center gap-4 rounded-xl bg-white p-4 shadow">
-      <p-inputGroup>
-        <p-inputgroup-addon>
-          <svg lucideMail></svg>
-        </p-inputgroup-addon>
+    <form
+      class="flex flex-col items-center gap-4 rounded-xl bg-white p-4 shadow"
+      #loginForm="ngForm"
+      (ngSubmit)="onSubmit(loginForm)"
+      (input)="onAnyInput()"
+    >
+      <div class="flex w-full flex-col">
+        <p-inputGroup>
+          <p-inputgroup-addon>
+            <svg lucideMail></svg>
+          </p-inputgroup-addon>
 
-        <p-floatlabel variant="on">
-          <input id="email" pInputText [(ngModel)]="email" />
-          <label for="email">Email</label>
-        </p-floatlabel>
-      </p-inputGroup>
+          <p-floatlabel variant="on">
+            <input
+              id="email"
+              name="email"
+              pInputText
+              [(ngModel)]="email"
+              #emailRef="ngModel"
+              [invalid]="emailRef.invalid && (emailRef.touched || loginForm.submitted)"
+              required
+              autocomplete="off"
+            />
+            <label for="email">Email</label>
+          </p-floatlabel>
+        </p-inputGroup>
+        @if (emailRef.invalid && (emailRef.touched || loginForm.submitted)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (emailRef.errors?.['required']) {
+              Email é obrigatório
+            } @else if (emailRef.errors?.['custom']) {
+              {{ emailRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
 
-      <p-inputgroup>
-        <p-inputgroup-addon>
-          <svg lucideLockKeyhole></svg>
-        </p-inputgroup-addon>
+      <div class="flex w-full flex-col">
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <svg lucideLockKeyhole></svg>
+          </p-inputgroup-addon>
 
-        <p-floatlabel variant="on">
-          <p-password
-            id="senha"
-            [toggleMask]="true"
-            autocomplete="off"
-            [feedback]="false"
-            [(ngModel)]="senha"
-            [pt]="{
-              maskIcon: { class: '!z-10' },
-              unmaskIcon: { class: '!z-10' },
-            }"
-          />
-          <label for="senha">Senha</label>
-        </p-floatlabel>
-      </p-inputgroup>
+          <p-floatlabel variant="on">
+            <p-password
+              id="senha"
+              name="senha"
+              [toggleMask]="true"
+              autocomplete="off"
+              [feedback]="false"
+              [(ngModel)]="senha"
+              [pt]="{
+                maskIcon: { class: '!z-10' },
+                unmaskIcon: { class: '!z-10' },
+              }"
+              #senhaRef="ngModel"
+              [invalid]="senhaRef.invalid && (senhaRef.touched || loginForm.submitted)"
+              required
+            />
+            <label for="senha">Senha</label>
+          </p-floatlabel>
+        </p-inputgroup>
+        @if (senhaRef.invalid && (senhaRef.touched || loginForm.submitted)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (senhaRef.errors?.['required']) {
+              Senha é obrigatória
+            } @else if (senhaRef.errors?.['custom']) {
+              {{ senhaRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
 
-      <button pButton class="bg-primary mt-3 w-full">Entrar</button>
-    </div>
+      @if (formError()) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formError() }}
+        </p-message>
+      }
+
+      <button
+        pButton
+        class="bg-primary w-full"
+        type="submit"
+        [disabled]="loginForm.invalid || loading()"
+      >
+        @if (loading()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
 
     <p class="text-center text-sm">
       Ainda não tem uma conta?

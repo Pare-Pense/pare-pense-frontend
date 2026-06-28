@@ -6,8 +6,6 @@
   background-color: #f0f8ff;
 }
 
-:host {
-  background-color: #f0f8ff;
-  min-height: 100svh;
-  display: block;
+ngx-charts-line-chart {
+  overflow-x: scroll;
 }
