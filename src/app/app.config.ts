@@ -10,6 +10,7 @@ import { authInterceptor } from './auth/auth-interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
+import { MessageService } from 'primeng/api';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -37,5 +38,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideTanStackQuery(new QueryClient()),
     provideAnimations(),
+    MessageService,
   ],
 };
