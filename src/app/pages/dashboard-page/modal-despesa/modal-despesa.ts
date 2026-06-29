@@ -16,6 +16,7 @@ import { ReceitaService } from '../../../services/receita-service';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { Message } from 'primeng/message';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-modal-despesa',
@@ -39,6 +40,7 @@ import { Message } from 'primeng/message';
 export class ModalDespesa {
   private authService = inject(AuthService);
   private despesaService = inject(DespesaService);
+  private messageService = inject(MessageService);
   private receitaService = inject(ReceitaService);
   private queryClient = inject(QueryClient);
   public loading = signal(false);
@@ -52,11 +54,8 @@ export class ModalDespesa {
   protected valData?: Date;
   protected valValor?: number;
 
-  protected onDialogHide() {
-    this.valNome = undefined;
-    this.valCategoria = undefined;
-    this.valData = undefined;
-    this.valValor = undefined;
+  protected onDialogHide(form: NgForm) {
+    form.resetForm();
     this.isDespesa.set(true);
   }
 
@@ -79,7 +78,11 @@ export class ModalDespesa {
       this.despesaService.cadastrarDespesa(transacao).subscribe({
         next: () => {
           this.loading.set(false);
-          alert('Despesa cadastrada com sucesso!');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Despesa cadastrada com sucesso!',
+          });
           this.visible.set(false);
           form.resetForm();
           this.invalidar();
@@ -102,7 +105,11 @@ export class ModalDespesa {
       this.receitaService.cadastrarReceita(transacao).subscribe({
         next: () => {
           this.loading.set(false);
-          alert('Receita cadastrada com sucesso!');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Receita cadastrada com sucesso!',
+          });
           this.visible.set(false);
           form.resetForm();
           this.invalidar();

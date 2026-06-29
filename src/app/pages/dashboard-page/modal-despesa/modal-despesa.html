@@ -2,7 +2,7 @@
   [modal]="true"
   [(visible)]="visible"
   header="{{ isEditMode() ? 'Editar' : 'Adicionar' }} {{ isDespesa() ? 'Despesa' : 'Receita' }}"
-  (onHide)="this.onDialogHide()"
+  (onHide)="this.onDialogHide(transacaoForm)"
   styleClass="w-full mx-4"
   [draggable]="false"
 >
