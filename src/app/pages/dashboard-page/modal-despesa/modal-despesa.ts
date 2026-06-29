@@ -15,6 +15,7 @@ import { AuthService } from '../../../auth/auth-service';
 import { ReceitaService } from '../../../services/receita-service';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'app-modal-despesa',
@@ -31,6 +32,7 @@ import { QueryClient } from '@tanstack/angular-query-experimental';
     InputIconModule,
     LucideDollarSign,
     ProgressSpinner,
+    Message,
   ],
   templateUrl: 'modal-despesa.html',
 })
