@@ -2,7 +2,7 @@
   [modal]="true"
   [(visible)]="visible"
   header="{{ isEditMode() ? 'Editar' : 'Adicionar' }} {{ isDespesa() ? 'Despesa' : 'Receita' }}"
-  (onHide)="this.onDialogHide()"
+  (onHide)="this.onDialogHide(transacaoForm)"
   styleClass="w-full mx-4"
   [draggable]="false"
 >
@@ -42,7 +42,13 @@
         </p-float-label>
 
         @if (nomeRef.invalid && (nomeRef.touched || transacaoForm.submitted)) {
-          <small class="mt-1 text-xs text-red-500">O nome é obrigatório.</small>
+          <p-message severity="error" size="small" variant="simple">
+            @if (nomeRef.errors?.['required']) {
+              Nome é obrigatório
+            } @else if (nomeRef.errors?.['custom']) {
+              {{ nomeRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
 
@@ -64,7 +70,13 @@
           </p-float-label>
 
           @if (categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)) {
-            <small class="mt-1 text-xs text-red-500">O categoria é obrigatório.</small>
+            <p-message severity="error" size="small" variant="simple">
+              @if (categoriaRef.errors?.['required']) {
+                Categoria é obrigatória
+              } @else if (categoriaRef.errors?.['custom']) {
+                {{ categoriaRef.errors?.['custom'] }}
+              }
+            </p-message>
           }
         </div>
       }
@@ -109,7 +121,15 @@
           (dataRef.invalid || horaRef.invalid) &&
           (dataRef.touched || horaRef.touched || transacaoForm.submitted)
         ) {
-          <small class="mt-1 text-xs text-red-500">A data/hora é obrigatória.</small>
+          <p-message severity="error" size="small" variant="simple">
+            @if (dataRef.errors?.['required'] || horaRef.errors?.['required']) {
+              Data e hora são obrigatórias
+            } @else if (dataRef.errors?.['custom']) {
+              {{ dataRef.errors?.['custom'] }}
+            } @else if (horaRef.errors?.['custom']) {
+              {{ horaRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
 
@@ -136,7 +156,13 @@
         </p-float-label>
 
         @if (valorRef.invalid && (valorRef.touched || transacaoForm.submitted)) {
-          <small class="mt-1 text-xs text-red-500">O valor é obrigatório.</small>
+          <p-message severity="error" size="small" variant="simple">
+            @if (valorRef.errors?.['required']) {
+              Valor é obrigatório
+            } @else if (valorRef.errors?.['custom']) {
+              {{ valorRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
     </div>
