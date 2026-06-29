@@ -54,7 +54,6 @@ export class UsuarioService {
       limiteMensal: limiteGastos
     }
     return this.http
-      .post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, payload)
-      //.pipe();
+      .post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, payload);
   }
 }
