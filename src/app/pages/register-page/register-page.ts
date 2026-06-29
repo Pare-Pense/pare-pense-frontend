@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -7,8 +7,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { LucideLockKeyhole, LucideMail, LucideWallet, LucideUser, LucideCalendar, LucideDollarSign} from '@lucide/angular';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-
+import { RouterLink, ActivatedRoute, Router, } from '@angular/router';
+import { AuthService } from '../../auth/auth-service';
+import { MessageModule } from 'primeng/message';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-register-page',
@@ -26,11 +28,19 @@ import { RouterLink } from '@angular/router';
     LucideWallet,
     LucideDollarSign,
     PasswordModule,
-    RouterLink,],
+    RouterLink,
+    ProgressSpinner,
+    MessageModule,],
   templateUrl: './register-page.html',
   styleUrl: './register-page.css',
 })
 export class RegisterPage {
+
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
+
   email: string = '';
   senha: string = '';
   username: string = '';
@@ -38,4 +48,36 @@ export class RegisterPage {
   senhaConf: string = '';
   saldoMensal: number | null = null;  
   limiteGastos: number | null = null;
+  loading = signal(false);
+  formError = signal('');
+
+
+  onSubmit(form: NgForm) {
+    this.formError.set('');
+    this.loading.set(true);
+    this.authService.register(this.email, this.senha, this.username, this.birthDate, this.limiteGastos, this.saldoMensal).subscribe({
+      next: () => {
+        this.loading.set(false);
+        const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';
+        this.router.navigateByUrl(redirect);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const msg: string | undefined = err?.error?.erro;
+        if (msg === 'Dados inválidos') {
+          for (const detail of err.error.detalhes) {
+            if (form.controls[detail.campo])
+              form.controls[detail.campo].setErrors({ custom: detail.mensagem });
+          }
+        } else {
+          this.formError.set(msg ?? 'Erro ao fazer register');
+        }
+        console.error('Erro ao fazer register!', msg);
+      },
+    });
+  }
+
+  onAnyInput() {
+    this.formError.set('');
+  }
 }
