@@ -51,51 +51,61 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-      @for (despesa of despesasAtuais(); track despesa.id) {
-        <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
-          <!-- ícone -->
-          <div class="bg-primary text-primary-contrast rounded-xl p-2">
-            <svg lucidePizza></svg>
+      @if (queryDespesas.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else {
+        @if (despesas().length === 0) {
+          <div class="mt-2 text-center text-lg font-medium">
+            <p>Nenhuma despesa no periodo selecionado.</p>
           </div>
+        }
 
-          <!-- infos -->
-          <div class="flex-1">
-            <p class="text-color-emphasis text-lg font-semibold">
-              {{ despesa.nome }}
-            </p>
-            <p class="text-sm text-gray-500">
-              {{ despesa.data }}
-            </p>
-          </div>
+        @for (despesa of despesas(); track despesa.id) {
+          <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
+            <!-- ícone -->
+            <div class="bg-primary text-primary-contrast rounded-xl p-2">
+              <svg lucidePizza></svg>
+            </div>
 
-          <!-- valor -->
-          <div class="flex flex-col items-end gap-2">
-            <h3 class="text-color-emphasis font-bold">
-              {{ despesa.valor | fmtReal }}
-            </h3>
+            <!-- infos -->
+            <div class="flex-1">
+              <p class="text-color-emphasis text-lg font-semibold">
+                {{ despesa.nome }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(despesa.data) }}
+              </p>
+            </div>
 
-            <div class="flex gap-2">
-              <button
-                pButton
-                class="flex items-center justify-center rounded-full p-2"
-                size="small"
-                severity="danger"
-                (click)="excluirDespesa(despesa.id)"
-              >
-                <svg lucideTrash2></svg>
-              </button>
-              <button
-                pButton
-                class="flex items-center justify-center rounded-full p-2"
-                size="small"
-                severity="secondary"
-                (click)="openModalDespesa()"
-              >
-                <svg lucidePencil></svg>
-              </button>
+            <!-- valor -->
+            <div class="flex flex-col items-end gap-2">
+              <h3 class="text-color-emphasis font-bold">
+                {{ despesa.valor | fmtReal }}
+              </h3>
+
+              <div class="flex gap-2">
+                <button
+                  pButton
+                  class="flex items-center justify-center rounded-full p-2"
+                  size="small"
+                  severity="danger"
+                  (click)="excluirDespesa(despesa.id)"
+                >
+                  <svg lucideTrash2></svg>
+                </button>
+                <button
+                  pButton
+                  class="flex items-center justify-center rounded-full p-2"
+                  size="small"
+                  severity="secondary"
+                  (click)="openModalDespesa(despesa)"
+                >
+                  <svg lucidePencil></svg>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        }
       }
     </div>
 
@@ -106,3 +116,5 @@
 <app-nav-bottom active="despesas" />
 
 <app-modal-despesa [(visible)]="modalDespesaVisible" [isEditMode]="isEditMode" />
+
+<p-confirmdialog />
