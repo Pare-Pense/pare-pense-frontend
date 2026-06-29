@@ -24,20 +24,6 @@ export class AuthService {
       .pipe(tap((r) => this.onLogin(r)));
   }
 
-  register(email: string, senha: string, username: string, birthDate: string, saldoMensal: number | null, limiteGastos: number | null) {
-    const payload = {
-      email: email,
-      senha: senha,
-      nome: username,            
-      dataNascimento: birthDate,  
-      rendaMensal: saldoMensal,   
-      limiteMensal: limiteGastos
-    }
-    return this.http
-      .post<LoginResponse>(`${this.url}/usuarios/criarUsuario`, payload)
-      //.pipe();
-  }
-
   protected onLogin(res: LoginResponse) {
     localStorage.setItem('token', res.token);
     localStorage.setItem('usuario', JSON.stringify(res.usuario));

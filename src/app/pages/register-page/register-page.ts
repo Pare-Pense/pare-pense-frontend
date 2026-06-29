@@ -8,7 +8,7 @@ import { LucideLockKeyhole, LucideMail, LucideWallet, LucideUser, LucideCalendar
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink, ActivatedRoute, Router, } from '@angular/router';
-import { AuthService } from '../../auth/auth-service';
+import { UsuarioService } from '../../services/usuario-service';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinner } from 'primeng/progressspinner';
 
@@ -36,7 +36,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 })
 export class RegisterPage {
 
-  private authService = inject(AuthService);
+  private userService = inject(UsuarioService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -55,7 +55,7 @@ export class RegisterPage {
   onSubmit(form: NgForm) {
     this.formError.set('');
     this.loading.set(true);
-    this.authService.register(this.email, this.senha, this.username, this.birthDate, this.limiteGastos, this.saldoMensal).subscribe({
+    this.userService.register(this.email, this.senha, this.username, this.birthDate, this.limiteGastos, this.saldoMensal).subscribe({
       next: () => {
         this.loading.set(false);
         const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';

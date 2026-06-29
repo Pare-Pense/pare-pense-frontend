@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.example';
 import { HttpClient } from '@angular/common/http';
 
 export interface UsuarioDTO {
@@ -9,6 +9,16 @@ export interface UsuarioDTO {
   email: string;
   rendaMensal: number;
   limiteMensal: number;
+}
+
+export interface RegisterResponse {
+  id: string;
+  nome: string;
+  dataNascimento: string;
+  email: string;
+  rendaMensal: number;
+  limiteMensal: number;
+  createdAt: string
 }
 
 export interface SumarioUsuarioDTO {
@@ -32,5 +42,19 @@ export class UsuarioService {
 
   public sumarioUsuario(id: string) {
     return this.http.get<SumarioUsuarioDTO>(`${this.url}/usuarios/sumario/${id}`);
+  }
+
+  register(email: string, senha: string, username: string, birthDate: string, saldoMensal: number | null, limiteGastos: number | null) {
+    const payload = {
+      email: email,
+      senha: senha,
+      nome: username,            
+      dataNascimento: birthDate,  
+      rendaMensal: saldoMensal,   
+      limiteMensal: limiteGastos
+    }
+    return this.http
+      .post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, payload)
+      //.pipe();
   }
 }
