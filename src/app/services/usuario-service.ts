@@ -11,6 +11,16 @@ export interface UsuarioDTO {
   limiteMensal: number;
 }
 
+export interface RegisterResponse {
+  id: string;
+  nome: string;
+  dataNascimento: string;
+  email: string;
+  rendaMensal: number;
+  limiteMensal: number;
+  createdAt: string
+}
+
 export interface SumarioUsuarioDTO {
   limiteMensal: string;
   rendaMensal: string;
@@ -32,5 +42,18 @@ export class UsuarioService {
 
   public sumarioUsuario(id: string) {
     return this.http.get<SumarioUsuarioDTO>(`${this.url}/usuarios/sumario/${id}`);
+  }
+
+  register(email: string, senha: string, username: string, birthDate: string, saldoMensal: number | null, limiteGastos: number | null) {
+    const payload = {
+      email: email,
+      senha: senha,
+      nome: username,            
+      dataNascimento: birthDate,  
+      rendaMensal: saldoMensal,   
+      limiteMensal: limiteGastos
+    }
+    return this.http
+      .post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, payload);
   }
 }
