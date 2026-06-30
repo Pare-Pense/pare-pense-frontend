@@ -62,6 +62,8 @@ export class ExpensesPage {
   categoriaSelecionada = signal<Categoria>('ALIMENTACAO');
   protected modalDespesaVisible = signal(false);
 
+  public despesaEdit?: Despesa;
+
   categorias = Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
     label,
     value: key as Categoria,
@@ -126,6 +128,10 @@ export class ExpensesPage {
     ];
   });
 
+  resetDespesa() {
+    this.despesaEdit = undefined;
+  }
+
   excluirDespesa(idDespesa: string) {
     const idUsuario = this.authService.getUsuarioId();
 
@@ -156,6 +162,7 @@ export class ExpensesPage {
   openModalDespesa(despesa: Despesa) {
     this.isEditMode = true;
     this.modalDespesaVisible.set(true);
+    this.despesaEdit = despesa;
   }
 
   formatarData(data: string) {
