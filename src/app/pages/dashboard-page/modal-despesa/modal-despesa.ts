@@ -146,7 +146,7 @@ export class ModalDespesa {
                   }
                 }
               }
-              console.error('Erro ao cadastrar despesa!', msg);
+              console.error('Erro ao atualizar despesa!', msg);
             },
           });
       } else {
@@ -175,7 +175,7 @@ export class ModalDespesa {
                   }
                 }
               }
-              console.error('Erro ao cadastrar receita!', msg);
+              console.error('Erro ao atualizar receita!', msg);
             },
           });
       }
