@@ -115,6 +115,11 @@
 
 <app-nav-bottom active="despesas" />
 
-<app-modal-despesa [(visible)]="modalDespesaVisible" [isEditMode]="isEditMode" />
+<app-modal-despesa
+  [(visible)]="modalDespesaVisible"
+  [isEditMode]="isEditMode"
+  [despesaEdit]="despesaEdit"
+  (reset)="resetDespesa()"
+/>
 
 <p-confirmdialog />

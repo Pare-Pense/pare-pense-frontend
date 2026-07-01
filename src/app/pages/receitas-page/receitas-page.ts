@@ -52,8 +52,10 @@ export class IncomesPage {
 
   protected modalReceitaVisible = signal(false);
   public isEditMode = false;
-  protected isDespesa = signal(true);
+  protected isDespesa = signal(false);
   periodoSelecionado = signal<Periodo>('semanal');
+
+  public receitaEdit?: Receita;
 
   periodos = [
     { label: 'Nos últimos 7 dias', value: 'semanal' },
@@ -88,6 +90,10 @@ export class IncomesPage {
       this.queryClient.invalidateQueries({ queryKey: ['receitas'] });
     },
   }));
+
+  resetReceita() {
+    this.receitaEdit = undefined;
+  }
 
   excluirReceita(idReceita: string) {
     const idUsuario = this.authService.getUsuarioId();
@@ -145,6 +151,7 @@ export class IncomesPage {
     this.isEditMode = true;
     this.modalReceitaVisible.set(true);
     this.isDespesa.set(false);
+    this.receitaEdit = receita;
   }
 
   formatarData(data: string) {
