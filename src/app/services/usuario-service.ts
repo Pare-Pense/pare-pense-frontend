@@ -31,6 +31,11 @@ export interface SumarioUsuarioDTO {
   limiteUsadoPorc: number;
 }
 
+export interface AtualizaSenhaDTO {
+  senhaAntiga: string;
+  senhaNova: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -48,6 +53,14 @@ export class UsuarioService {
 
   public atualizaUsuario(id: string, dados: AtualizaUsuarioDTO) {
     return this.http.patch<UsuarioDTO>(`${this.url}/usuarios/${id}`, dados);
+  }
+
+  public atualizaSenha(id: string, dados: AtualizaSenhaDTO) {
+    return this.http.patch(`${this.url}/usuarios/${id}/senha`, dados);
+  }
+
+  public deletarUsuario(id: string) {
+    return this.http.delete(`${this.url}/usuarios/${id}`);
   }
 
   register(
