@@ -11,6 +11,8 @@ export interface UsuarioDTO {
   limiteMensal: number;
 }
 
+export type AtualizaUsuarioDTO = Partial<Omit<UsuarioDTO, 'id'>>;
+
 export interface RegisterResponse {
   id: string;
   nome: string;
@@ -29,6 +31,11 @@ export interface SumarioUsuarioDTO {
   limiteUsadoPorc: number;
 }
 
+export interface AtualizaSenhaDTO {
+  senhaAntiga: string;
+  senhaNova: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -42,6 +49,18 @@ export class UsuarioService {
 
   public sumarioUsuario(id: string) {
     return this.http.get<SumarioUsuarioDTO>(`${this.url}/usuarios/sumario/${id}`);
+  }
+
+  public atualizaUsuario(id: string, dados: AtualizaUsuarioDTO) {
+    return this.http.patch<UsuarioDTO>(`${this.url}/usuarios/${id}`, dados);
+  }
+
+  public atualizaSenha(id: string, dados: AtualizaSenhaDTO) {
+    return this.http.patch(`${this.url}/usuarios/${id}/senha`, dados);
+  }
+
+  public deletarUsuario(id: string) {
+    return this.http.delete(`${this.url}/usuarios/${id}`);
   }
 
   register(

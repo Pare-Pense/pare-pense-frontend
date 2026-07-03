@@ -13,6 +13,10 @@
   --p-progressspinner-color-two: currentColor;
   --p-progressspinner-color-three: currentColor;
   --p-progressspinner-color-four: currentColor;
+
+  --cor-fundo-primary: #83d4ff;
+  --cor-fundo-secondary: #b8e6ff;
+  --cor-fundo-secao: #f0f8ff;
 }
 
 .h-nav-bottom {
@@ -25,4 +29,16 @@
 
 .p-toast {
   max-width: calc(100vw - 40px);
+}
+
+.fundo-primary {
+  background-color: var(--cor-fundo-primary);
+}
+
+.fundo-secondary {
+  background-color: var(--cor-fundo-secondary);
+}
+
+.fundo-secao {
+  background-color: var(--cor-fundo-secao);
 }
