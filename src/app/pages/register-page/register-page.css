@@ -2,12 +2,12 @@
   background-color: #b8e6ff;
 }
 
-input[type="date"]:not(:focus):in-range::-webkit-datetime-edit-fields-wrapper,
-input[type="date"]:not(:focus):invalid::-webkit-datetime-edit-fields-wrapper {
+input[type='date']:not(:focus):in-range::-webkit-datetime-edit-fields-wrapper,
+input[type='date']:not(:focus):invalid::-webkit-datetime-edit-fields-wrapper {
   color: transparent !important;
 }
 
-input[type="date"]:focus::-webkit-datetime-edit-fields-wrapper,
-input[type="date"]:valid::-webkit-datetime-edit-fields-wrapper {
+input[type='date']:focus::-webkit-datetime-edit-fields-wrapper,
+input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   color: inherit !important;
 }
