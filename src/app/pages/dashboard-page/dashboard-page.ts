@@ -4,46 +4,35 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import {
-  LucideUser,
-  LucideBell,
-  LucidePizza,
-  LucidePlus,
-  LucideParasol,
-  LucideDynamicIcon,
-  LucideCarFront,
-  LucideShoppingCart,
-  LucideReceipt,
-  LucideLayers,
-} from '@lucide/angular';
+import { LucidePlus } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { DespesaService } from '../../services/despesa-service';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ModalDespesa } from './modal-despesa/modal-despesa';
 import { AuthService } from '../../auth/auth-service';
 import { UsuarioService } from '../../services/usuario-service';
 import { DecimalPipe } from '@angular/common';
+import { TopBar } from '../../components/top-bar/top-bar';
+import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 
 @Component({
   selector: 'app-dashboard-page',
   imports: [
     TabsModule,
     AvatarModule,
-    LucideDynamicIcon,
-    LucideUser,
-    LucideBell,
     LucidePlus,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
     ProgressSpinnerModule,
     NavBottom,
-    RouterLink,
     ModalDespesa,
     DecimalPipe,
+    TopBar,
+    IconCategoria,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
@@ -94,23 +83,5 @@ export class DashboardPage {
         periodo: this.periodoStr(),
       },
     });
-  }
-
-  iconParaCategoria(categoria: string) {
-    switch (categoria) {
-      case 'ALIMENTACAO':
-        return LucidePizza;
-      case 'LAZER':
-        return LucideParasol;
-      case 'TRANSPORTE':
-        return LucideCarFront;
-      case 'COMPRAS':
-        return LucideShoppingCart;
-      case 'CONTAS':
-        return LucideReceipt;
-      case 'OUTROS':
-      default:
-        return LucideLayers;
-    }
   }
 }

@@ -31,6 +31,13 @@ export interface CadastroDespesa {
   idUsuario: string;
 }
 
+export interface AtualizarDespesa {
+  nome: string | undefined;
+  categoria: Categoria | undefined;
+  data: Date | undefined;
+  valor: number | undefined;
+}
+
 export interface GastosCategoriaDTO {
   id: Categoria;
   nome: string;
@@ -71,17 +78,23 @@ export class DespesaService {
   public recuperarDespesasPeriodoECategoria(
     idUsuario: string,
     periodo: string,
-    categoria: Categoria,
+    categoria?: Categoria,
   ): Observable<Despesa[]> {
     return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`, {
-      params: {
-        categoria,
-      },
+      params: categoria ? { categoria } : {},
     });
   }
 
   public cadastrarDespesa(despesa: CadastroDespesa): Observable<Despesa> {
     return this.http.post<Despesa>(`${this.url}/cadastrarDespesa`, despesa);
+  }
+
+  public atualizarDespesa(
+    despesa: AtualizarDespesa,
+    idUsuario: string,
+    idDespesa: string,
+  ): Observable<Despesa> {
+    return this.http.patch<Despesa>(`${this.url}/${idUsuario}/${idDespesa}`, despesa);
   }
 
   public deletarDespesa(idUsuario: string, idDespesa: string) {

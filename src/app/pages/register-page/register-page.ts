@@ -86,7 +86,7 @@ export class RegisterPage {
                 form.controls[detail.campo].setErrors({ custom: detail.mensagem });
             }
           } else {
-            this.formError.set(msg ?? 'Erro ao fazer register');
+            this.formError.set(msg ?? 'Erro ao fazer o cadastro');
           }
           console.error('Erro ao fazer register!', msg);
         },

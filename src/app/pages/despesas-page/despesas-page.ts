@@ -1,13 +1,12 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucideUser, LucideBell, LucidePizza, LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
-import { LineChartModule } from '@swimlane/ngx-charts';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
@@ -22,50 +21,72 @@ import { AuthService } from '../../auth/auth-service';
 import { lastValueFrom } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { ChartModule } from 'primeng/chart';
+import { TopBar } from '../../components/top-bar/top-bar';
+import { ActivatedRoute } from '@angular/router';
+import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
+type CategoriaFiltro = Categoria | 'TODAS';
 
 @Component({
   selector: 'app-finances-page',
   imports: [
     TabsModule,
     AvatarModule,
-    LucideUser,
-    LucideBell,
-    LucidePizza,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
     ProgressSpinnerModule,
     NavBottom,
-    LineChartModule,
+    ChartModule,
     SelectModule,
     FormsModule,
     ModalDespesa,
     LucidePencil,
     LucideTrash2,
     ConfirmDialogModule,
+    TopBar,
+    IconCategoria,
   ],
   templateUrl: './despesas-page.html',
   styleUrl: './despesas-page.css',
   providers: [ConfirmationService],
 })
-export class ExpensesPage {
+export class ExpensesPage implements OnInit {
   private despesaService = inject(DespesaService);
   private authService = inject(AuthService);
   private queryClient = inject(QueryClient);
   private confirmationService = inject(ConfirmationService);
+  private route = inject(ActivatedRoute);
 
   public isEditMode = false;
   protected isDespesa = signal(true);
   periodoSelecionado = signal<Periodo>('semanal');
-  categoriaSelecionada = signal<Categoria>('ALIMENTACAO');
+  categoriaSelecionada = signal<CategoriaFiltro>('TODAS');
   protected modalDespesaVisible = signal(false);
 
-  categorias = Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
-    label,
-    value: key as Categoria,
-  }));
+  public despesaEdit?: Despesa;
+
+  ngOnInit() {
+    const params = this.route.snapshot.queryParams;
+    let paramCategoria = params['categoria'];
+    let paramPeriodo = params['periodo'];
+    if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
+      this.categoriaSelecionada.set(paramCategoria);
+    }
+    if (['semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
+      this.periodoSelecionado.set(paramPeriodo);
+    }
+  }
+
+  categorias = [
+    { label: 'Todas', value: 'TODAS' as CategoriaFiltro },
+    ...Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
+      label,
+      value: key as CategoriaFiltro,
+    })),
+  ];
 
   formatarLabel(cat: string) {
     return cat.charAt(0) + cat.slice(1).toLowerCase();
@@ -77,6 +98,11 @@ export class ExpensesPage {
     { label: 'No último ano', value: 'anual' },
   ];
 
+  chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
   queryDespesas = injectQuery(() => {
     const idUsuario = this.authService.getUsuarioId();
     const categoria = this.categoriaSelecionada();
@@ -86,7 +112,11 @@ export class ExpensesPage {
       queryKey: ['despesas', idUsuario, categoria, periodo],
       queryFn: () =>
         lastValueFrom(
-          this.despesaService.recuperarDespesasPeriodoECategoria(idUsuario!, periodo, categoria),
+          this.despesaService.recuperarDespesasPeriodoECategoria(
+            idUsuario!,
+            periodo,
+            categoria === 'TODAS' ? undefined : categoria,
+          ),
         ),
       enabled: !!idUsuario,
     };
@@ -103,28 +133,60 @@ export class ExpensesPage {
 
   despesas = computed(() => this.queryDespesas.data() ?? []);
 
-  graficoAtual = computed(() => {
+  chartData = computed(() => {
     const despesas = this.despesas();
+    const periodo = this.periodoSelecionado();
 
     const agrupado = new Map<string, number>();
 
-    for (const d of despesas) {
-      const key = new Date(d.data).toISOString().split('T')[0];
+    despesas.forEach((d) => {
+      const data = new Date(d.data);
+      let key = '';
+
+      if (periodo === 'semanal') {
+        key = data.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+        });
+      }
+
+      if (periodo === 'mensal') {
+        const dia = data.getDate();
+
+        if (dia <= 7) key = 'Semana 1';
+        else if (dia <= 14) key = 'Semana 2';
+        else if (dia <= 21) key = 'Semana 3';
+        else if (dia <= 28) key = 'Semana 4';
+        else key = 'Semana 5';
+      }
+
+      if (periodo === 'anual') {
+        key = data.toLocaleString('pt-BR', {
+          month: 'short',
+        });
+      }
 
       agrupado.set(key, (agrupado.get(key) || 0) + Number(d.valor));
-    }
+    });
 
-    const series = Array.from(agrupado.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([name, value]) => ({ name, value }));
+    const labels = Array.from(agrupado.keys());
+    const values = Array.from(agrupado.values());
 
-    return [
-      {
-        name: this.categoriaSelecionada(),
-        series,
-      },
-    ];
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Despesas',
+          data: values,
+          tension: 0.4,
+        },
+      ],
+    };
   });
+
+  resetDespesa() {
+    this.despesaEdit = undefined;
+  }
 
   excluirDespesa(idDespesa: string) {
     const idUsuario = this.authService.getUsuarioId();
@@ -156,6 +218,7 @@ export class ExpensesPage {
   openModalDespesa(despesa: Despesa) {
     this.isEditMode = true;
     this.modalDespesaVisible.set(true);
+    this.despesaEdit = despesa;
   }
 
   formatarData(data: string) {

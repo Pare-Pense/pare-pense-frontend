@@ -11,6 +11,12 @@ export interface Receita {
   idUsuario: string;
 }
 
+export interface AtualizarReceita {
+  nome: string | undefined;
+  data: Date | undefined;
+  valor: number | undefined;
+}
+
 export interface CadastroReceita {
   nome: string;
   data: Date;
@@ -38,6 +44,14 @@ export class ReceitaService {
     periodo: 'semanal' | 'mensal' | 'anual',
   ): Observable<Receita[]> {
     return this.http.get<Receita[]>(`${this.url}/${idUsuario}/${periodo}`);
+  }
+
+  public atualizarReceita(
+    receita: AtualizarReceita,
+    idUsuario: string,
+    idReceita: string,
+  ): Observable<Receita> {
+    return this.http.patch<Receita>(`${this.url}/${idUsuario}/${idReceita}`, receita);
   }
 
   public deletarReceita(idUsuario: string, idReceita: string) {

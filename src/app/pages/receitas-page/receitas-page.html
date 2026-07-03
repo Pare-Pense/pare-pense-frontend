@@ -1,17 +1,7 @@
 <div class="flex flex-col items-center">
   <!-- area do fundo azul -->
   <div class="fundo-primary flex w-full flex-col gap-4 p-4">
-    <!-- top bar -->
-    <div class="flex items-center gap-2">
-      <p>Receitas</p>
-      <div class="flex-1"></div>
-      <button pButton rounded="true" severity="primary">
-        <svg pButtonIcon lucideBell></svg>
-      </button>
-      <button pButton rounded="true" severity="secondary">
-        <svg pButtonIcon lucideUser></svg>
-      </button>
-    </div>
+    <app-top-bar title="Receitas" />
 
     <div class="flex flex-row gap-2">
       <p-select
@@ -25,13 +15,7 @@
     </div>
 
     <div class="chart-card flex h-87.5 w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
-      <ngx-charts-line-chart
-        [results]="graficoAtual()"
-        [autoScale]="true"
-        [xAxis]="true"
-        [yAxis]="true"
-      >
-      </ngx-charts-line-chart>
+      <p-chart type="line" [data]="chartData()" [options]="chartOptions" class="h-full w-full" />
     </div>
   </div>
 
@@ -104,6 +88,8 @@
   [(visible)]="modalReceitaVisible"
   [isEditMode]="isEditMode"
   [(isDespesa)]="isDespesa"
+  [receitaEdit]="receitaEdit"
+  (reset)="resetReceita()"
 />
 
 <p-confirmdialog />
