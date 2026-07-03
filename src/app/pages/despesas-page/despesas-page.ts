@@ -1,10 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucideUser, LucideBell, LucidePizza, LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { SelectModule } from 'primeng/select';
@@ -22,6 +22,9 @@ import { lastValueFrom } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
+import { TopBar } from '../../components/top-bar/top-bar';
+import { ActivatedRoute } from '@angular/router';
+import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
 type CategoriaFiltro = Categoria | 'TODAS';
@@ -31,9 +34,6 @@ type CategoriaFiltro = Categoria | 'TODAS';
   imports: [
     TabsModule,
     AvatarModule,
-    LucideUser,
-    LucideBell,
-    LucidePizza,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
@@ -46,16 +46,19 @@ type CategoriaFiltro = Categoria | 'TODAS';
     LucidePencil,
     LucideTrash2,
     ConfirmDialogModule,
+    TopBar,
+    IconCategoria,
   ],
   templateUrl: './despesas-page.html',
   styleUrl: './despesas-page.css',
   providers: [ConfirmationService],
 })
-export class ExpensesPage {
+export class ExpensesPage implements OnInit {
   private despesaService = inject(DespesaService);
   private authService = inject(AuthService);
   private queryClient = inject(QueryClient);
   private confirmationService = inject(ConfirmationService);
+  private route = inject(ActivatedRoute);
 
   public isEditMode = false;
   protected isDespesa = signal(true);
@@ -64,6 +67,18 @@ export class ExpensesPage {
   protected modalDespesaVisible = signal(false);
 
   public despesaEdit?: Despesa;
+
+  ngOnInit() {
+    const params = this.route.snapshot.queryParams;
+    let paramCategoria = params['categoria'];
+    let paramPeriodo = params['periodo'];
+    if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
+      this.categoriaSelecionada.set(paramCategoria);
+    }
+    if (['semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
+      this.periodoSelecionado.set(paramPeriodo);
+    }
+  }
 
   categorias = [
     { label: 'Todas', value: 'TODAS' as CategoriaFiltro },

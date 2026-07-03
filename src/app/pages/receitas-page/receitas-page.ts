@@ -4,7 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucideUser, LucideBell, LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { SelectModule } from 'primeng/select';
@@ -17,6 +17,7 @@ import { lastValueFrom } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
+import { TopBar } from '../../components/top-bar/top-bar';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
 
@@ -25,8 +26,6 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
   imports: [
     TabsModule,
     AvatarModule,
-    LucideUser,
-    LucideBell,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
@@ -39,6 +38,7 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
     LucidePencil,
     LucideTrash2,
     ConfirmDialogModule,
+    TopBar,
   ],
   templateUrl: './receitas-page.html',
   styleUrl: './receitas-page.css',
