@@ -8,11 +8,10 @@ import {
   LucideReceipt,
   LucideShoppingCart,
 } from '@lucide/angular';
-import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-icon-categoria',
-  imports: [ButtonModule, LucideDynamicIcon],
+  imports: [LucideDynamicIcon],
   templateUrl: './icon-categoria.html',
 })
 export class IconCategoria {
