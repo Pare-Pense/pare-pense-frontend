@@ -61,7 +61,8 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input id="saldo-mensal" type="number" pInputText [(ngModel)]="saldoMensal" name="saldo-mensal" />
+            <p-inputNumber id="saldo-mensal" type="number" mode="currency" currency="BRL" [(ngModel)]="saldoMensal" name="saldo-mensal" >
+            </p-inputNumber>
             <label for="saldo-mensal">Renda Mensal</label>
           </p-floatlabel>
         </p-inputGroup>
@@ -73,7 +74,8 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input id="limite-gastos" type="number" pInputText [(ngModel)]="limiteGastos" name="limite-gastos" />
+            <p-inputNumber id="limite-gastos" type="number" mode="currency" currency="BRL"  [(ngModel)]="limiteGastos" name="limite-gastos" >
+             </p-inputNumber>
             <label for="limite-gastos">Limite de Gastos Mensais</label>
           </p-floatlabel>
         </p-inputGroup>
@@ -168,7 +170,7 @@
             <label for="senhaConf">Confirmar Senha</label>
           </p-floatlabel>
         </p-inputgroup>
-        @if ((senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) && (senhaConfRef.touched || registerForm.submitted)) {
+        @if ((senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) && (senhaConfRef.touched)) {
         <p-message severity="error" size="small" variant="simple">
           @if (senhaConfRef.errors?.['required']) {
           Confirme sua senha

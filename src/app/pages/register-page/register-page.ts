@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { LucideLockKeyhole, LucideMail, LucideWallet, LucideUser, LucideCalendar, LucideDollarSign} from '@lucide/angular';
@@ -20,6 +21,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     FloatLabelModule,
     InputGroupAddonModule,
     InputGroupModule,
+    InputNumberModule,
     InputTextModule,
     LucideLockKeyhole,
     LucideMail,
