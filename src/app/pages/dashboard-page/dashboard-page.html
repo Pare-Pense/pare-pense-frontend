@@ -99,9 +99,7 @@
             class="flex items-center gap-2 rounded-xl bg-white p-4 shadow active:bg-gray-100"
             (click)="this.clickCategoria(gasto.id)"
           >
-            <div class="bg-primary text-primary-contrast rounded-xl p-2">
-              <svg [lucideIcon]="this.iconParaCategoria(gasto.id)"></svg>
-            </div>
+            <app-icon-categoria [categoria]="gasto.id" />
             <div class="flex-1">
               <p class="text-color-emphasis text-lg">{{ gasto.nome }}</p>
             </div>
