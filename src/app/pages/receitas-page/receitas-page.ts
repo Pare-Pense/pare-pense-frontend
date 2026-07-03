@@ -56,7 +56,7 @@ export class IncomesPage {
   periodoSelecionado = signal<Periodo>('semanal');
 
   public receitaEdit?: Receita;
-  
+
   chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -133,14 +133,14 @@ export class IncomesPage {
 
     const agrupado = new Map<string, number>();
 
-    receitas.forEach(r => {
+    receitas.forEach((r) => {
       const data = new Date(r.data);
       let key = '';
 
       if (periodo === 'semanal') {
         key = data.toLocaleDateString('pt-BR', {
           day: '2-digit',
-          month: '2-digit'
+          month: '2-digit',
         });
       }
 
@@ -156,7 +156,7 @@ export class IncomesPage {
 
       if (periodo === 'anual') {
         key = data.toLocaleString('pt-BR', {
-          month: 'short'
+          month: 'short',
         });
       }
 
@@ -172,9 +172,9 @@ export class IncomesPage {
         {
           label: 'Receitas',
           data: values,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     };
   });
 

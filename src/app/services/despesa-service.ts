@@ -81,7 +81,7 @@ export class DespesaService {
     categoria?: Categoria,
   ): Observable<Despesa[]> {
     return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`, {
-      params: categoria? {categoria} : {},
+      params: categoria ? { categoria } : {},
     });
   }
 

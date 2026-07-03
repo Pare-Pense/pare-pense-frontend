@@ -65,13 +65,13 @@ export class ExpensesPage {
 
   public despesaEdit?: Despesa;
 
- categorias = [
-  { label: 'Todas', value: 'TODAS' as CategoriaFiltro },
-  ...Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
-    label,
-    value: key as CategoriaFiltro,
-  })),
-];
+  categorias = [
+    { label: 'Todas', value: 'TODAS' as CategoriaFiltro },
+    ...Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
+      label,
+      value: key as CategoriaFiltro,
+    })),
+  ];
 
   formatarLabel(cat: string) {
     return cat.charAt(0) + cat.slice(1).toLowerCase();
@@ -82,7 +82,6 @@ export class ExpensesPage {
     { label: 'No último mês', value: 'mensal' },
     { label: 'No último ano', value: 'anual' },
   ];
-
 
   chartOptions = {
     responsive: true,
@@ -98,7 +97,11 @@ export class ExpensesPage {
       queryKey: ['despesas', idUsuario, categoria, periodo],
       queryFn: () =>
         lastValueFrom(
-          this.despesaService.recuperarDespesasPeriodoECategoria(idUsuario!, periodo, categoria === 'TODAS' ? undefined : categoria),
+          this.despesaService.recuperarDespesasPeriodoECategoria(
+            idUsuario!,
+            periodo,
+            categoria === 'TODAS' ? undefined : categoria,
+          ),
         ),
       enabled: !!idUsuario,
     };
@@ -121,50 +124,50 @@ export class ExpensesPage {
 
     const agrupado = new Map<string, number>();
 
-    despesas.forEach(d => {
+    despesas.forEach((d) => {
       const data = new Date(d.data);
       let key = '';
 
-    if (periodo === 'semanal') {
-      key = data.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit'
-      });
-    }
-
-    if (periodo === 'mensal') {
-      const dia = data.getDate();
-
-      if (dia <= 7) key = 'Semana 1';
-      else if (dia <= 14) key = 'Semana 2';
-      else if (dia <= 21) key = 'Semana 3';
-      else if (dia <= 28) key = 'Semana 4';
-      else key = 'Semana 5';
-    }
-
-    if (periodo === 'anual') {
-      key = data.toLocaleString('pt-BR', {
-        month: 'short'
-      });
-    }
-
-    agrupado.set(key, (agrupado.get(key) || 0) + Number(d.valor));
-  });
-
-  const labels = Array.from(agrupado.keys());
-  const values = Array.from(agrupado.values());
-
-  return {
-    labels,
-    datasets: [
-      {
-        label: 'Despesas',
-        data: values,
-        tension: 0.4
+      if (periodo === 'semanal') {
+        key = data.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+        });
       }
-    ]
-  };
-});
+
+      if (periodo === 'mensal') {
+        const dia = data.getDate();
+
+        if (dia <= 7) key = 'Semana 1';
+        else if (dia <= 14) key = 'Semana 2';
+        else if (dia <= 21) key = 'Semana 3';
+        else if (dia <= 28) key = 'Semana 4';
+        else key = 'Semana 5';
+      }
+
+      if (periodo === 'anual') {
+        key = data.toLocaleString('pt-BR', {
+          month: 'short',
+        });
+      }
+
+      agrupado.set(key, (agrupado.get(key) || 0) + Number(d.valor));
+    });
+
+    const labels = Array.from(agrupado.keys());
+    const values = Array.from(agrupado.values());
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Despesas',
+          data: values,
+          tension: 0.4,
+        },
+      ],
+    };
+  });
 
   resetDespesa() {
     this.despesaEdit = undefined;
