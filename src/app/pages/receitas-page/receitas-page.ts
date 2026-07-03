@@ -4,7 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucideUser, LucideBell, LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { SelectModule } from 'primeng/select';
@@ -26,8 +26,6 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
   imports: [
     TabsModule,
     AvatarModule,
-    LucideUser,
-    LucideBell,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
