@@ -1,17 +1,7 @@
 <div class="flex flex-col items-center">
   <!-- area do fundo azul -->
   <div class="fundo-primary flex w-full flex-col gap-4 p-4">
-    <!-- top bar -->
-    <div class="flex items-center gap-2">
-      <p>Dashboard</p>
-      <div class="flex-1"></div>
-      <button pButton rounded="true" severity="primary">
-        <svg pButtonIcon lucideBell></svg>
-      </button>
-      <a pButton rounded="true" severity="secondary" routerLink="/perfil">
-        <svg pButtonIcon lucideUser></svg>
-      </a>
-    </div>
+    <app-top-bar title="Dashboard" />
 
     <div class="flex gap-4">
       <div class="flex-1 rounded-xl bg-white p-3 shadow-md">

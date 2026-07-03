@@ -17,6 +17,7 @@ import { lastValueFrom } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
+import { TopBar } from '../../components/top-bar/top-bar';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
 
@@ -39,6 +40,7 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
     LucidePencil,
     LucideTrash2,
     ConfirmDialogModule,
+    TopBar,
   ],
   templateUrl: './receitas-page.html',
   styleUrl: './receitas-page.css',
