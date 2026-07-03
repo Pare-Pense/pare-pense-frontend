@@ -7,7 +7,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LucideUser, LucideBell, LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
-import { LineChartModule } from '@swimlane/ngx-charts';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
@@ -17,6 +16,7 @@ import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-quer
 import { lastValueFrom } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { ChartModule } from 'primeng/chart';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
 
@@ -32,7 +32,7 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
     FmtRealPipe,
     ProgressSpinnerModule,
     NavBottom,
-    LineChartModule,
+    ChartModule,
     SelectModule,
     FormsModule,
     ModalDespesa,
@@ -56,6 +56,11 @@ export class IncomesPage {
   periodoSelecionado = signal<Periodo>('semanal');
 
   public receitaEdit?: Receita;
+
+  chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+  };
 
   periodos = [
     { label: 'Nos últimos 7 dias', value: 'semanal' },
@@ -122,29 +127,55 @@ export class IncomesPage {
     });
   }
 
-  graficoAtual = computed(() => {
+  chartData = computed(() => {
     const receitas = this.receitas();
+    const periodo = this.periodoSelecionado();
 
     const agrupado = new Map<string, number>();
 
     receitas.forEach((r) => {
       const data = new Date(r.data);
+      let key = '';
 
-      const key = data.toISOString().split('T')[0];
+      if (periodo === 'semanal') {
+        key = data.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+        });
+      }
+
+      if (periodo === 'mensal') {
+        const dia = data.getDate();
+
+        if (dia <= 7) key = 'Semana 1';
+        else if (dia <= 14) key = 'Semana 2';
+        else if (dia <= 21) key = 'Semana 3';
+        else if (dia <= 28) key = 'Semana 4';
+        else key = 'Semana 5';
+      }
+
+      if (periodo === 'anual') {
+        key = data.toLocaleString('pt-BR', {
+          month: 'short',
+        });
+      }
 
       agrupado.set(key, (agrupado.get(key) || 0) + Number(r.valor));
     });
 
-    const series = Array.from(agrupado.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([name, value]) => ({ name, value }));
+    const labels = Array.from(agrupado.keys());
+    const values = Array.from(agrupado.values());
 
-    return [
-      {
-        name: 'Receitas',
-        series,
-      },
-    ];
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Receitas',
+          data: values,
+          tension: 0.4,
+        },
+      ],
+    };
   });
 
   openModalReceita(receita: Receita) {
