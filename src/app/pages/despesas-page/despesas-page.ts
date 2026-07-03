@@ -7,7 +7,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LucideUser, LucideBell, LucidePizza, LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
-import { LineChartModule } from '@swimlane/ngx-charts';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
@@ -22,8 +21,10 @@ import { AuthService } from '../../auth/auth-service';
 import { lastValueFrom } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { ChartModule } from 'primeng/chart';
 
 type Periodo = 'semanal' | 'mensal' | 'anual';
+type CategoriaFiltro = Categoria | 'TODAS';
 
 @Component({
   selector: 'app-finances-page',
@@ -38,7 +39,7 @@ type Periodo = 'semanal' | 'mensal' | 'anual';
     FmtRealPipe,
     ProgressSpinnerModule,
     NavBottom,
-    LineChartModule,
+    ChartModule,
     SelectModule,
     FormsModule,
     ModalDespesa,
@@ -59,15 +60,18 @@ export class ExpensesPage {
   public isEditMode = false;
   protected isDespesa = signal(true);
   periodoSelecionado = signal<Periodo>('semanal');
-  categoriaSelecionada = signal<Categoria>('ALIMENTACAO');
+  categoriaSelecionada = signal<CategoriaFiltro>('TODAS');
   protected modalDespesaVisible = signal(false);
 
   public despesaEdit?: Despesa;
 
-  categorias = Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
-    label,
-    value: key as Categoria,
-  }));
+  categorias = [
+    { label: 'Todas', value: 'TODAS' as CategoriaFiltro },
+    ...Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
+      label,
+      value: key as CategoriaFiltro,
+    })),
+  ];
 
   formatarLabel(cat: string) {
     return cat.charAt(0) + cat.slice(1).toLowerCase();
@@ -79,6 +83,11 @@ export class ExpensesPage {
     { label: 'No último ano', value: 'anual' },
   ];
 
+  chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
   queryDespesas = injectQuery(() => {
     const idUsuario = this.authService.getUsuarioId();
     const categoria = this.categoriaSelecionada();
@@ -88,7 +97,11 @@ export class ExpensesPage {
       queryKey: ['despesas', idUsuario, categoria, periodo],
       queryFn: () =>
         lastValueFrom(
-          this.despesaService.recuperarDespesasPeriodoECategoria(idUsuario!, periodo, categoria),
+          this.despesaService.recuperarDespesasPeriodoECategoria(
+            idUsuario!,
+            periodo,
+            categoria === 'TODAS' ? undefined : categoria,
+          ),
         ),
       enabled: !!idUsuario,
     };
@@ -105,27 +118,55 @@ export class ExpensesPage {
 
   despesas = computed(() => this.queryDespesas.data() ?? []);
 
-  graficoAtual = computed(() => {
+  chartData = computed(() => {
     const despesas = this.despesas();
+    const periodo = this.periodoSelecionado();
 
     const agrupado = new Map<string, number>();
 
-    for (const d of despesas) {
-      const key = new Date(d.data).toISOString().split('T')[0];
+    despesas.forEach((d) => {
+      const data = new Date(d.data);
+      let key = '';
+
+      if (periodo === 'semanal') {
+        key = data.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+        });
+      }
+
+      if (periodo === 'mensal') {
+        const dia = data.getDate();
+
+        if (dia <= 7) key = 'Semana 1';
+        else if (dia <= 14) key = 'Semana 2';
+        else if (dia <= 21) key = 'Semana 3';
+        else if (dia <= 28) key = 'Semana 4';
+        else key = 'Semana 5';
+      }
+
+      if (periodo === 'anual') {
+        key = data.toLocaleString('pt-BR', {
+          month: 'short',
+        });
+      }
 
       agrupado.set(key, (agrupado.get(key) || 0) + Number(d.valor));
-    }
+    });
 
-    const series = Array.from(agrupado.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([name, value]) => ({ name, value }));
+    const labels = Array.from(agrupado.keys());
+    const values = Array.from(agrupado.values());
 
-    return [
-      {
-        name: this.categoriaSelecionada(),
-        series,
-      },
-    ];
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Despesas',
+          data: values,
+          tension: 0.4,
+        },
+      ],
+    };
   });
 
   resetDespesa() {

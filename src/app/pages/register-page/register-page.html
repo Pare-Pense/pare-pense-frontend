@@ -27,19 +27,27 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input id="username" type="text" pInputText [(ngModel)]="username" name="user-name"  #userRef="ngModel"
-            [invalid]="userRef.invalid && (userRef.touched || registerForm.submitted)" required />
+            <input
+              id="username"
+              type="text"
+              pInputText
+              [(ngModel)]="username"
+              name="user-name"
+              #userRef="ngModel"
+              [invalid]="userRef.invalid && (userRef.touched || registerForm.submitted)"
+              required
+            />
             <label for="username">Nome</label>
           </p-floatlabel>
         </p-inputGroup>
         @if (userRef.invalid && (userRef.touched || registerForm.submitted)) {
-        <p-message severity="error" size="small" variant="simple">
-          @if (userRef.errors?.['required']) {
-            Nome de usuário obrigatório
-          } @else if (userRef.errors?.['custom']) {
-            {{ userRef.errors?.['custom'] }}
-          }
-        </p-message>
+          <p-message severity="error" size="small" variant="simple">
+            @if (userRef.errors?.['required']) {
+              Nome de usuário obrigatório
+            } @else if (userRef.errors?.['custom']) {
+              {{ userRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
       <div class="flex w-full flex-col">
@@ -49,7 +57,13 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input id="birthDate" type="date" pInputText [(ngModel)]="birthDate" name="birth-date" />
+            <input
+              id="birthDate"
+              type="date"
+              pInputText
+              [(ngModel)]="birthDate"
+              name="birth-date"
+            />
             <label for="birthDate">Data de Nascimento</label>
           </p-floatlabel>
         </p-inputGroup>
@@ -61,7 +75,13 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input id="saldo-mensal" type="number" pInputText [(ngModel)]="saldoMensal" name="saldo-mensal" />
+            <input
+              id="saldo-mensal"
+              type="number"
+              pInputText
+              [(ngModel)]="saldoMensal"
+              name="saldo-mensal"
+            />
             <label for="saldo-mensal">Renda Mensal</label>
           </p-floatlabel>
         </p-inputGroup>
@@ -73,7 +93,13 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input id="limite-gastos" type="number" pInputText [(ngModel)]="limiteGastos" name="limite-gastos" />
+            <input
+              id="limite-gastos"
+              type="number"
+              pInputText
+              [(ngModel)]="limiteGastos"
+              name="limite-gastos"
+            />
             <label for="limite-gastos">Limite de Gastos Mensais</label>
           </p-floatlabel>
         </p-inputGroup>
@@ -85,27 +111,27 @@
           </p-inputgroup-addon>
 
           <p-floatlabel variant="on">
-            <input 
-            id="email" 
-            name="email"
-            pInputText 
-            [(ngModel)]="email" 
-            #emailRef="ngModel"
-            [invalid]="emailRef.invalid && (emailRef.touched || registerForm.submitted)"
-            required
-            autocomplete="off"
+            <input
+              id="email"
+              name="email"
+              pInputText
+              [(ngModel)]="email"
+              #emailRef="ngModel"
+              [invalid]="emailRef.invalid && (emailRef.touched || registerForm.submitted)"
+              required
+              autocomplete="off"
             />
             <label for="email">Email</label>
           </p-floatlabel>
         </p-inputGroup>
         @if (emailRef.invalid && (emailRef.touched || registerForm.submitted)) {
-        <p-message severity="error" size="small" variant="simple">
-          @if (emailRef.errors?.['required']) {
-            Email é obrigatório
-          } @else if (emailRef.errors?.['custom']) {
-            {{ emailRef.errors?.['custom'] }}
-          }
-        </p-message>
+          <p-message severity="error" size="small" variant="simple">
+            @if (emailRef.errors?.['required']) {
+              Email é obrigatório
+            } @else if (emailRef.errors?.['custom']) {
+              {{ emailRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
       <div class="flex w-full flex-col">
@@ -134,13 +160,13 @@
           </p-floatlabel>
         </p-inputgroup>
         @if (senhaRef.invalid && (senhaRef.touched || registerForm.submitted)) {
-        <p-message severity="error" size="small" variant="simple">
-          @if (senhaRef.errors?.['required']) {
-            Senha é obrigatória
-          } @else if (senhaRef.errors?.['custom']) {
-            {{ senhaRef.errors?.['custom'] }}
-          }
-        </p-message>
+          <p-message severity="error" size="small" variant="simple">
+            @if (senhaRef.errors?.['required']) {
+              Senha é obrigatória
+            } @else if (senhaRef.errors?.['custom']) {
+              {{ senhaRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
       <div class="flex w-full flex-col">
@@ -162,34 +188,41 @@
                 unmaskIcon: { class: '!z-10' },
               }"
               #senhaConfRef="ngModel"
-              [invalid]="(senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) && (senhaConfRef.touched || registerForm.submitted)"
+              [invalid]="
+                (senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) &&
+                (senhaConfRef.touched || registerForm.submitted)
+              "
               required
             />
             <label for="senhaConf">Confirmar Senha</label>
           </p-floatlabel>
         </p-inputgroup>
-        @if ((senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) && (senhaConfRef.touched || registerForm.submitted)) {
-        <p-message severity="error" size="small" variant="simple">
-          @if (senhaConfRef.errors?.['required']) {
-          Confirme sua senha
-          } @else if (senha !== senhaConf) {
-            As senhas não coincidem
-          } @else if (senhaConfRef.errors?.['custom']) {
-            {{ senhaConfRef.errors?.['custom'] }}
-          }
-        </p-message>
+        @if (
+          (senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) &&
+          (senhaConfRef.touched || registerForm.submitted)
+        ) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (senhaConfRef.errors?.['required']) {
+              Confirme sua senha
+            } @else if (senha !== senhaConf) {
+              As senhas não coincidem
+            } @else if (senhaConfRef.errors?.['custom']) {
+              {{ senhaConfRef.errors?.['custom'] }}
+            }
+          </p-message>
         }
       </div>
       @if (formError()) {
-      <p-message severity="error" size="small" variant="simple">
-        {{ formError() }}
-      </p-message>
+        <p-message severity="error" size="small" variant="simple">
+          {{ formError() }}
+        </p-message>
       }
-      <button         
+      <button
         pButton
         class="bg-primary w-full"
         type="submit"
-        [disabled]="registerForm.invalid || (senha !== senhaConf) || loading()">       
+        [disabled]="registerForm.invalid || senha !== senhaConf || loading()"
+      >
         @if (loading()) {
           <p-progressspinner class="h-6 w-6" strokeWidth="8" />
         } @else {

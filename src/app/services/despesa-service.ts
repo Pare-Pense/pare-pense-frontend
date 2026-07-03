@@ -78,12 +78,10 @@ export class DespesaService {
   public recuperarDespesasPeriodoECategoria(
     idUsuario: string,
     periodo: string,
-    categoria: Categoria,
+    categoria?: Categoria,
   ): Observable<Despesa[]> {
     return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`, {
-      params: {
-        categoria,
-      },
+      params: categoria ? { categoria } : {},
     });
   }
 
