@@ -76,7 +76,7 @@ export class IncomesPage {
       queryKey: ['receitas', idUsuario, periodo],
       queryFn: () =>
         lastValueFrom(
-          this.receitaService.recuperarReceitasPorPeriodo(
+          this.receitaService.recuperarReceitasAll(
             idUsuario!,
             periodo === 'semanal' ? 'semanal' : periodo === 'mensal' ? 'mensal' : 'anual',
           ),

@@ -55,10 +55,6 @@ export class DespesaService {
     return this.http.get<Despesa>(`${this.url}/${idUsuario}/${idDespesa}`);
   }
 
-  public recuperarDespesasAll(idUsuario: string): Observable<Despesa[]> {
-    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}`);
-  }
-
   public recuperarGastosCategoria(idUsuario: string, periodo: 'anual' | 'mensal' | 'semanal') {
     return this.http.get<any[]>(`${this.url}/media/${idUsuario}/${periodo}`).pipe(
       map((obj) => {
@@ -75,13 +71,13 @@ export class DespesaService {
     );
   }
 
-  public recuperarDespesasPeriodoECategoria(
+  public recuperarDespesasAll(
     idUsuario: string,
-    periodo: string,
+    periodo?: string,
     categoria?: Categoria,
   ): Observable<Despesa[]> {
-    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}/${periodo}`, {
-      params: categoria ? { categoria } : {},
+    return this.http.get<Despesa[]>(`${this.url}/${idUsuario}`, {
+      params: { ...(periodo && { periodo }), ...(categoria && { categoria }) },
     });
   }
 
