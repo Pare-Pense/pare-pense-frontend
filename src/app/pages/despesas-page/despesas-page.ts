@@ -112,7 +112,7 @@ export class ExpensesPage implements OnInit {
       queryKey: ['despesas', idUsuario, categoria, periodo],
       queryFn: () =>
         lastValueFrom(
-          this.despesaService.recuperarDespesasPeriodoECategoria(
+          this.despesaService.recuperarDespesasAll(
             idUsuario!,
             periodo,
             categoria === 'TODAS' ? undefined : categoria,

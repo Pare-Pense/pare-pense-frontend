@@ -35,15 +35,13 @@ export class ReceitaService {
     return this.http.post<Receita>(`${this.url}/cadastrarReceita`, receita);
   }
 
-  public recuperarReceitasAll(idUsuario: string): Observable<Receita[]> {
-    return this.http.get<Receita[]>(`${this.url}/${idUsuario}`);
-  }
-
-  public recuperarReceitasPorPeriodo(
+  public recuperarReceitasAll(
     idUsuario: string,
-    periodo: 'semanal' | 'mensal' | 'anual',
+    periodo?: 'semanal' | 'mensal' | 'anual',
   ): Observable<Receita[]> {
-    return this.http.get<Receita[]>(`${this.url}/${idUsuario}/${periodo}`);
+    return this.http.get<Receita[]>(`${this.url}/${idUsuario}`, {
+      params: { ...(periodo && { periodo }) },
+    });
   }
 
   public atualizarReceita(
