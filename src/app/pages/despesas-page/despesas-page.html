@@ -1,0 +1,108 @@
+<div class="flex flex-col items-center">
+  <!-- area do fundo azul -->
+  <div class="fundo-primary flex w-full flex-col gap-4 p-4">
+    <!-- top bar -->
+    <app-top-bar title="Despesas" />
+
+    <div class="flex flex-row gap-2">
+      <p-select
+        [options]="categorias"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="categoriaSelecionada()"
+        (ngModelChange)="categoriaSelecionada.set($event)"
+      >
+      </p-select>
+
+      <p-select
+        [options]="periodos"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="periodoSelecionado()"
+        (ngModelChange)="periodoSelecionado.set($event)"
+      >
+      </p-select>
+    </div>
+
+    <div class="chart-card flex h-87.5 w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
+      <p-chart type="line" [data]="chartData()" [options]="chartOptions" class="h-full w-full" />
+    </div>
+  </div>
+
+  <!-- separador redondo entre azul e resto do conteudo -->
+  <div class="fundo-primary h-4 w-full">
+    <div class="fundo-secao h-full rounded-t-full"></div>
+  </div>
+
+  <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
+    <div class="flex flex-col gap-4">
+      @if (queryDespesas.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else {
+        @if (despesas().length === 0) {
+          <div class="mt-2 text-center text-lg font-medium">
+            <p>Nenhuma despesa no periodo selecionado.</p>
+          </div>
+        }
+
+        @for (despesa of despesas(); track despesa.id) {
+          <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
+            <!-- ícone -->
+            <app-icon-categoria [categoria]="despesa.categoria" />
+
+            <!-- infos -->
+            <div class="flex-1">
+              <p class="text-color-emphasis text-lg font-semibold">
+                {{ despesa.nome }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ formatarData(despesa.data) }}
+              </p>
+            </div>
+
+            <!-- valor -->
+            <div class="flex flex-col items-end gap-2">
+              <h3 class="text-color-emphasis font-bold">
+                {{ despesa.valor | fmtReal }}
+              </h3>
+
+              <div class="flex gap-2">
+                <button
+                  pButton
+                  class="flex items-center justify-center rounded-full p-2"
+                  size="small"
+                  severity="danger"
+                  (click)="excluirDespesa(despesa.id)"
+                >
+                  <svg lucideTrash2></svg>
+                </button>
+                <button
+                  pButton
+                  class="flex items-center justify-center rounded-full p-2"
+                  size="small"
+                  severity="secondary"
+                  (click)="openModalDespesa(despesa)"
+                >
+                  <svg lucidePencil></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="h-nav-bottom-pad"></div>
+  </div>
+</div>
+
+<app-nav-bottom active="despesas" />
+
+<app-modal-despesa
+  [(visible)]="modalDespesaVisible"
+  [isEditMode]="isEditMode"
+  [despesaEdit]="despesaEdit"
+  (reset)="resetDespesa()"
+/>
+
+<p-confirmdialog />

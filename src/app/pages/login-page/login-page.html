@@ -1,0 +1,115 @@
+<div class="fundo-primary flex flex-col items-center">
+  <div class="flex h-screen w-screen flex-col justify-center gap-4 p-4">
+    <!-- Header -->
+    <div class="flex flex-col items-center gap-2">
+      <div class="bg-primary text-primary-contrast rounded-xl p-4">
+        <svg lucideWallet class="size-10"></svg>
+      </div>
+
+      <h2 class="text-2xl font-bold">Bem-Vindo!</h2>
+
+      <p class="pr-1 pl-1 text-center text-sm">
+        Faça login para acessar sua conta e gerenciar suas finanças
+      </p>
+    </div>
+
+    <!-- Card inputs -->
+    <form
+      class="flex flex-col items-center gap-4 rounded-xl bg-white p-4 shadow"
+      #loginForm="ngForm"
+      (ngSubmit)="onSubmit(loginForm)"
+      (input)="onAnyInput()"
+    >
+      <div class="flex w-full flex-col">
+        <p-inputGroup>
+          <p-inputgroup-addon>
+            <svg lucideMail></svg>
+          </p-inputgroup-addon>
+
+          <p-floatlabel variant="on">
+            <input
+              id="email"
+              name="email"
+              pInputText
+              [(ngModel)]="email"
+              #emailRef="ngModel"
+              [invalid]="emailRef.invalid && (emailRef.touched || loginForm.submitted)"
+              required
+              autocomplete="off"
+            />
+            <label for="email">Email</label>
+          </p-floatlabel>
+        </p-inputGroup>
+        @if (emailRef.invalid && (emailRef.touched || loginForm.submitted)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (emailRef.errors?.['required']) {
+              Email é obrigatório
+            } @else if (emailRef.errors?.['custom']) {
+              {{ emailRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
+
+      <div class="flex w-full flex-col">
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <svg lucideLockKeyhole></svg>
+          </p-inputgroup-addon>
+
+          <p-floatlabel variant="on">
+            <p-password
+              id="senha"
+              name="senha"
+              [toggleMask]="true"
+              autocomplete="off"
+              [feedback]="false"
+              [(ngModel)]="senha"
+              [pt]="{
+                maskIcon: { class: '!z-10' },
+                unmaskIcon: { class: '!z-10' },
+              }"
+              #senhaRef="ngModel"
+              [invalid]="senhaRef.invalid && (senhaRef.touched || loginForm.submitted)"
+              required
+            />
+            <label for="senha">Senha</label>
+          </p-floatlabel>
+        </p-inputgroup>
+        @if (senhaRef.invalid && (senhaRef.touched || loginForm.submitted)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (senhaRef.errors?.['required']) {
+              Senha é obrigatória
+            } @else if (senhaRef.errors?.['custom']) {
+              {{ senhaRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
+
+      @if (formError()) {
+        <p-message severity="error" size="small" variant="simple">
+          {{ formError() }}
+        </p-message>
+      }
+
+      <button
+        pButton
+        class="bg-primary w-full"
+        type="submit"
+        [disabled]="loginForm.invalid || loading()"
+      >
+        @if (loading()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
+
+    <p class="text-center text-sm">
+      Ainda não tem uma conta?
+      <a class="text-blue-600" routerLink="/register">Criar conta</a>
+    </p>
+  </div>
+</div>

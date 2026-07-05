@@ -1,0 +1,338 @@
+<div
+  class="fundo-secondary flex min-h-screen w-screen flex-col items-center justify-center gap-4 px-4"
+>
+  <a routerLink="/home" class="absolute top-0 left-0 p-2">
+    <svg lucideChevronLeft></svg>
+  </a>
+
+  <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow">
+    @if (queryUsuario.isLoading()) {
+      <p-progressspinner class="my-4 h-12 w-12 text-black opacity-10" strokeWidth="8" />
+    } @else if (queryUsuario.data(); as data) {
+      <div class="flex items-center gap-4">
+        <svg lucideUser class="h-16 w-16 rounded-full bg-gray-200 p-2"></svg>
+        <h2 class="text-2xl font-bold">Olá, {{ formatShortName(data.nome) }}</h2>
+      </div>
+
+      <form
+        #form="ngForm"
+        (ngSubmit)="onSubmit(form)"
+        class="flex flex-col gap-4"
+        novalidate
+        (input)="this.formError.set('')"
+      >
+        <!-- nome -->
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <input
+              pInputText
+              id="ipt-nome"
+              name="nome"
+              [(ngModel)]="valUsuario.nome"
+              required
+              #nomeRef="ngModel"
+              [invalid]="nomeRef.invalid && (nomeRef.touched || form.submitted)"
+              fluid
+              autocomplete="off"
+            />
+            <label for="ipt-nome">Nome</label>
+          </p-float-label>
+
+          @if (nomeRef.invalid && (nomeRef.touched || form.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (nomeRef.errors?.['required']) {
+                Nome é obrigatório
+              } @else if (nomeRef.errors?.['custom']) {
+                {{ nomeRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        <!-- email -->
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <input
+              pInputText
+              id="ipt-email"
+              name="email"
+              [(ngModel)]="valUsuario.email"
+              required
+              #emailRef="ngModel"
+              [invalid]="emailRef.invalid && (emailRef.touched || form.submitted)"
+              fluid
+              autocomplete="off"
+            />
+            <label for="ipt-email">Email</label>
+          </p-float-label>
+
+          @if (emailRef.invalid && (emailRef.touched || form.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (emailRef.errors?.['required']) {
+                Email é obrigatório
+              } @else if (emailRef.errors?.['custom']) {
+                {{ emailRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        <!-- renda mensal -->
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <p-iconfield>
+              <p-inputnumber
+                [(ngModel)]="valUsuario.rendaMensal"
+                inputId="ipt-rendaMensal"
+                name="rendaMensal"
+                required
+                #rendaMensalRef="ngModel"
+                [invalid]="rendaMensalRef.invalid && (rendaMensalRef.touched || form.submitted)"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                fluid
+              />
+              <p-inputicon>
+                <svg lucideDollarSign class="h-4"></svg>
+              </p-inputicon>
+            </p-iconfield>
+            <label for="ipt-rendaMensal">Renda Mensal</label>
+          </p-float-label>
+
+          @if (rendaMensalRef.invalid && (rendaMensalRef.touched || form.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (rendaMensalRef.errors?.['required']) {
+                Renda Mensal é obrigatória
+              } @else if (rendaMensalRef.errors?.['custom']) {
+                {{ rendaMensalRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        <!-- limite mensal -->
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <p-iconfield>
+              <p-inputnumber
+                [(ngModel)]="valUsuario.limiteMensal"
+                inputId="ipt-limiteMensal"
+                name="limiteMensal"
+                required
+                #limiteMensalRef="ngModel"
+                [invalid]="limiteMensalRef.invalid && (limiteMensalRef.touched || form.submitted)"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                fluid
+              />
+              <p-inputicon>
+                <svg lucideDollarSign class="h-4"></svg>
+              </p-inputicon>
+            </p-iconfield>
+            <label for="ipt-limiteMensal">Limite de Gastos Mensais</label>
+          </p-float-label>
+
+          @if (limiteMensalRef.invalid && (limiteMensalRef.touched || form.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (limiteMensalRef.errors?.['required']) {
+                Limite Mensal é obrigatório
+              } @else if (limiteMensalRef.errors?.['custom']) {
+                {{ limiteMensalRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        <!-- data nascimento -->
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <p-datepicker
+              [(ngModel)]="valUsuario.dataNascimento"
+              inputId="ipt-dataNascimento"
+              name="dataNascimento"
+              required
+              #dataNascimentoRef="ngModel"
+              [invalid]="dataNascimentoRef.invalid && (dataNascimentoRef.touched || form.submitted)"
+              showIcon
+              iconDisplay="input"
+              fluid
+              appendTo="body"
+            />
+            <label for="ipt-dataNascimento">Data de Nascimento</label>
+          </p-float-label>
+
+          @if (dataNascimentoRef.invalid && (dataNascimentoRef.touched || form.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (dataNascimentoRef.errors?.['required']) {
+                Data de nascimento é obrigatória
+              } @else if (dataNascimentoRef.errors?.['custom']) {
+                {{ dataNascimentoRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        @if (formError()) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ formError() }}
+          </p-message>
+        }
+
+        <button
+          pButton
+          type="submit"
+          severity="primary"
+          [disabled]="form.pristine || mutationUsuario.isPending()"
+        >
+          @if (mutationUsuario.isPending()) {
+            <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+          } @else {
+            Salvar
+          }
+        </button>
+      </form>
+
+      <button pButton severity="primary" outlined (click)="this.popupAlterarSenha = true">
+        Alterar Senha
+      </button>
+    }
+
+    <button pButton severity="danger" (click)="this.logout()">Sair da Conta</button>
+    <button pButton severity="danger" (click)="this.excluirConta()">Excluir Conta</button>
+  </div>
+</div>
+
+<!-- popup de alterar senha -->
+<p-dialog
+  [modal]="true"
+  [(visible)]="popupAlterarSenha"
+  [draggable]="false"
+  styleClass="w-full mx-4"
+  header="Alterar Senha"
+  (onHide)="formSenha.resetForm()"
+>
+  <form
+    #formSenha="ngForm"
+    (ngSubmit)="onSubmitSenha(formSenha)"
+    class="mt-2 flex flex-col gap-4"
+    novalidate
+  >
+    <!-- senha antiga -->
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <p-password
+          id="ipt-senhaAntiga"
+          name="senhaAntiga"
+          [toggleMask]="true"
+          autocomplete="off"
+          [feedback]="false"
+          [(ngModel)]="senhaValues.senhaAntiga"
+          [pt]="{
+            maskIcon: { class: '!z-10' },
+            unmaskIcon: { class: '!z-10' },
+          }"
+          #senhaAntigaRef="ngModel"
+          [invalid]="senhaAntigaRef.invalid && (senhaAntigaRef.touched || formSenha.submitted)"
+          required
+          fluid
+        />
+        <label for="ipt-senhaAntiga">Senha atual</label>
+      </p-float-label>
+
+      @if (senhaAntigaRef.invalid && (senhaAntigaRef.touched || formSenha.submitted)) {
+        <p-message severity="error" size="small" variant="simple">
+          @if (senhaAntigaRef.errors?.['required']) {
+            Senha atual é obrigatória
+          } @else if (senhaAntigaRef.errors?.['custom']) {
+            {{ senhaAntigaRef.errors?.['custom'] }}
+          }
+        </p-message>
+      }
+    </div>
+
+    <!-- senha nova -->
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <p-password
+          id="ipt-senhaNova"
+          name="senhaNova"
+          [(ngModel)]="senhaValues.senhaNova"
+          #senhaNovaRef="ngModel"
+          [invalid]="senhaNovaRef.invalid && (senhaNovaRef.touched || formSenha.submitted)"
+          [toggleMask]="true"
+          autocomplete="off"
+          [feedback]="false"
+          [pt]="{
+            maskIcon: { class: '!z-10' },
+            unmaskIcon: { class: '!z-10' },
+          }"
+          required
+          fluid
+        />
+        <label for="ipt-senhaNova">Nova senha</label>
+      </p-float-label>
+
+      @if (senhaNovaRef.invalid && (senhaNovaRef.touched || formSenha.submitted)) {
+        <p-message severity="error" size="small" variant="simple">
+          @if (senhaNovaRef.errors?.['required']) {
+            Senha nova é obrigatória
+          } @else if (senhaNovaRef.errors?.['custom']) {
+            {{ senhaNovaRef.errors?.['custom'] }}
+          }
+        </p-message>
+      }
+    </div>
+
+    <!-- confirmar senha nova -->
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <p-password
+          id="ipt-confirmarSenhaNova"
+          name="confirmarSenhaNova"
+          [(ngModel)]="senhaValues.confirmarSenhaNova"
+          #confirmarSenhaNovaRef="ngModel"
+          [invalid]="
+            (confirmarSenhaNovaRef.dirty || confirmarSenhaNovaRef.touched) &&
+            senhaValues.confirmarSenhaNova !== senhaValues.senhaNova
+          "
+          [toggleMask]="true"
+          autocomplete="off"
+          [feedback]="false"
+          [pt]="{
+            maskIcon: { class: '!z-10' },
+            unmaskIcon: { class: '!z-10' },
+          }"
+          required
+          fluid
+        />
+        <label for="ipt-confirmarSenhaNova">Confirmar nova senha</label>
+      </p-float-label>
+
+      @if (
+        (confirmarSenhaNovaRef.dirty || confirmarSenhaNovaRef.touched) &&
+        senhaValues.confirmarSenhaNova !== senhaValues.senhaNova
+      ) {
+        <p-message severity="error" size="small" variant="simple">
+          As senhas não coincidem
+        </p-message>
+      }
+    </div>
+
+    <button
+      pButton
+      type="submit"
+      severity="primary"
+      [disabled]="formSenha.invalid || senhaValues.senhaNova !== senhaValues.confirmarSenhaNova"
+    >
+      @if (mutationSenha.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else {
+        Alterar Senha
+      }
+    </button>
+  </form>
+</p-dialog>
+
+<p-confirmdialog [draggable]="false" styleClass="mx-4" />

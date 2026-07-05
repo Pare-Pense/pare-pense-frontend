@@ -1,0 +1,17 @@
+.fundo-primary {
+  background-color: #83d4ff;
+}
+
+.fundo-secao {
+  background-color: #f0f8ff;
+}
+
+ngx-charts-line-chart {
+  overflow-x: scroll;
+}
+
+:host {
+  background-color: #f0f8ff;
+  min-height: 100svh;
+  display: block;
+}

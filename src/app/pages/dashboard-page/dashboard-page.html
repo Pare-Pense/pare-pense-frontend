@@ -1,0 +1,135 @@
+<div class="flex flex-col items-center">
+  <!-- area do fundo azul -->
+  <div class="fundo-primary flex w-full flex-col gap-4 p-4">
+    <app-top-bar title="Dashboard" />
+
+    <div class="flex gap-4">
+      <div class="flex-1 rounded-xl bg-white p-3 shadow-md">
+        <div class="flex justify-between">
+          <p>Despesas</p>
+        </div>
+        <h2 class="text-color-emphasis text-xl font-bold">
+          @if (querySumario.isPending()) {
+            <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+          } @else if (querySumario.data(); as data) {
+            {{ data.totalDespesas | fmtReal }}
+          }
+        </h2>
+      </div>
+
+      <div class="flex-1 rounded-xl bg-white p-3 shadow-md">
+        <div class="flex justify-between">
+          <p>Receitas</p>
+        </div>
+        <h2 class="text-color-emphasis text-xl font-bold">
+          @if (querySumario.isPending()) {
+            <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+          } @else if (querySumario.data(); as data) {
+            {{ data.totalReceitas | fmtReal }}
+          }
+        </h2>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
+      @if (querySumario.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else if (querySumario.data(); as data) {
+        <div class="flex items-start justify-between">
+          <p>Limite mensal</p>
+          <h2 class="text-color-emphasis text-xl font-bold">{{ +data.limiteMensal | fmtReal }}</h2>
+        </div>
+        <div class="flex flex-col gap-1">
+          <p-progressbar [value]="data.limiteUsadoPorc">
+            <ng-template #content></ng-template>
+          </p-progressbar>
+          <span class="text-xs">{{ data.limiteUsadoPorc | number: '1.0-1' }}% utilizado</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- separador redondo entre azul e resto do conteudo -->
+  <div class="fundo-primary h-4 w-full">
+    <div class="fundo-secao h-full rounded-t-full"></div>
+  </div>
+
+  <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
+    <!-- selecionador de periodo -->
+    <div class="rounded-border flex justify-between bg-white p-2 shadow">
+      <div class="flex flex-1 justify-start">
+        <p-button
+          severity="contrast"
+          label="Semanal"
+          [text]="periodoIdx() != 0"
+          (onClick)="setPeriodoIdx(0)"
+        />
+      </div>
+      <div class="flex flex-1 justify-center">
+        <p-button
+          severity="contrast"
+          label="Mensal"
+          [text]="periodoIdx() != 1"
+          (onClick)="setPeriodoIdx(1)"
+        />
+      </div>
+      <div class="flex flex-1 justify-end">
+        <p-button
+          severity="contrast"
+          label="Anual"
+          [text]="periodoIdx() != 2"
+          (onClick)="setPeriodoIdx(2)"
+        />
+      </div>
+    </div>
+
+    <!-- lista de categorias -->
+    <div class="flex flex-col gap-4">
+      @if (queryGastos.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else if (queryGastos.data(); as data) {
+        <div class="flex justify-between px-2 font-bold">
+          <span>Categoria</span>
+          <span>Gasto Total</span>
+        </div>
+
+        <!-- categoria cell -->
+        @for (gasto of data; track gasto.id) {
+          <div
+            class="flex items-center gap-2 rounded-xl bg-white p-4 shadow active:bg-gray-100"
+            (click)="this.clickCategoria(gasto.id)"
+          >
+            <app-icon-categoria [categoria]="gasto.id" />
+            <div class="flex-1">
+              <p class="text-color-emphasis text-lg">{{ gasto.nome }}</p>
+            </div>
+            <h3 class="text-color-emphasis font-bold">{{ gasto.valor | fmtReal }}</h3>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- espaço para nav inferior -->
+    <div class="h-nav-bottom-pad mt-4"></div>
+  </div>
+</div>
+
+<app-nav-bottom active="home" />
+
+<!-- botão de + -->
+<div class="pointer-events-none fixed bottom-0 z-10 flex w-screen flex-col">
+  <div class="flex justify-end p-4">
+    <button
+      pButton
+      rounded="true"
+      severity="primary"
+      class="pointer-events-auto"
+      (click)="this.openModalAddDespesa()"
+    >
+      <svg pButtonIcon lucidePlus></svg>
+    </button>
+  </div>
+  <div class="h-nav-bottom"></div>
+</div>
+
+<app-modal-despesa [(visible)]="modalDespesaVisible" />

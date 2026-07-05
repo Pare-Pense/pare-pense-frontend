@@ -1,0 +1,13 @@
+<label class="h-nav-bottom flex cursor-pointer flex-col items-center justify-center gap-0.5 px-4">
+  <input
+    class="peer hidden"
+    type="radio"
+    name="nav-telas"
+    [checked]="checked()"
+    (click)="this.onClick()"
+  />
+  <svg [lucideIcon]="iconProp()" class="peer-checked:text-primary"></svg>
+  <div
+    class="bg-primary h-1 w-4 scale-x-0 rounded-full transition-transform peer-checked:scale-x-100"
+  ></div>
+</label>

@@ -1,0 +1,180 @@
+<p-dialog
+  [modal]="true"
+  [(visible)]="visible"
+  header="{{ isEditMode() ? 'Editar' : 'Adicionar' }} {{ isDespesa() ? 'Despesa' : 'Receita' }}"
+  (onHide)="this.onDialogHide(transacaoForm)"
+  styleClass="w-full mx-4"
+  [draggable]="false"
+>
+  <form #transacaoForm="ngForm" (ngSubmit)="onSubmit(transacaoForm)" novalidate>
+    <div class="flex flex-col gap-4 pt-2 pb-4">
+      @if (!isEditMode()) {
+        <div class="rounded-border flex justify-between gap-2 bg-white p-2 shadow">
+          <p-button
+            severity="contrast"
+            label="Despesa"
+            [text]="!isDespesa()"
+            (onClick)="isDespesa.set(true)"
+          />
+          <p-button
+            severity="contrast"
+            label="Receita"
+            [text]="isDespesa()"
+            (onClick)="isDespesa.set(false)"
+          />
+        </div>
+      }
+
+      <div class="flex flex-col">
+        <p-float-label variant="on">
+          <input
+            pInputText
+            id="modal-despesa-nome"
+            name="nome"
+            [(ngModel)]="valNome"
+            required
+            #nomeRef="ngModel"
+            [invalid]="nomeRef.invalid && (nomeRef.touched || transacaoForm.submitted)"
+            class="w-full"
+            autocomplete="off"
+          />
+          <label for="modal-despesa-nome">Nome</label>
+        </p-float-label>
+
+        @if (nomeRef.invalid && (nomeRef.touched || transacaoForm.submitted)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (nomeRef.errors?.['required']) {
+              Nome é obrigatório
+            } @else if (nomeRef.errors?.['custom']) {
+              {{ nomeRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
+
+      @if (isDespesa()) {
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <p-select
+              inputId="modal-despesa-categoria"
+              name="categoria"
+              [(ngModel)]="valCategoria"
+              [options]="categorias"
+              required
+              #categoriaRef="ngModel"
+              [invalid]="categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)"
+              class="w-full"
+              appendTo="body"
+            />
+            <label for="modal-despesa-categoria">Categoria</label>
+          </p-float-label>
+
+          @if (categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (categoriaRef.errors?.['required']) {
+                Categoria é obrigatória
+              } @else if (categoriaRef.errors?.['custom']) {
+                {{ categoriaRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+      }
+
+      <div class="flex flex-col">
+        <div class="flex gap-4">
+          <p-floatlabel variant="on" class="flex-3">
+            <p-datepicker
+              [(ngModel)]="valData"
+              inputId="modal-despesa-data"
+              name="data"
+              required
+              #dataRef="ngModel"
+              [invalid]="dataRef.invalid && (dataRef.touched || transacaoForm.submitted)"
+              showIcon
+              iconDisplay="input"
+              class="w-full"
+              appendTo="body"
+            />
+            <label for="modal-despesa-data">Data</label>
+          </p-floatlabel>
+
+          <p-floatlabel variant="on" class="flex-2">
+            <p-datepicker
+              [(ngModel)]="valData"
+              inputId="modal-despesa-hora"
+              name="hora"
+              required
+              #horaRef="ngModel"
+              [invalid]="horaRef.invalid && (horaRef.touched || transacaoForm.submitted)"
+              iconDisplay="input"
+              [timeOnly]="true"
+              hourFormat="24"
+              class="w-full"
+              appendTo="body"
+            />
+            <label for="modal-despesa-data">Hora</label>
+          </p-floatlabel>
+        </div>
+
+        @if (
+          (dataRef.invalid || horaRef.invalid) &&
+          (dataRef.touched || horaRef.touched || transacaoForm.submitted)
+        ) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (dataRef.errors?.['required'] || horaRef.errors?.['required']) {
+              Data e hora são obrigatórias
+            } @else if (dataRef.errors?.['custom']) {
+              {{ dataRef.errors?.['custom'] }}
+            } @else if (horaRef.errors?.['custom']) {
+              {{ horaRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <p-float-label variant="on">
+          <p-iconfield>
+            <p-inputnumber
+              [(ngModel)]="valValor"
+              inputId="modal-despesa-valor"
+              name="valor"
+              required
+              #valorRef="ngModel"
+              [invalid]="valorRef.invalid && (valorRef.touched || transacaoForm.submitted)"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              class="w-full"
+            />
+            <p-inputicon>
+              <svg lucideDollarSign class="h-4"></svg>
+            </p-inputicon>
+          </p-iconfield>
+          <label for="modal-despesa-valor">Valor</label>
+        </p-float-label>
+
+        @if (valorRef.invalid && (valorRef.touched || transacaoForm.submitted)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (valorRef.errors?.['required']) {
+              Valor é obrigatório
+            } @else if (valorRef.errors?.['custom']) {
+              {{ valorRef.errors?.['custom'] }}
+            }
+          </p-message>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-4">
+      <p-button [disabled]="loading()" type="submit">
+        @if (loading()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+        } @else {
+          {{ isEditMode() ? 'Salvar alterações' : 'Adicionar' }}
+        }
+      </p-button>
+    </div>
+  </form>
+</p-dialog>
