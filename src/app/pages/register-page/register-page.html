@@ -194,14 +194,14 @@
               #senhaConfRef="ngModel"
               [invalid]="
                 (senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) &&
-                (senhaConfRef.touched || registerForm.submitted)
+                (senhaConfRef.touched || senhaConfRef.dirty || registerForm.submitted)
               "
               required
             />
             <label for="senhaConf">Confirmar Senha</label>
           </p-floatlabel>
         </p-inputgroup>
-        @if ((senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) && senhaConfRef.touched) {
+        @if ((senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) && (senhaConfRef.touched || senhaConfRef.dirty)) {
           <p-message severity="error" size="small" variant="simple">
             @if (senhaConfRef.errors?.['required']) {
               Confirme sua senha
