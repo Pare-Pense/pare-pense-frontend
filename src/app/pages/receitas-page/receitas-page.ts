@@ -60,12 +60,28 @@ export class IncomesPage {
   chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Período',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Total recebido (R$)',
+        },
+        beginAtZero: true,
+      },
+    },
   };
 
   periodos = [
-    { label: 'Nos últimos 7 dias', value: 'semanal' },
-    { label: 'No último mês', value: 'mensal' },
-    { label: 'No último ano', value: 'anual' },
+    { label: 'Semanal', value: 'semanal' },
+    { label: 'Mensal', value: 'mensal' },
+    { label: 'Anual', value: 'anual' },
   ];
 
   queryReceitas = injectQuery(() => {
@@ -170,7 +186,7 @@ export class IncomesPage {
       labels,
       datasets: [
         {
-          label: 'Receitas',
+          label: 'Receitas por período',
           data: values,
           tension: 0.4,
         },

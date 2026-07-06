@@ -93,14 +93,30 @@ export class ExpensesPage implements OnInit {
   }
 
   periodos = [
-    { label: 'Nos últimos 7 dias', value: 'semanal' },
-    { label: 'No último mês', value: 'mensal' },
-    { label: 'No último ano', value: 'anual' },
+    { label: 'Semanal', value: 'semanal' },
+    { label: 'Mensal', value: 'mensal' },
+    { label: 'Anual', value: 'anual' },
   ];
 
   chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Período',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Total gasto (R$)',
+        },
+        beginAtZero: true,
+      },
+    },
   };
 
   queryDespesas = injectQuery(() => {
@@ -176,7 +192,7 @@ export class ExpensesPage implements OnInit {
       labels,
       datasets: [
         {
-          label: 'Despesas',
+          label: 'Despesas por período',
           data: values,
           tension: 0.4,
         },
