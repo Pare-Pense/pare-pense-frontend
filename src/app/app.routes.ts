@@ -12,15 +12,18 @@ export const routes: Routes = [
     path: 'home',
     component: DashboardPage,
     canActivate: [authGuard],
+    title: 'Dashboard - Pare & Pense',
   },
   {
     path: 'perfil',
     component: PerfilPage,
     canActivate: [authGuard],
+    title: 'Perfil - Pare & Pense',
   },
   {
     path: 'login',
     component: LoginPage,
+    title: 'Login - Pare & Pense',
   },
   {
     path: '',
@@ -31,14 +34,17 @@ export const routes: Routes = [
     path: 'despesas',
     component: ExpensesPage,
     canActivate: [authGuard],
+    title: 'Despesas - Pare & Pense',
   },
   {
     path: 'receitas',
     component: IncomesPage,
     canActivate: [authGuard],
+    title: 'Receitas - Pare & Pense',
   },
   {
     path: 'register',
     component: RegisterPage,
+    title: 'Cadastro - Pare & Pense',
   },
 ];
