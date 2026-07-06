@@ -1,0 +1,14 @@
+{
+  "name": "Pare & Pense",
+  "short_name": "Pare & Pense",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#3b82f6",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/icon-256.png", "sizes": "256x256", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-256.png", "sizes": "256x256", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
