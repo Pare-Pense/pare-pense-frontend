@@ -19,6 +19,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario-service';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-register-page',
@@ -45,6 +46,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
   styleUrl: './register-page.css',
 })
 export class RegisterPage {
+  private messageService = inject(MessageService);
   private userService = inject(UsuarioService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -76,6 +78,11 @@ export class RegisterPage {
           this.loading.set(false);
           const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';
           this.router.navigateByUrl(redirect);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Usuário cadastrado com sucesso!',
+          });
         },
         error: (err) => {
           this.loading.set(false);
