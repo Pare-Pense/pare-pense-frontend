@@ -11,10 +11,12 @@
   </h2>
 
   <div class="flex-1"></div>
-  <button pButton rounded="true" severity="primary">
+  <button pButton rounded="true" severity="primary" (click)="this.modalNotifs.set(true)">
     <svg pButtonIcon lucideBell></svg>
   </button>
   <a pButton rounded="true" severity="secondary" routerLink="/perfil">
     <svg pButtonIcon lucideUser></svg>
   </a>
 </div>
+
+<app-modal-notificacoes [(visible)]="modalNotifs" />
