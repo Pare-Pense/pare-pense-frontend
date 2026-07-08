@@ -52,6 +52,7 @@ export class ModalDespesa {
   protected valNome?: string;
   protected valCategoria?: string;
   protected valData?: Date;
+  protected valHora?: Date;
   protected valValor?: number;
 
   public despesaEdit = input<Despesa>();
@@ -116,6 +117,7 @@ export class ModalDespesa {
     }
 
     this.loading.set(true);
+    this.valData?.setHours(this.valHora?.getHours()!, this.valHora?.getMinutes());
 
     if (this.isEditMode()) {
       const transacao = this.checarAlteracoes();
