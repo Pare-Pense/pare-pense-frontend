@@ -72,6 +72,7 @@ export class ModalDespesa {
 
           this.valNome = transacao.nome;
           this.valData = new Date(transacao.data);
+          this.valHora = new Date(this.valData);
           this.valValor = transacao.valor;
 
           if ('categoria' in transacao) {
