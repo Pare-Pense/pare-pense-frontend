@@ -17,6 +17,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { Message } from 'primeng/message';
 import { MessageService } from 'primeng/api';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @Component({
   selector: 'app-modal-despesa',
@@ -34,6 +35,7 @@ import { MessageService } from 'primeng/api';
     LucideDollarSign,
     ProgressSpinner,
     Message,
+    InputMaskModule,
   ],
   templateUrl: 'modal-despesa.html',
 })
