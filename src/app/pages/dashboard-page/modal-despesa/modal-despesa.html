@@ -95,7 +95,7 @@
               iconDisplay="input"
               class="w-full"
               appendTo="body"
-              pInputMask="99/99/9999"
+              [readonlyInput]="true"
             />
             <label for="modal-despesa-data">Data</label>
           </p-floatlabel>
@@ -113,7 +113,7 @@
               hourFormat="24"
               class="w-full"
               appendTo="body"
-              pInputMask="99:99"
+              [readonlyInput]="true"
             />
             <label for="modal-despesa-data">Hora</label>
           </p-floatlabel>
