@@ -95,13 +95,14 @@
               iconDisplay="input"
               class="w-full"
               appendTo="body"
+              [readonlyInput]="true"
             />
             <label for="modal-despesa-data">Data</label>
           </p-floatlabel>
 
           <p-floatlabel variant="on" class="flex-2">
             <p-datepicker
-              [(ngModel)]="valData"
+              [(ngModel)]="valHora"
               inputId="modal-despesa-hora"
               name="hora"
               required
@@ -112,14 +113,15 @@
               hourFormat="24"
               class="w-full"
               appendTo="body"
+              [readonlyInput]="true"
             />
             <label for="modal-despesa-data">Hora</label>
           </p-floatlabel>
         </div>
 
         @if (
-          (dataRef.invalid || horaRef.invalid) &&
-          (dataRef.touched || horaRef.touched || transacaoForm.submitted)
+          (dataRef.invalid && (dataRef.touched || transacaoForm.submitted)) ||
+          (horaRef.invalid && (horaRef.touched || transacaoForm.submitted))
         ) {
           <p-message severity="error" size="small" variant="simple">
             @if (dataRef.errors?.['required'] || horaRef.errors?.['required']) {

@@ -17,6 +17,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { Message } from 'primeng/message';
 import { MessageService } from 'primeng/api';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @Component({
   selector: 'app-modal-despesa',
@@ -34,6 +35,7 @@ import { MessageService } from 'primeng/api';
     LucideDollarSign,
     ProgressSpinner,
     Message,
+    InputMaskModule,
   ],
   templateUrl: 'modal-despesa.html',
 })
@@ -52,6 +54,7 @@ export class ModalDespesa {
   protected valNome?: string;
   protected valCategoria?: string;
   protected valData?: Date;
+  protected valHora?: Date;
   protected valValor?: number;
 
   public despesaEdit = input<Despesa>();
@@ -69,6 +72,7 @@ export class ModalDespesa {
 
           this.valNome = transacao.nome;
           this.valData = new Date(transacao.data);
+          this.valHora = new Date(this.valData);
           this.valValor = transacao.valor;
 
           if ('categoria' in transacao) {
@@ -116,6 +120,7 @@ export class ModalDespesa {
     }
 
     this.loading.set(true);
+    this.valData?.setHours(this.valHora?.getHours()!, this.valHora?.getMinutes());
 
     if (this.isEditMode()) {
       const transacao = this.checarAlteracoes();
