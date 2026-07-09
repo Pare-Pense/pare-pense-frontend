@@ -16,7 +16,7 @@ import {
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { UsuarioService } from '../../services/usuario-service';
+import { CadastroUsuarioDTO, UsuarioService } from '../../services/usuario-service';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
@@ -64,15 +64,17 @@ export class RegisterPage {
   onSubmit(form: NgForm) {
     this.formError.set('');
     this.loading.set(true);
+    const novoUsuario: CadastroUsuarioDTO = {
+      nome: this.username,
+      dataNascimento: this.birthDate,
+      email: this.email,
+      senha: this.senha,
+      rendaMensal: this.saldoMensal,
+      limiteMensal: this.limiteGastos,
+    };
+
     this.userService
-      .register(
-        this.email,
-        this.senha,
-        this.username,
-        this.birthDate,
-        this.limiteGastos,
-        this.saldoMensal,
-      )
+      .register(novoUsuario)
       .subscribe({
         next: () => {
           this.loading.set(false);
