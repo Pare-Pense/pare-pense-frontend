@@ -73,33 +73,31 @@ export class RegisterPage {
       limiteMensal: this.limiteGastos,
     };
 
-    this.userService
-      .register(novoUsuario)
-      .subscribe({
-        next: () => {
-          this.loading.set(false);
-          const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';
-          this.router.navigateByUrl(redirect);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Usuário cadastrado com sucesso!',
-          });
-        },
-        error: (err) => {
-          this.loading.set(false);
-          const msg: string | undefined = err?.error?.erro;
-          if (msg === 'Dados inválidos') {
-            for (const detail of err.error.detalhes) {
-              if (form.controls[detail.campo])
-                form.controls[detail.campo].setErrors({ custom: detail.mensagem });
-            }
-          } else {
-            this.formError.set(msg ?? 'Erro ao fazer o cadastro');
+    this.userService.register(novoUsuario).subscribe({
+      next: () => {
+        this.loading.set(false);
+        const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';
+        this.router.navigateByUrl(redirect);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Usuário cadastrado com sucesso!',
+        });
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const msg: string | undefined = err?.error?.erro;
+        if (msg === 'Dados inválidos') {
+          for (const detail of err.error.detalhes) {
+            if (form.controls[detail.campo])
+              form.controls[detail.campo].setErrors({ custom: detail.mensagem });
           }
-          console.error('Erro ao fazer register!', msg);
-        },
-      });
+        } else {
+          this.formError.set(msg ?? 'Erro ao fazer o cadastro');
+        }
+        console.error('Erro ao fazer register!', msg);
+      },
+    });
   }
 
   onAnyInput() {
