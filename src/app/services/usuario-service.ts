@@ -72,9 +72,7 @@ export class UsuarioService {
     return this.http.delete(`${this.url}/usuarios/${id}`);
   }
 
-  register(
-    dados: CadastroUsuarioDTO
-  ) {
+  register(dados: CadastroUsuarioDTO) {
     return this.http.post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, dados);
   }
 }
