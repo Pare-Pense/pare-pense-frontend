@@ -16,7 +16,7 @@ import {
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { UsuarioService } from '../../services/usuario-service';
+import { CadastroUsuarioDTO, UsuarioService } from '../../services/usuario-service';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
@@ -64,40 +64,40 @@ export class RegisterPage {
   onSubmit(form: NgForm) {
     this.formError.set('');
     this.loading.set(true);
-    this.userService
-      .register(
-        this.email,
-        this.senha,
-        this.username,
-        this.birthDate,
-        this.limiteGastos,
-        this.saldoMensal,
-      )
-      .subscribe({
-        next: () => {
-          this.loading.set(false);
-          const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';
-          this.router.navigateByUrl(redirect);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Usuário cadastrado com sucesso!',
-          });
-        },
-        error: (err) => {
-          this.loading.set(false);
-          const msg: string | undefined = err?.error?.erro;
-          if (msg === 'Dados inválidos') {
-            for (const detail of err.error.detalhes) {
-              if (form.controls[detail.campo])
-                form.controls[detail.campo].setErrors({ custom: detail.mensagem });
-            }
-          } else {
-            this.formError.set(msg ?? 'Erro ao fazer o cadastro');
+    const novoUsuario: CadastroUsuarioDTO = {
+      nome: this.username,
+      dataNascimento: this.birthDate,
+      email: this.email,
+      senha: this.senha,
+      rendaMensal: this.saldoMensal,
+      limiteMensal: this.limiteGastos,
+    };
+
+    this.userService.register(novoUsuario).subscribe({
+      next: () => {
+        this.loading.set(false);
+        const redirect = this.route.snapshot.queryParams['redirect'] ?? '/home';
+        this.router.navigateByUrl(redirect);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Usuário cadastrado com sucesso!',
+        });
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const msg: string | undefined = err?.error?.erro;
+        if (msg === 'Dados inválidos') {
+          for (const detail of err.error.detalhes) {
+            if (form.controls[detail.campo])
+              form.controls[detail.campo].setErrors({ custom: detail.mensagem });
           }
-          console.error('Erro ao fazer register!', msg);
-        },
-      });
+        } else {
+          this.formError.set(msg ?? 'Erro ao fazer o cadastro');
+        }
+        console.error('Erro ao fazer register!', msg);
+      },
+    });
   }
 
   onAnyInput() {
