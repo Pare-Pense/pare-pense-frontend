@@ -11,6 +11,15 @@ export interface UsuarioDTO {
   limiteMensal: number;
 }
 
+export interface CadastroUsuarioDTO {
+  nome: string;
+  dataNascimento: string;
+  email: string;
+  senha: string;
+  rendaMensal: number | null;
+  limiteMensal: number | null;
+}
+
 export type AtualizaUsuarioDTO = Partial<Omit<UsuarioDTO, 'id'>>;
 
 export interface RegisterResponse {
@@ -64,21 +73,8 @@ export class UsuarioService {
   }
 
   register(
-    email: string,
-    senha: string,
-    username: string,
-    birthDate: string,
-    saldoMensal: number | null,
-    limiteGastos: number | null,
+    dados: CadastroUsuarioDTO
   ) {
-    const payload = {
-      email: email,
-      senha: senha,
-      nome: username,
-      dataNascimento: birthDate,
-      rendaMensal: saldoMensal,
-      limiteMensal: limiteGastos,
-    };
-    return this.http.post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, payload);
+    return this.http.post<RegisterResponse>(`${this.url}/usuarios/criarUsuario`, dados);
   }
 }
