@@ -26,7 +26,7 @@ import { TopBar } from '../../components/top-bar/top-bar';
 import { ActivatedRoute } from '@angular/router';
 import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 
-type Periodo = 'semanal' | 'mensal' | 'anual';
+type Periodo = 'todos' | 'semanal' | 'mensal' | 'anual';
 type CategoriaFiltro = Categoria | 'TODAS';
 
 @Component({
@@ -62,7 +62,7 @@ export class ExpensesPage implements OnInit {
 
   public isEditMode = false;
   protected isDespesa = signal(true);
-  periodoSelecionado = signal<Periodo>('semanal');
+  periodoSelecionado = signal<Periodo>('todos');
   categoriaSelecionada = signal<CategoriaFiltro>('TODAS');
   protected modalDespesaVisible = signal(false);
 
@@ -75,7 +75,7 @@ export class ExpensesPage implements OnInit {
     if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
       this.categoriaSelecionada.set(paramCategoria);
     }
-    if (['semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
+    if (['todas','semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
       this.periodoSelecionado.set(paramPeriodo);
     }
   }
@@ -93,6 +93,7 @@ export class ExpensesPage implements OnInit {
   }
 
   periodos = [
+    { label: 'Todos', value: 'todos' },
     { label: 'Semanal', value: 'semanal' },
     { label: 'Mensal', value: 'mensal' },
     { label: 'Anual', value: 'anual' },
@@ -129,12 +130,12 @@ export class ExpensesPage implements OnInit {
       queryFn: () =>
         lastValueFrom(
           this.despesaService.recuperarDespesasAll(
-            idUsuario!,
-            periodo,
-            categoria === 'TODAS' ? undefined : categoria,
+          idUsuario!,
+          periodo === 'todos' ? undefined : periodo,
+          categoria === 'TODAS' ? undefined : categoria,
           ),
-        ),
-      enabled: !!idUsuario,
+      ),
+    enabled: !!idUsuario,
     };
   });
 
@@ -158,6 +159,10 @@ export class ExpensesPage implements OnInit {
     despesas.forEach((d) => {
       const data = new Date(d.data);
       let key = '';
+
+      if (periodo === 'todos') {
+        key = data.getFullYear().toString();
+      }
 
       if (periodo === 'semanal') {
         key = data.toLocaleDateString('pt-BR', {

@@ -5,6 +5,8 @@
     <app-top-bar title="Despesas" />
 
     <div class="flex flex-row gap-2">
+      <div class="flex flex-col gap-2 w-2/5">
+      <p>Categoria</p>
       <p-select
         [options]="categorias"
         optionLabel="label"
@@ -13,7 +15,10 @@
         (ngModelChange)="categoriaSelecionada.set($event)"
       >
       </p-select>
+      </div>
 
+      <div class="flex flex-col gap-2 w-2/5">
+      <p>Período</p>
       <p-select
         [options]="periodos"
         optionLabel="label"
@@ -22,6 +27,8 @@
         (ngModelChange)="periodoSelecionado.set($event)"
       >
       </p-select>
+      </div>
+
     </div>
 
     <div class="chart-card flex h-87.5 w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
