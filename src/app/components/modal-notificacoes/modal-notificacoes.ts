@@ -47,4 +47,8 @@ export class ModalNotificacoes {
         timestamp: new Date(Date.now() - 89 * (i + 1) * 3600 * 1000),
       })),
   ];
+
+  constructor() {
+    this.notificacoes = [];
+  }
 }
