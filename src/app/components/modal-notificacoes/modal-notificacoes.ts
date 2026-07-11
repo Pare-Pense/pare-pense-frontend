@@ -1,54 +1,36 @@
-import { Component, model } from '@angular/core';
+import { Component, effect, inject, model } from '@angular/core';
 import { LucideBell, LucideX } from '@lucide/angular';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FmtTimestampPipe } from '../../util/fmt-timestamp';
+import { AuthService } from '../../auth/auth-service';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
+import { NotificacaoService } from '../../services/notificacao-service';
 
 @Component({
   selector: 'app-modal-notificacoes',
-  imports: [
-    ButtonModule,
-    ProgressSpinnerModule,
-    DialogModule,
-    LucideBell,
-    LucideX,
-    FmtTimestampPipe,
-  ],
+  imports: [ButtonModule, ProgressSpinnerModule, DialogModule, LucideBell, FmtTimestampPipe],
   templateUrl: './modal-notificacoes.html',
 })
 export class ModalNotificacoes {
+  private authService = inject(AuthService);
+  private notificacaoService = inject(NotificacaoService);
   public visible = model(false);
-  notificacoes = [
-    {
-      id: 1,
-      msg: 'Isso é uma notificação de teste!',
-      lida: false,
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      msg: 'Isso é uma notificação de teste! e contem ainda mais texto! texto texto texto texto',
-      lida: false,
-      timestamp: new Date(Date.now() - 2 * 3600 * 1000),
-    },
-    {
-      id: 3,
-      msg: 'Isso é uma notificação de teste! ainda bem que você já leu ela',
-      lida: true,
-      timestamp: new Date(Date.now() - 40 * 3600 * 1000),
-    },
-    ...Array(10)
-      .fill(0)
-      .map((_, i) => ({
-        id: 4 + i,
-        msg: 'Isso é uma notificação de teste!',
-        lida: i % 2 == 1,
-        timestamp: new Date(Date.now() - 89 * (i + 1) * 3600 * 1000),
-      })),
-  ];
+
+  queryNotificacoes = injectQuery(() => ({
+    queryKey: ['notificacoes', this.authService.getUsuarioId()],
+    queryFn: () =>
+      lastValueFrom(this.notificacaoService.getNotificacoes(this.authService.getUsuarioId()!)),
+    enabled: this.visible(),
+  }));
 
   constructor() {
-    this.notificacoes = [];
+    effect(() => {
+      if (this.queryNotificacoes.data()) {
+        this.notificacaoService.marcarNotificacoesLida(this.authService.getUsuarioId()!);
+      }
+    });
   }
 }
