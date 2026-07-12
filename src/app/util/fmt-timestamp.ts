@@ -4,7 +4,8 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'fmtTimestamp',
 })
 export class FmtTimestampPipe implements PipeTransform {
-  transform(valor: Date): string {
+  transform(valorS: string): string {
+    const valor = new Date(valorS);
     const diff = Date.now() - +valor;
     if (Math.abs(diff) < 10_000) {
       return 'agora';

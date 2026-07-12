@@ -7,7 +7,7 @@ export interface Notificacao {
   id: string;
   mensagem: string;
   lida: boolean;
-  timestamp: Date;
+  createdAt: string;
 }
 
 export interface ResponseNotificacoes {
