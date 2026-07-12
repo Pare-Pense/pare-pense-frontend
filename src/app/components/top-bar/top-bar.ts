@@ -23,6 +23,6 @@ export class TopBar {
   queryNotif = injectQuery(() => ({
     queryKey: ['notificacoes', this.authService.getUsuarioId(), 'count'],
     queryFn: () =>
-      lastValueFrom(this.notificacaoService.getNotificacaoCount(this.authService.getUsuarioId()!)),
+      lastValueFrom(this.notificacaoService.getNotificacoes(this.authService.getUsuarioId()!)),
   }));
 }

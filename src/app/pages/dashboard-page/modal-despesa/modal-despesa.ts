@@ -281,6 +281,9 @@ export class ModalDespesa {
     this.queryClient.invalidateQueries({ queryKey: ['usuario', 'sumario'] });
     if (this.isDespesa()) {
       this.queryClient.invalidateQueries({ queryKey: ['despesas'] });
+      setTimeout(() => {
+        this.queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
+      }, 1000);
     } else {
       this.queryClient.invalidateQueries({ queryKey: ['receitas'] });
     }
