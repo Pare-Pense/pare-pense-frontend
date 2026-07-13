@@ -19,7 +19,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
 import { TopBar } from '../../components/top-bar/top-bar';
 
-type Periodo = 'semanal' | 'mensal' | 'anual';
+type Periodo = 'todos' | 'semanal' | 'mensal' | 'anual';
 
 @Component({
   selector: 'app-incomes-page',
@@ -53,7 +53,7 @@ export class IncomesPage {
   protected modalReceitaVisible = signal(false);
   public isEditMode = false;
   protected isDespesa = signal(false);
-  periodoSelecionado = signal<Periodo>('semanal');
+  periodoSelecionado = signal<Periodo>('todos');
 
   public receitaEdit?: Receita;
 
@@ -79,6 +79,7 @@ export class IncomesPage {
   };
 
   periodos = [
+    { label: 'Todos', value: 'todos' },
     { label: 'Semanal', value: 'semanal' },
     { label: 'Mensal', value: 'mensal' },
     { label: 'Anual', value: 'anual' },
@@ -94,7 +95,7 @@ export class IncomesPage {
         lastValueFrom(
           this.receitaService.recuperarReceitasAll(
             idUsuario!,
-            periodo === 'semanal' ? 'semanal' : periodo === 'mensal' ? 'mensal' : 'anual',
+            periodo === 'todos' ? undefined : periodo,
           ),
         ),
       enabled: !!idUsuario,
@@ -152,6 +153,10 @@ export class IncomesPage {
     receitas.forEach((r) => {
       const data = new Date(r.data);
       let key = '';
+
+      if (periodo === 'todos') {
+        key = data.getFullYear().toString();
+      }
 
       if (periodo === 'semanal') {
         key = data.toLocaleDateString('pt-BR', {
