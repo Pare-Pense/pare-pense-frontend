@@ -5,7 +5,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FmtTimestampPipe } from '../../util/fmt-timestamp';
 import { AuthService } from '../../auth/auth-service';
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { NotificacaoService } from '../../services/notificacao-service';
 
@@ -18,6 +18,7 @@ export class ModalNotificacoes {
   private authService = inject(AuthService);
   private notificacaoService = inject(NotificacaoService);
   public visible = model(false);
+  private queryClient = inject(QueryClient);
 
   queryNotificacoes = injectQuery(() => ({
     queryKey: ['notificacoes', this.authService.getUsuarioId()],
@@ -29,7 +30,13 @@ export class ModalNotificacoes {
   constructor() {
     effect(() => {
       if (this.queryNotificacoes.data()) {
-        this.notificacaoService.marcarNotificacoesLida(this.authService.getUsuarioId()!);
+        this.notificacaoService.marcarNotificacoesLida(this.authService.getUsuarioId()!).subscribe({
+          next: () => {
+            setTimeout(() => {
+              this.queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
+            }, 3000);
+          },
+        });
       }
     });
   }

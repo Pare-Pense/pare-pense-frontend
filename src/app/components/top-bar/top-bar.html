@@ -15,7 +15,7 @@
     <button pButton rounded="true" severity="primary" (click)="this.modalNotifs.set(true)">
       <svg pButtonIcon lucideBell></svg>
     </button>
-    @if (queryNotif.data(); as data) {
+    @if (queryNotif.data()?.naoLidas; as data) {
       @if (data > 0) {
         <div
           class="pointer-events-none absolute right-0 bottom-0 inline-flex h-4 w-4 items-center justify-center overflow-clip rounded-full bg-red-500 text-xs text-white"

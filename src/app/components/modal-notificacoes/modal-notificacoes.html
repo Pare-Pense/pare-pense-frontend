@@ -11,7 +11,7 @@
     <div class="flex min-h-12 flex-col items-center justify-center">
       <p-progressspinner class="h-6 w-6" strokeWidth="8" />
     </div>
-  } @else if (queryNotificacoes.data(); as notificacoes) {
+  } @else if (queryNotificacoes.data()?.notificacoes; as notificacoes) {
     @if (notificacoes.length === 0) {
       <div class="flex min-h-12 flex-col items-center justify-center">
         <span class="text-muted-color italic">Não há nenhuma notificação.</span>
@@ -33,9 +33,10 @@
               }
             </div>
             <div class="flex flex-1 flex-col">
+              <p class="font-bold">{{ notif.titulo }}</p>
               <p>{{ notif.mensagem }}</p>
 
-              <span class="text-muted-color text-sm">{{ notif.timestamp | fmtTimestamp }}</span>
+              <span class="text-muted-color text-sm">{{ notif.createdAt | fmtTimestamp }}</span>
             </div>
           </div>
         }
