@@ -6,6 +6,7 @@
   [draggable]="false"
   [dismissableMask]="true"
   contentStyleClass="px-0"
+  (onShow)="this.onShow()"
 >
   @if (queryNotificacoes.isLoading()) {
     <div class="flex min-h-12 flex-col items-center justify-center">
