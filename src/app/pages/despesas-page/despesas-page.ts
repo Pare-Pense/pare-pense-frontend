@@ -27,6 +27,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 
 type Periodo = 'todos' | 'semanal' | 'mensal' | 'anual';
+type Periodo = 'todos' | 'semanal' | 'mensal' | 'anual';
 type CategoriaFiltro = Categoria | 'TODAS';
 
 @Component({
@@ -63,6 +64,7 @@ export class ExpensesPage implements OnInit {
   public isEditMode = false;
   protected isDespesa = signal(true);
   periodoSelecionado = signal<Periodo>('todos');
+  periodoSelecionado = signal<Periodo>('todos');
   categoriaSelecionada = signal<CategoriaFiltro>('TODAS');
   protected modalDespesaVisible = signal(false);
 
@@ -75,6 +77,7 @@ export class ExpensesPage implements OnInit {
     if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
       this.categoriaSelecionada.set(paramCategoria);
     }
+    if (['todas', 'semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
     if (['todas', 'semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
       this.periodoSelecionado.set(paramPeriodo);
     }
@@ -93,6 +96,7 @@ export class ExpensesPage implements OnInit {
   }
 
   periodos = [
+    { label: 'Todos', value: 'todos' },
     { label: 'Todos', value: 'todos' },
     { label: 'Semanal', value: 'semanal' },
     { label: 'Mensal', value: 'mensal' },
@@ -140,6 +144,7 @@ export class ExpensesPage implements OnInit {
         lastValueFrom(
           this.despesaService.recuperarDespesasAll(
             idUsuario!,
+            periodo === 'todos' ? undefined : periodo,
             periodo === 'todos' ? undefined : periodo,
             categoria === 'TODAS' ? undefined : categoria,
           ),
