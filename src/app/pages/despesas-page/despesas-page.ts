@@ -102,7 +102,16 @@ export class ExpensesPage implements OnInit {
   chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Evolução das despesas',
+      },
+    },
     scales: {
       x: {
         title: {
@@ -153,8 +162,10 @@ export class ExpensesPage implements OnInit {
   chartData = computed(() => {
     const despesas = this.despesas();
     const periodo = this.periodoSelecionado();
+    const categoriaSelecionada = this.categoriaSelecionada();
 
-    const agrupado = new Map<string, number>();
+    const labelsSet = new Set<string>();
+    const agrupado = new Map<Categoria, Map<string, number>>();
 
     despesas.forEach((d) => {
       const data = new Date(d.data);
@@ -162,16 +173,12 @@ export class ExpensesPage implements OnInit {
 
       if (periodo === 'todos') {
         key = data.getFullYear().toString();
-      }
-
-      if (periodo === 'semanal') {
+      } else if (periodo === 'semanal') {
         key = data.toLocaleDateString('pt-BR', {
           day: '2-digit',
           month: '2-digit',
         });
-      }
-
-      if (periodo === 'mensal') {
+      } else if (periodo === 'mensal') {
         const dia = data.getDate();
 
         if (dia <= 7) key = 'Semana 1';
@@ -179,26 +186,51 @@ export class ExpensesPage implements OnInit {
         else if (dia <= 21) key = 'Semana 3';
         else if (dia <= 28) key = 'Semana 4';
         else key = 'Semana 5';
-      }
-
-      if (periodo === 'anual') {
+      } else if (periodo === 'anual') {
         key = data.toLocaleString('pt-BR', {
           month: 'short',
         });
       }
 
-      agrupado.set(key, (agrupado.get(key) || 0) + Number(d.valor));
+      labelsSet.add(key);
+
+      if (!agrupado.has(d.categoria)) {
+        agrupado.set(d.categoria, new Map());
+      }
+
+      const mapaCategoria = agrupado.get(d.categoria)!;
+
+      mapaCategoria.set(
+        key,
+        (mapaCategoria.get(key) ?? 0) + Number(d.valor),
+      );
     });
 
-    const labels = Array.from(agrupado.keys());
-    const values = Array.from(agrupado.values());
+    const labels = Array.from(labelsSet);
+
+    if (categoriaSelecionada === 'TODAS') {
+      const datasets = Array.from(agrupado.entries()).map(
+        ([categoria, valores]) => ({
+          label: CATEGORIA_NOMES[categoria],
+          data: labels.map((label) => valores.get(label) ?? 0),
+          tension: 0.4,
+        }),
+      );
+
+      return {
+        labels,
+        datasets,
+      };
+    }
+
+    const valores = agrupado.get(categoriaSelecionada);
 
     return {
       labels,
       datasets: [
         {
-          label: 'Despesas por período',
-          data: values,
+          label: CATEGORIA_NOMES[categoriaSelecionada],
+          data: labels.map((label) => valores?.get(label) ?? 0),
           tension: 0.4,
         },
       ],
