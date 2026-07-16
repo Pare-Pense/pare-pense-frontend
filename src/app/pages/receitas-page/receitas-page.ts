@@ -62,15 +62,15 @@ export class IncomesPage {
     maintainAspectRatio: false,
 
     plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: 'Evolução das despesas',
-        },
+      legend: {
+        display: true,
+        position: 'top',
       },
+      title: {
+        display: true,
+        text: 'Evolução das despesas',
+      },
+    },
 
     scales: {
       x: {

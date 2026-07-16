@@ -75,7 +75,7 @@ export class ExpensesPage implements OnInit {
     if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
       this.categoriaSelecionada.set(paramCategoria);
     }
-    if (['todas','semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
+    if (['todas', 'semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
       this.periodoSelecionado.set(paramPeriodo);
     }
   }
@@ -139,12 +139,12 @@ export class ExpensesPage implements OnInit {
       queryFn: () =>
         lastValueFrom(
           this.despesaService.recuperarDespesasAll(
-          idUsuario!,
-          periodo === 'todos' ? undefined : periodo,
-          categoria === 'TODAS' ? undefined : categoria,
+            idUsuario!,
+            periodo === 'todos' ? undefined : periodo,
+            categoria === 'TODAS' ? undefined : categoria,
           ),
-      ),
-    enabled: !!idUsuario,
+        ),
+      enabled: !!idUsuario,
     };
   });
 
@@ -200,22 +200,17 @@ export class ExpensesPage implements OnInit {
 
       const mapaCategoria = agrupado.get(d.categoria)!;
 
-      mapaCategoria.set(
-        key,
-        (mapaCategoria.get(key) ?? 0) + Number(d.valor),
-      );
+      mapaCategoria.set(key, (mapaCategoria.get(key) ?? 0) + Number(d.valor));
     });
 
     const labels = Array.from(labelsSet);
 
     if (categoriaSelecionada === 'TODAS') {
-      const datasets = Array.from(agrupado.entries()).map(
-        ([categoria, valores]) => ({
-          label: CATEGORIA_NOMES[categoria],
-          data: labels.map((label) => valores.get(label) ?? 0),
-          tension: 0.4,
-        }),
-      );
+      const datasets = Array.from(agrupado.entries()).map(([categoria, valores]) => ({
+        label: CATEGORIA_NOMES[categoria],
+        data: labels.map((label) => valores.get(label) ?? 0),
+        tension: 0.4,
+      }));
 
       return {
         labels,
