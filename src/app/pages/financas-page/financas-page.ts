@@ -215,16 +215,27 @@ export class FinancasPage implements OnInit {
 
   // montagem do gráfico
   chartData = computed(() => {
-    const label = this.isDespesa ? 'Despesas' : 'Receitas';
     const items = this.items();
     const periodo = this.periodoSelecionado();
-    return agruparChartData(label, items, periodo);
+    const categoria = this.isDespesa ? this.categoriaSelecionada() : '';
+    return agruparChartData(this.isDespesa, items, periodo, categoria);
   });
 
   readonly chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-
+    plugins: this.isDespesa
+      ? {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Evolução das despesas',
+          },
+        }
+      : undefined,
     scales: {
       x: {
         title: {
@@ -243,8 +254,14 @@ export class FinancasPage implements OnInit {
   };
 }
 
-function agruparChartData(label: string, items: (Despesa | Receita)[], periodo: Periodo) {
-  const agrupado = new Map<string, number>();
+function agruparChartData(
+  isDespesa: boolean,
+  items: (Despesa | Receita)[],
+  periodo: Periodo,
+  categoria: CategoriaFiltro | '',
+) {
+  const labelsSet = new Set<string>();
+  const agrupado = new Map<Categoria | '', Map<string, number>>();
 
   for (const item of items) {
     const data = new Date(item.data);
@@ -275,18 +292,41 @@ function agruparChartData(label: string, items: (Despesa | Receita)[], periodo: 
       });
     }
 
-    agrupado.set(key, (agrupado.get(key) || 0) + Number(item.valor));
+    labelsSet.add(key);
+    const itemCat = 'categoria' in item ? item.categoria : '';
+
+    if (!agrupado.has(itemCat)) {
+      agrupado.set(itemCat, new Map());
+    }
+
+    const mapaCategoria = agrupado.get(itemCat)!;
+
+    mapaCategoria.set(key, (mapaCategoria.get(key) ?? 0) + Number(item.valor));
   }
 
-  const labels = Array.from(agrupado.keys());
-  const values = Array.from(agrupado.values());
+  const labels = Array.from(labelsSet);
+
+  if (categoria === 'TODAS') {
+    const datasets = Array.from(agrupado.entries()).map(([categoria, valores]) => ({
+      label: CATEGORIA_NOMES[categoria as Categoria],
+      data: labels.map((label) => valores.get(label) ?? 0),
+      tension: 0.4,
+    }));
+
+    return {
+      labels,
+      datasets,
+    };
+  }
+
+  const valores = agrupado.get(categoria);
 
   return {
     labels,
     datasets: [
       {
-        label: `${label} por período`,
-        data: values,
+        label: isDespesa ? CATEGORIA_NOMES[categoria as Categoria] : 'Receitas',
+        data: labels.map((label) => valores?.get(label) ?? 0),
         tension: 0.4,
       },
     ],
