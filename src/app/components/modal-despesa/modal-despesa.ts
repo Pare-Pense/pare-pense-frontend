@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, model, output, signal } from '@angular/core';
+import { Component, effect, inject, input, model, output, signal, viewChild } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -62,6 +62,8 @@ export class ModalDespesa {
   public dadosOriginais: any = null;
   public reset = output<void>();
 
+  protected transacaoForm = viewChild.required<NgForm>('transacaoForm');
+
   constructor() {
     effect(() => {
       if (this.isEditMode()) {
@@ -120,7 +122,11 @@ export class ModalDespesa {
     }
 
     this.loading.set(true);
-    this.valData?.setHours(this.valHora?.getHours()!, this.valHora?.getMinutes());
+    if (this.isDespesa()) {
+      this.valData?.setHours(this.valHora?.getHours()!, this.valHora?.getMinutes());
+    } else {
+      this.valData?.setHours(12, 0);
+    }
 
     if (this.isEditMode()) {
       const transacao = this.checarAlteracoes();
@@ -287,5 +293,9 @@ export class ModalDespesa {
     } else {
       this.queryClient.invalidateQueries({ queryKey: ['receitas'] });
     }
+  }
+
+  protected get horaRef() {
+    return this.transacaoForm()?.controls?.['hora'];
   }
 }
