@@ -100,35 +100,41 @@
             <label for="modal-despesa-data">Data</label>
           </p-floatlabel>
 
-          <p-floatlabel variant="on" class="flex-2">
-            <p-datepicker
-              [(ngModel)]="valHora"
-              inputId="modal-despesa-hora"
-              name="hora"
-              required
-              #horaRef="ngModel"
-              [invalid]="horaRef.invalid && (horaRef.touched || transacaoForm.submitted)"
-              iconDisplay="input"
-              [timeOnly]="true"
-              hourFormat="24"
-              class="w-full"
-              appendTo="body"
-              [readonlyInput]="true"
-            />
-            <label for="modal-despesa-data">Hora</label>
-          </p-floatlabel>
+          @if (isDespesa()) {
+            <p-floatlabel variant="on" class="flex-2">
+              <p-datepicker
+                [(ngModel)]="valHora"
+                inputId="modal-despesa-hora"
+                name="hora"
+                required
+                #horaRef="ngModel"
+                [invalid]="horaRef.invalid && (horaRef.touched || transacaoForm.submitted)"
+                iconDisplay="input"
+                [timeOnly]="true"
+                hourFormat="24"
+                class="w-full"
+                appendTo="body"
+                [readonlyInput]="true"
+              />
+              <label for="modal-despesa-data">Hora</label>
+            </p-floatlabel>
+          }
         </div>
 
         @if (
           (dataRef.invalid && (dataRef.touched || transacaoForm.submitted)) ||
-          (horaRef.invalid && (horaRef.touched || transacaoForm.submitted))
+          (horaRef && horaRef.invalid && (horaRef.touched || transacaoForm.submitted))
         ) {
           <p-message severity="error" size="small" variant="simple">
             @if (dataRef.errors?.['required'] || horaRef.errors?.['required']) {
-              Data e hora são obrigatórias
+              @if (isDespesa()) {
+                Data e hora são obrigatórias
+              } @else {
+                Data é obrigatória
+              }
             } @else if (dataRef.errors?.['custom']) {
               {{ dataRef.errors?.['custom'] }}
-            } @else if (horaRef.errors?.['custom']) {
+            } @else if (horaRef?.errors?.['custom']) {
               {{ horaRef.errors?.['custom'] }}
             }
           </p-message>
