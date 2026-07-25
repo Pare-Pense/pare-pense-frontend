@@ -1,18 +1,39 @@
 <div class="flex flex-col items-center">
   <!-- area do fundo azul -->
   <div class="fundo-primary flex w-full flex-col gap-4 p-4">
-    <app-top-bar title="Receitas" />
+    <!-- top bar -->
+    <app-top-bar [title]="isDespesa ? 'Despesas' : 'Receitas'" />
 
-    <div class="flex w-2/5 flex-col gap-2">
-      <p>Período</p>
-      <p-select
-        [options]="periodos"
-        optionLabel="label"
-        optionValue="value"
-        [ngModel]="periodoSelecionado()"
-        (ngModelChange)="periodoSelecionado.set($event)"
-      >
-      </p-select>
+    <div class="flex gap-4">
+      @if (isDespesa) {
+        <div class="flex flex-1 flex-col gap-1">
+          <p class="font-bold">Categoria</p>
+          <p-select
+            [options]="categorias"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="categoriaSelecionada()"
+            (ngModelChange)="categoriaSelecionada.set($event)"
+          >
+          </p-select>
+        </div>
+      }
+
+      <div class="flex flex-1 flex-col gap-1">
+        <p class="font-bold">Período</p>
+        <p-select
+          [options]="periodos"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="periodoSelecionado()"
+          (ngModelChange)="periodoSelecionado.set($event)"
+        >
+        </p-select>
+      </div>
+
+      @if (!isDespesa) {
+        <div class="flex-1"></div>
+      }
     </div>
 
     <div class="chart-card flex h-87.5 w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
@@ -27,39 +48,45 @@
 
   <div class="fundo-secao flex w-full flex-col items-stretch gap-4 px-4">
     <div class="flex flex-col gap-4">
-      @if (queryReceitas.isPending()) {
+      @if (isPending()) {
         <p-progressspinner class="h-6 w-6" strokeWidth="8" />
       } @else {
-        @if (receitas().length === 0) {
+        @if (items().length === 0) {
           <div class="mt-2 text-center text-lg font-medium">
-            <p>Nenhuma receita no periodo selecionado.</p>
+            <p>Nenhuma {{ isDespesa ? 'despesa' : 'receita' }} no periodo selecionado.</p>
           </div>
         }
 
-        @for (receita of receitas(); track receita.id) {
+        @for (item of items(); track item.id) {
           <div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow">
+            @if ('categoria' in item) {
+              <!-- ícone -->
+              <app-icon-categoria [categoria]="item.categoria" />
+            }
+
             <!-- infos -->
             <div class="flex-1">
               <p class="text-color-emphasis text-lg font-semibold">
-                {{ receita.nome }}
+                {{ item.nome }}
               </p>
               <p class="text-sm text-gray-500">
-                {{ formatarData(receita.data) }}
+                {{ formatarData(item.data) }}
               </p>
             </div>
 
             <!-- valor -->
             <div class="flex flex-col items-end gap-2">
               <h3 class="text-color-emphasis font-bold">
-                {{ receita.valor | fmtReal }}
+                {{ item.valor | fmtReal }}
               </h3>
+
               <div class="flex gap-2">
                 <button
                   pButton
                   class="flex items-center justify-center rounded-full p-2"
                   size="small"
                   severity="danger"
-                  (click)="excluirReceita(receita.id)"
+                  (click)="excluirItem(item.id)"
                 >
                   <svg lucideTrash2></svg>
                 </button>
@@ -68,7 +95,7 @@
                   class="flex items-center justify-center rounded-full p-2"
                   size="small"
                   severity="secondary"
-                  (click)="openModalReceita(receita)"
+                  (click)="openEditModal(item)"
                 >
                   <svg lucidePencil></svg>
                 </button>
@@ -83,14 +110,15 @@
   </div>
 </div>
 
-<app-nav-bottom active="receitas" />
+<app-nav-bottom [active]="isDespesa ? 'despesas' : 'receitas'" />
 
 <app-modal-despesa
-  [(visible)]="modalReceitaVisible"
-  [isEditMode]="isEditMode"
-  [(isDespesa)]="isDespesa"
+  [(visible)]="modalVisible"
+  [isEditMode]="true"
+  [despesaEdit]="despesaEdit"
   [receitaEdit]="receitaEdit"
-  (reset)="resetReceita()"
+  [isDespesa]="isDespesa"
+  (reset)="onModalReset()"
 />
 
 <p-confirmdialog />
