@@ -7,7 +7,7 @@
     <div class="flex gap-4">
       @if (isDespesa) {
         <div class="flex flex-1 flex-col gap-1">
-          <p class="font-bold">Categoria</p>
+          <p class="font-medium">Categoria</p>
           <p-select
             [options]="categorias"
             optionLabel="label"
@@ -20,7 +20,7 @@
       }
 
       <div class="flex flex-1 flex-col gap-1">
-        <p class="font-bold">Período</p>
+        <p class="font-medium">Período</p>
         <p-select
           [options]="periodos"
           optionLabel="label"
