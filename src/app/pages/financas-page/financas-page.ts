@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, Signal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { LucideDollarSign, LucidePencil, LucideTrash2 } from '@lucide/angular';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -49,6 +49,7 @@ type CategoriaFiltro = Categoria | 'TODAS';
     ConfirmDialogModule,
     TopBar,
     IconCategoria,
+    LucideDollarSign,
   ],
   templateUrl: './financas-page.html',
   styleUrl: './financas-page.css',
