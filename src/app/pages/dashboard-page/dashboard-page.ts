@@ -11,7 +11,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { Router } from '@angular/router';
-import { ModalDespesa } from './modal-despesa/modal-despesa';
+import { ModalDespesa } from '../../components/modal-despesa/modal-despesa';
 import { AuthService } from '../../auth/auth-service';
 import { UsuarioService } from '../../services/usuario-service';
 import { DecimalPipe } from '@angular/common';
