@@ -25,7 +25,7 @@ import {
 } from '../../services/despesa-service';
 import { Receita, ReceitaService } from '../../services/receita-service';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
-import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
+import { ModalDespesa } from '../../components/modal-despesa/modal-despesa';
 
 type Periodo = 'todos' | 'semanal' | 'mensal' | 'anual';
 type CategoriaFiltro = Categoria | 'TODAS';
