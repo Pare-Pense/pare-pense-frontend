@@ -217,7 +217,7 @@ export class FinancasPage implements OnInit {
   chartData = computed(() => {
     const items = this.items();
     const periodo = this.periodoSelecionado();
-    const categoria = this.isDespesa ? this.categoriaSelecionada() : '';
+    const categoria = this.isDespesa ? this.categoriaSelecionada() : 'OUTROS';
     return agruparChartData(this.isDespesa, items, periodo, categoria);
   });
 
@@ -258,10 +258,10 @@ function agruparChartData(
   isDespesa: boolean,
   items: (Despesa | Receita)[],
   periodo: Periodo,
-  categoria: CategoriaFiltro | '',
+  categoria: CategoriaFiltro,
 ) {
   const labelsSet = new Set<string>();
-  const agrupado = new Map<Categoria | '', Map<string, number>>();
+  const agrupado = new Map<Categoria, Map<string, number>>();
 
   for (const item of items) {
     const data = new Date(item.data);
@@ -293,7 +293,7 @@ function agruparChartData(
     }
 
     labelsSet.add(key);
-    const itemCat = 'categoria' in item ? item.categoria : '';
+    const itemCat = 'categoria' in item ? item.categoria : 'OUTROS';
 
     if (!agrupado.has(itemCat)) {
       agrupado.set(itemCat, new Map());
@@ -317,18 +317,18 @@ function agruparChartData(
       labels,
       datasets,
     };
+  } else {
+    const valores = agrupado.get(categoria);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: isDespesa ? CATEGORIA_NOMES[categoria as Categoria] : 'Receitas',
+          data: labels.map((label) => valores?.get(label) ?? 0),
+          tension: 0.4,
+        },
+      ],
+    };
   }
-
-  const valores = agrupado.get(categoria);
-
-  return {
-    labels,
-    datasets: [
-      {
-        label: isDespesa ? CATEGORIA_NOMES[categoria as Categoria] : 'Receitas',
-        data: labels.map((label) => valores?.get(label) ?? 0),
-        tension: 0.4,
-      },
-    ],
-  };
 }
