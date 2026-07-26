@@ -9,7 +9,7 @@ import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-import { ModalDespesa } from '../dashboard-page/modal-despesa/modal-despesa';
+import { ModalDespesa } from '../../components/modal-despesa/modal-despesa';
 import { Receita, ReceitaService } from '../../services/receita-service';
 import { AuthService } from '../../auth/auth-service';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';

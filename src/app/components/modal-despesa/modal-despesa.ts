@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, model, output, signal } from '@angular/core';
+import { Component, effect, inject, input, model, output, signal, viewChild } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -10,9 +10,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { LucideDollarSign } from '@lucide/angular';
-import { Categoria, Despesa, DespesaService } from '../../../services/despesa-service';
-import { AuthService } from '../../../auth/auth-service';
-import { Receita, ReceitaService } from '../../../services/receita-service';
+import { Categoria, Despesa, DespesaService } from '../../services/despesa-service';
+import { AuthService } from '../../auth/auth-service';
+import { Receita, ReceitaService } from '../../services/receita-service';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import { Message } from 'primeng/message';
@@ -61,6 +61,8 @@ export class ModalDespesa {
   public receitaEdit = input<Receita>();
   public dadosOriginais: any = null;
   public reset = output<void>();
+
+  protected transacaoForm = viewChild.required<NgForm>('transacaoForm');
 
   constructor() {
     effect(() => {
@@ -120,7 +122,11 @@ export class ModalDespesa {
     }
 
     this.loading.set(true);
-    this.valData?.setHours(this.valHora?.getHours()!, this.valHora?.getMinutes());
+    if (this.isDespesa()) {
+      this.valData?.setHours(this.valHora?.getHours()!, this.valHora?.getMinutes());
+    } else {
+      this.valData?.setHours(12, 0);
+    }
 
     if (this.isEditMode()) {
       const transacao = this.checarAlteracoes();
@@ -281,8 +287,15 @@ export class ModalDespesa {
     this.queryClient.invalidateQueries({ queryKey: ['usuario', 'sumario'] });
     if (this.isDespesa()) {
       this.queryClient.invalidateQueries({ queryKey: ['despesas'] });
+      setTimeout(() => {
+        this.queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
+      }, 1000);
     } else {
       this.queryClient.invalidateQueries({ queryKey: ['receitas'] });
     }
+  }
+
+  protected get horaRef() {
+    return this.transacaoForm()?.controls?.['hora'];
   }
 }
