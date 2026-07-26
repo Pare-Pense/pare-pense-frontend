@@ -224,18 +224,16 @@ export class FinancasPage implements OnInit {
   readonly chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: this.isDespesa
-      ? {
-          legend: {
-            display: true,
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Evolução das despesas',
-          },
-        }
-      : undefined,
+    plugins: {
+      legend: {
+        display: this.isDespesa,
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: this.isDespesa ? 'Evolução das despesas' : 'Evolução das receitas',
+      },
+    },
     scales: {
       x: {
         title: {
