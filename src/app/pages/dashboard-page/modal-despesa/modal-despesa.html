@@ -140,7 +140,7 @@
               }
             } @else if (dataRef.errors?.['custom']) {
               {{ dataRef.errors?.['custom'] }}
-            } @else if (horaRef.errors?.['custom']) {
+            } @else if (horaRef?.errors?.['custom']) {
               {{ horaRef.errors?.['custom'] }}
             }
           </p-message>
