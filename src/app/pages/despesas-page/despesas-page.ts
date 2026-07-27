@@ -75,7 +75,7 @@ export class ExpensesPage implements OnInit {
     if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
       this.categoriaSelecionada.set(paramCategoria);
     }
-    if (['todas','semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
+    if (['todas', 'semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
       this.periodoSelecionado.set(paramPeriodo);
     }
   }
@@ -130,12 +130,12 @@ export class ExpensesPage implements OnInit {
       queryFn: () =>
         lastValueFrom(
           this.despesaService.recuperarDespesasAll(
-          idUsuario!,
-          periodo === 'todos' ? undefined : periodo,
-          categoria === 'TODAS' ? undefined : categoria,
+            idUsuario!,
+            periodo === 'todos' ? undefined : periodo,
+            categoria === 'TODAS' ? undefined : categoria,
           ),
-      ),
-    enabled: !!idUsuario,
+        ),
+      enabled: !!idUsuario,
     };
   });
 
