@@ -105,7 +105,7 @@
             <label for="modal-despesa-data">Data</label>
           </p-floatlabel>
 
-          if (isDespesa()) {
+          @if (isDespesa()) {
             <p-floatlabel variant="on" class="flex-2">
               <p-datepicker
                 [(ngModel)]="valHora"
