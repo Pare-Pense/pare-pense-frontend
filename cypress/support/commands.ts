@@ -1,37 +1,28 @@
 /// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+const BASE_URL = 'localhost:4200';
+
+Cypress.Commands.add('goToUserRegistration', () => {
+    cy.visit(BASE_URL)
+    cy.get('[data-cy=btn-criar-conta').click();
+})
+
+Cypress.Commands.add('goToLoginUser', (email, password) => {
+  cy.intercept('POST', '**/login').as('login');
+
+  cy.visit(`${BASE_URL}/login`);
+
+  cy.get('[data-cy=input-email]')
+    .type(email);
+
+  cy.get('[data-cy=input-senha]')
+    .type(password);
+
+  cy.get('[data-cy=btn-login]')
+    .click();
+
+  cy.wait('@login')
+    .its('response.statusCode')
+    .should('eq', 200);
+});
+
