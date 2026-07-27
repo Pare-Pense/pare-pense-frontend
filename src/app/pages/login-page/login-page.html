@@ -34,6 +34,7 @@
               [(ngModel)]="email"
               #emailRef="ngModel"
               [invalid]="emailRef.invalid && (emailRef.touched || loginForm.submitted)"
+              data-cy="input-email"
               required
               autocomplete="off"
             />
@@ -70,6 +71,7 @@
                 unmaskIcon: { class: '!z-10' },
               }"
               #senhaRef="ngModel"
+              data-cy="input-senha"
               [invalid]="senhaRef.invalid && (senhaRef.touched || loginForm.submitted)"
               required
             />
@@ -98,6 +100,7 @@
         class="bg-primary w-full"
         type="submit"
         [disabled]="loginForm.invalid || loading()"
+        data-cy="btn-login"
       >
         @if (loading()) {
           <p-progressspinner class="h-6 w-6" strokeWidth="8" />
@@ -109,7 +112,7 @@
 
     <p class="text-center text-sm">
       Ainda não tem uma conta?
-      <a class="text-blue-600" routerLink="/register">Criar conta</a>
+      <a class="text-blue-600" routerLink="/register" data-cy="btn-criar-conta">Criar conta</a>
     </p>
   </div>
 </div>
