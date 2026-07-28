@@ -36,6 +36,9 @@ describe('CT-004 - Cadastro de receita', () => {
     cy.get('[data-cy=input-transacao-data]')
     .type(receitaData.data);
 
+    // fecha o modal do calendario
+    cy.get('.p-datepicker-input-icon-container').click();
+
     cy.get('[data-cy=input-transacao-valor]')
       .type(receitaData.valor);
 
