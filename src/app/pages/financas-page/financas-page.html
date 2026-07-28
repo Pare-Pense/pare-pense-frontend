@@ -91,6 +91,7 @@
                   size="small"
                   severity="danger"
                   (click)="excluirItem(item.id)"
+                  data-cy="btn-excluir-item"
                 >
                   <svg lucideTrash2></svg>
                 </button>
@@ -100,6 +101,7 @@
                   size="small"
                   severity="secondary"
                   (click)="openEditModal(item)"
+                  data-cy="btn-edit-item"
                 >
                   <svg lucidePencil></svg>
                 </button>
