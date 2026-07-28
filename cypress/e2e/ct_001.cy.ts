@@ -1,18 +1,17 @@
 /// <reference types="cypress" />
+/// <reference types="../support/index.d.ts" />
 
 describe('CT-001 - Cadastro de usuário', () => {
-
   const userData = {
     nome: 'Pedrinho Sousa',
     dataNascimento: '2000-05-10',
     email: `pedrinho@teste.com`,
     senha: 'Teste123!',
     rendaMensal: '5000',
-    limiteMensal: '2000'
+    limiteMensal: '2000',
   };
 
   it('deve cadastrar um usuário com sucesso', () => {
-
     cy.intercept('POST', '**/criarUsuario').as('criarUsuario');
 
     cy.goToUserRegistration();
@@ -27,11 +26,8 @@ describe('CT-001 - Cadastro de usuário', () => {
 
     cy.get('[data-cy=btn-cadastrar]').click();
 
-    cy.wait('@criarUsuario').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(201);
-    });
+    cy.wait('@criarUsuario').its('response.statusCode').should('eq', 201);
 
     cy.contains('Usuário cadastrado com sucesso');
   });
-
 });

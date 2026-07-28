@@ -2,7 +2,6 @@
 
 declare namespace Cypress {
   interface Chainable {
-
     /**
      * Navega para a tela de cadastro.
      */
@@ -13,6 +12,4 @@ declare namespace Cypress {
      */
     goToLoginUser(email: string, password: string): Chainable<void>;
   }
-
-
 }
