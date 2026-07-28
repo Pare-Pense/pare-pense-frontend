@@ -10,7 +10,6 @@ describe('CT-004 - Cadastro de receita', () => {
   const receitaData = {
     nome: 'Salário',
     data: '26/07/2026',
-    hora: '14:30',
     valor: '5000'
   };
 
@@ -36,9 +35,6 @@ describe('CT-004 - Cadastro de receita', () => {
 
     cy.get('[data-cy=input-transacao-data]')
     .type(receitaData.data);
-
-    cy.get('[data-cy=input-transacao-hora]')
-    .type(receitaData.hora);
 
     cy.get('[data-cy=input-transacao-valor]')
       .type(receitaData.valor);
