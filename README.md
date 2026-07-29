@@ -27,7 +27,7 @@ pnpm install
 
 ### 2. Configuração do environment
 
-Siga o exemplo do [environment](src/environments/environment.example.ts] e crie o environment.development.ts (ver se precisa adicionar o de prod)
+Siga o exemplo do [`environment.example.ts`](src/environments/environment.example.ts) e crie o `environment.development.ts` (ver se precisa adicionar o de prod)
 
 ### 3. Execução
 
