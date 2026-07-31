@@ -24,9 +24,9 @@ describe('CT-003 - Cadastro de despesa', () => {
 
     cy.get('[data-cy=btn-despesa]').click();
 
-    cy.wait(300);
+    cy.wait(500);
 
-    cy.get('[data-cy=input-transacao-nome]').type(despesaData.nome);
+    cy.get('[data-cy=input-transacao-nome]').click().type(despesaData.nome);
 
     cy.get('[data-cy=input-transacao-categoria]').click();
     cy.get('.p-select-option').contains(despesaData.categoria).click();

@@ -20,3 +20,7 @@ Cypress.Commands.add('goToLoginUser', (email, password) => {
 
   cy.wait('@login').its('response.statusCode').should('eq', 200);
 });
+
+Cypress.Commands.add('goToUrl', (url) => {
+  cy.visit(`${BASE_URL}/${url}`);
+});

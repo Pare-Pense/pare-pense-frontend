@@ -199,8 +199,12 @@
       </button>
     }
 
-    <button pButton severity="danger" (click)="this.logout()">Sair da Conta</button>
-    <button pButton severity="danger" (click)="this.excluirConta()">Excluir Conta</button>
+    <button pButton severity="danger" (click)="this.logout()" data-cy="btn-logoff">
+      Sair da Conta
+    </button>
+    <button pButton severity="danger" (click)="this.excluirConta()" data-cy="btn-excluir-conta">
+      Excluir Conta
+    </button>
   </div>
 </div>
 

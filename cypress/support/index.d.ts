@@ -11,5 +11,10 @@ declare namespace Cypress {
      * Realiza o login de um usuário
      */
     goToLoginUser(email: string, password: string): Chainable<void>;
+
+    /**
+     * Navega para uma rota especifica.
+     */
+    goToUrl(url: string): Chainable<void>;
   }
 }
