@@ -15,12 +15,14 @@
             label="Despesa"
             [text]="!isDespesa()"
             (onClick)="isDespesa.set(true)"
+            data-cy="btn-despesa"
           />
           <p-button
             severity="contrast"
             label="Receita"
             [text]="isDespesa()"
             (onClick)="isDespesa.set(false)"
+            data-cy="btn-receita"
           />
         </div>
       }
@@ -37,6 +39,7 @@
             [invalid]="nomeRef.invalid && (nomeRef.touched || transacaoForm.submitted)"
             class="w-full"
             autocomplete="off"
+            data-cy="input-transacao-nome"
           />
           <label for="modal-despesa-nome">Nome</label>
         </p-float-label>
@@ -64,6 +67,7 @@
               #categoriaRef="ngModel"
               [invalid]="categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)"
               class="w-full"
+              data-cy="input-transacao-categoria"
               appendTo="body"
             />
             <label for="modal-despesa-categoria">Categoria</label>
@@ -96,6 +100,7 @@
               class="w-full"
               appendTo="body"
               [readonlyInput]="true"
+              data-cy="input-transacao-data"
             />
             <label for="modal-despesa-data">Data</label>
           </p-floatlabel>
@@ -115,6 +120,7 @@
                 class="w-full"
                 appendTo="body"
                 [readonlyInput]="true"
+                data-cy="input-transacao-hora"
               />
               <label for="modal-despesa-data">Hora</label>
             </p-floatlabel>
@@ -155,6 +161,7 @@
               currency="BRL"
               locale="pt-BR"
               class="w-full"
+              data-cy="input-transacao-valor"
             />
             <p-inputicon>
               <svg lucideDollarSign class="h-4"></svg>
@@ -176,7 +183,7 @@
     </div>
 
     <div class="flex justify-end gap-4">
-      <p-button [disabled]="loading()" type="submit">
+      <p-button [disabled]="loading()" type="submit" data-cy="btn-transacao-cadastrar">
         @if (loading()) {
           <p-progressspinner class="h-6 w-6" strokeWidth="8" />
         } @else {

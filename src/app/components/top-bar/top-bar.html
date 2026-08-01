@@ -12,7 +12,13 @@
 
   <div class="flex-1"></div>
   <div class="relative flex">
-    <button pButton rounded="true" severity="primary" (click)="this.modalNotifs.set(true)">
+    <button
+      pButton
+      rounded="true"
+      severity="primary"
+      (click)="this.modalNotifs.set(true)"
+      data-cy="btn-header-notification"
+    >
       <svg pButtonIcon lucideBell></svg>
     </button>
     @if (queryNotif.data()?.naoLidas; as data) {
@@ -25,7 +31,7 @@
       }
     }
   </div>
-  <a pButton rounded="true" severity="secondary" routerLink="/perfil">
+  <a pButton rounded="true" severity="secondary" routerLink="/perfil" data-cy="btn-header-perfil">
     <svg pButtonIcon lucideUser></svg>
   </a>
 </div>
