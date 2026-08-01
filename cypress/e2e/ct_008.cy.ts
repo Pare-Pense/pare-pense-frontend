@@ -12,7 +12,7 @@ describe('CT-008 - Cadastro de receita inválida', () => {
     data: '26/07/2026',
   };
 
-  it('deve cadastrar uma receita com sucesso', () => {
+  it('deve falhar o cadastro de uma receita', () => {
     cy.intercept('POST', '**/cadastrarReceita').as('cadastrarReceita');
 
     cy.goToLoginUser(userData.email, userData.senha);

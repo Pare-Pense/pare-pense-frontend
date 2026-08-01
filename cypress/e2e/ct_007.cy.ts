@@ -14,7 +14,7 @@ describe('CT-007 - Cadastro de despesa inválida', () => {
     hora: '14:30',
   };
 
-  it('deve cadastrar uma despesa com sucesso', () => {
+  it('deve falhar o cadastro de uma despesa', () => {
     cy.intercept('POST', '**/cadastrarDespesa').as('cadastrarDespesa');
 
     cy.goToLoginUser(userData.email, userData.senha);
