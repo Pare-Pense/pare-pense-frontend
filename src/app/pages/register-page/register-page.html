@@ -35,6 +35,7 @@
               name="user-name"
               #userRef="ngModel"
               [invalid]="userRef.invalid && (userRef.touched || registerForm.submitted)"
+              data-cy="input-nome"
               required
             />
             <label for="username">Nome</label>
@@ -63,6 +64,7 @@
               pInputText
               [(ngModel)]="birthDate"
               name="birth-date"
+              data-cy="input-data-nascimento"
             />
             <label for="birthDate">Data de Nascimento</label>
           </p-floatlabel>
@@ -82,6 +84,7 @@
               currency="BRL"
               [(ngModel)]="saldoMensal"
               name="saldo-mensal"
+              data-cy="input-renda-mensal"
             >
             </p-inputNumber>
             <label for="saldo-mensal">Renda Mensal</label>
@@ -102,6 +105,7 @@
               currency="BRL"
               [(ngModel)]="limiteGastos"
               name="limite-gastos"
+              data-cy="input-limite-mensal"
             >
             </p-inputNumber>
             <label for="limite-gastos">Limite de Gastos Mensais</label>
@@ -122,6 +126,7 @@
               [(ngModel)]="email"
               #emailRef="ngModel"
               [invalid]="emailRef.invalid && (emailRef.touched || registerForm.submitted)"
+              data-cy="input-email"
               required
               autocomplete="off"
             />
@@ -158,6 +163,7 @@
               }"
               #senhaRef="ngModel"
               [invalid]="senhaRef.invalid && (senhaRef.touched || registerForm.submitted)"
+              data-cy="input-senha"
               required
             />
             <label for="senha">Senha</label>
@@ -196,6 +202,7 @@
                 (senhaConfRef.invalid || (senhaConf && senha !== senhaConf)) &&
                 (senhaConfRef.touched || senhaConfRef.dirty || registerForm.submitted)
               "
+              data-cy="input-confirmar-senha"
               required
             />
             <label for="senhaConf">Confirmar Senha</label>
@@ -226,6 +233,7 @@
         class="bg-primary w-full"
         type="submit"
         [disabled]="registerForm.invalid || senha !== senhaConf || loading()"
+        data-cy="btn-cadastrar"
       >
         @if (loading()) {
           <p-progressspinner class="h-6 w-6" strokeWidth="8" />
