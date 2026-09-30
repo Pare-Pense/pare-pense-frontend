@@ -4,7 +4,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { LucidePlus } from '@lucide/angular';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { DespesaService } from '../../services/despesa-service';
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -17,13 +16,13 @@ import { UsuarioService } from '../../services/usuario-service';
 import { DecimalPipe } from '@angular/common';
 import { TopBar } from '../../components/top-bar/top-bar';
 import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
+import { DashboardAcaoBtn } from '../../components/dashboard-acao-btn/dashboard-acao-btn';
 
 @Component({
   selector: 'app-dashboard-page',
   imports: [
     TabsModule,
     AvatarModule,
-    LucidePlus,
     ButtonModule,
     ProgressBarModule,
     FmtRealPipe,
@@ -33,6 +32,7 @@ import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
     DecimalPipe,
     TopBar,
     IconCategoria,
+    DashboardAcaoBtn,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
@@ -67,13 +67,20 @@ export class DashboardPage {
   }));
 
   protected modalDespesaVisible = signal(false);
+  protected modalIsDespesa = signal(true);
+
+  clickAcao(acao: string) {
+    if (acao === 'despesa') {
+      this.modalIsDespesa.set(true);
+      this.modalDespesaVisible.set(true);
+    } else if (acao === 'receita') {
+      this.modalIsDespesa.set(false);
+      this.modalDespesaVisible.set(true);
+    }
+  }
 
   setPeriodoIdx(idx: number) {
     this.periodoIdx.set(idx);
-  }
-
-  openModalAddDespesa() {
-    this.modalDespesaVisible.set(true);
   }
 
   clickCategoria(id: string) {
