@@ -17,6 +17,7 @@ import { DecimalPipe } from '@angular/common';
 import { TopBar } from '../../components/top-bar/top-bar';
 import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 import { DashboardAcaoBtn } from '../../components/dashboard-acao-btn/dashboard-acao-btn';
+import { ModalExtrato } from '../../components/modal-extrato/modal-extrato';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -33,6 +34,7 @@ import { DashboardAcaoBtn } from '../../components/dashboard-acao-btn/dashboard-
     TopBar,
     IconCategoria,
     DashboardAcaoBtn,
+    ModalExtrato,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
@@ -68,6 +70,7 @@ export class DashboardPage {
 
   protected modalDespesaVisible = signal(false);
   protected modalIsDespesa = signal(true);
+  protected modalExtratoVisible = signal(false);
 
   clickAcao(acao: string) {
     if (acao === 'despesa') {
@@ -76,6 +79,8 @@ export class DashboardPage {
     } else if (acao === 'receita') {
       this.modalIsDespesa.set(false);
       this.modalDespesaVisible.set(true);
+    } else if (acao === 'extrato') {
+      this.modalExtratoVisible.set(true);
     }
   }
 

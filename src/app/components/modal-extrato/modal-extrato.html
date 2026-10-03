@@ -1,0 +1,188 @@
+@let despesas = this.despesas();
+<p-dialog
+  [modal]="true"
+  [(visible)]="visible"
+  [header]="
+    (despesas?.length ?? 0 > 0)
+      ? `Importar Despesa (${despesaIndex() + 1}/${despesas?.length!})`
+      : 'Importar Extrato'
+  "
+  styleClass="w-full mx-4"
+  [draggable]="false"
+  (onHide)="this.onDialogHide()"
+>
+  @if (despesas === null) {
+    <div class="flex flex-col items-center gap-4">
+      <svg lucideScrollText [size]="64"></svg>
+      <p class="text-center font-medium">
+        Importe suas despesas diretamente de um arquivo
+        <span class="rounded bg-black/5 font-mono">.ofx</span>
+      </p>
+      <label
+        for="upload-extrato"
+        class="text-primary-contrast active:bg-primary-600 flex cursor-pointer items-center gap-2 rounded px-3 py-2 transition-colors"
+        [class]="loading() ? 'bg-primary-400' : 'bg-primary'"
+      >
+        @if (loading()) {
+          <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+        } @else {
+          <svg lucideUpload></svg>
+        }
+        Escolher Arquivo
+        <input
+          type="file"
+          class="hidden"
+          id="upload-extrato"
+          accept=".ofx"
+          (change)="onFileSelected($event)"
+          [disabled]="loading()"
+        />
+      </label>
+    </div>
+  } @else if (despesas.length === 0) {
+    <p class="my-8 text-center font-medium">Não foi possível extrair nenhuma despesa do arquivo</p>
+  } @else {
+    <form #transacaoForm="ngForm" (ngSubmit)="onSubmit(transacaoForm)" novalidate>
+      <div class="flex flex-col gap-4 pt-2 pb-4">
+        <p-float-label variant="on">
+          <input
+            pInputText
+            id="modal-extrato-extra"
+            name="extra"
+            [(ngModel)]="valExtra"
+            class="w-full"
+            autocomplete="off"
+            disabled
+          />
+          <label for="modal-extrato-extra">Origem</label>
+        </p-float-label>
+
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <input
+              pInputText
+              id="modal-extrato-nome"
+              name="nome"
+              [(ngModel)]="valNome"
+              required
+              #nomeRef="ngModel"
+              [invalid]="nomeRef.invalid && (nomeRef.touched || transacaoForm.submitted)"
+              class="w-full"
+              autocomplete="off"
+            />
+            <label for="modal-extrato-nome">Nome</label>
+          </p-float-label>
+
+          @if (nomeRef.invalid && (nomeRef.touched || transacaoForm.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (nomeRef.errors?.['required']) {
+                Nome é obrigatório
+              } @else if (nomeRef.errors?.['custom']) {
+                {{ nomeRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <p-select
+              inputId="modal-extrato-categoria"
+              name="categoria"
+              [(ngModel)]="valCategoria"
+              [options]="categorias"
+              required
+              #categoriaRef="ngModel"
+              [invalid]="categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)"
+              class="w-full"
+              data-cy="input-transacao-categoria"
+              appendTo="body"
+            />
+            <label for="modal-extrato-categoria">Categoria</label>
+          </p-float-label>
+
+          @if (categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)) {
+            <p-message severity="error" size="small" variant="simple">
+              @if (categoriaRef.errors?.['required']) {
+                Categoria é obrigatória
+              } @else if (categoriaRef.errors?.['custom']) {
+                {{ categoriaRef.errors?.['custom'] }}
+              }
+            </p-message>
+          }
+        </div>
+
+        <div class="flex flex-col">
+          <div class="flex gap-4">
+            <p-floatlabel variant="on" class="flex-3">
+              <p-datepicker
+                [(ngModel)]="valData"
+                inputId="modal-extrato-data"
+                name="data"
+                disabled
+                showIcon
+                iconDisplay="input"
+                class="w-full"
+                appendTo="body"
+                [readonlyInput]="true"
+                data-cy="input-transacao-data"
+              />
+              <label for="modal-extrato-data">Data</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on" class="flex-2">
+              <p-datepicker
+                [(ngModel)]="valHora"
+                inputId="modal-extrato-hora"
+                name="hora"
+                required
+                #horaRef="ngModel"
+                [invalid]="horaRef.invalid && (horaRef.touched || transacaoForm.submitted)"
+                iconDisplay="input"
+                [timeOnly]="true"
+                hourFormat="24"
+                class="w-full"
+                appendTo="body"
+                [readonlyInput]="true"
+                data-cy="input-transacao-hora"
+              />
+              <label for="modal-extrato-data">Hora</label>
+            </p-floatlabel>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <p-float-label variant="on">
+            <p-iconfield>
+              <p-inputnumber
+                [(ngModel)]="valValor"
+                inputId="modal-extrato-valor"
+                name="valor"
+                mode="currency"
+                currency="BRL"
+                locale="pt-BR"
+                class="w-full"
+                disabled
+              />
+              <p-inputicon>
+                <svg lucideDollarSign class="h-4"></svg>
+              </p-inputicon>
+            </p-iconfield>
+            <label for="modal-extrato-valor">Valor</label>
+          </p-float-label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-4">
+        <p-button severity="warn" (click)="onPular()">Pular</p-button>
+        <p-button type="submit" [disabled]="loading()">
+          @if (loading()) {
+            <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+          } @else {
+            Adicionar
+          }
+        </p-button>
+      </div>
+    </form>
+  }
+</p-dialog>
