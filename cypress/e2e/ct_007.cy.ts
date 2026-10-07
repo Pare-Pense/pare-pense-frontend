@@ -19,9 +19,9 @@ describe('CT-007 - Cadastro de despesa inválida', () => {
 
     cy.goToLoginUser(userData.email, userData.senha);
 
-    cy.get('[data-cy=btn-modal-transacao]').click();
+    cy.get('[data-cy=btn-dashboard-acoes]').click();
 
-    cy.get('[data-cy=btn-despesa]').click();
+    cy.get('[data-cy=btn-acao-despesa]').click();
 
     cy.wait(500);
 
