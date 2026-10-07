@@ -59,12 +59,12 @@ export class ModalExtrato {
   despesaIndex = signal(0);
 
   loading = signal(false);
+
   onFileSelected(event: Event) {
     let input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
-    console.log(file);
     this.loading.set(true);
 
     this.despesaService.importarExtrato(file).subscribe({
