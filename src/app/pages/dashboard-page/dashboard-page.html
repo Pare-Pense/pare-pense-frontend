@@ -99,7 +99,7 @@
             class="flex items-center gap-2 rounded-xl bg-white p-4 shadow active:bg-gray-100"
             (click)="this.clickCategoria(gasto.id)"
           >
-            <app-icon-categoria [categoria]="gasto.id" />
+            <app-icon-categoria [categoria]="gasto.nomeOriginal" />
             <div class="flex-1">
               <p class="text-color-emphasis text-lg">{{ gasto.nome }}</p>
             </div>
