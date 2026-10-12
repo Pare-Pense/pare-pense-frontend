@@ -1,14 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  model,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, computed, inject, model, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LucideDollarSign, LucideScrollText, LucideUpload } from '@lucide/angular';
 import { QueryClient } from '@tanstack/angular-query-experimental';
@@ -26,8 +16,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AuthService } from '../../auth/auth-service';
-import { Despesa, DespesaExtraida, DespesaService } from '../../services/despesa-service';
 import { injectQueryCategorias, nomeExibicaoCategoria } from '../../services/categoria-service';
 import {
   dataParaISODate,
@@ -36,7 +26,7 @@ import {
   FREQUENCIAS,
   regraAPartirDaData,
 } from '../../services/despesa-recorrente-service';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { DespesaExtraida, DespesaService } from '../../services/despesa-service';
 
 @Component({
   selector: 'app-modal-extrato',
