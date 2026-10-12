@@ -1,0 +1,157 @@
+<div class="fundo-secondary flex min-h-screen w-screen flex-col items-center gap-4 px-4 pt-12 pb-4">
+  <a routerLink="/perfil" class="absolute top-0 left-0 p-2">
+    <svg lucideChevronLeft></svg>
+  </a>
+
+  <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow">
+    <h2 class="text-2xl font-bold">Minhas categorias</h2>
+
+    <!-- nova categoria -->
+    <form #formNova="ngForm" (ngSubmit)="onSubmitNova(formNova)" class="flex flex-col" novalidate>
+      <div class="flex gap-2">
+        <p-float-label variant="on" class="flex-1">
+          <input
+            pInputText
+            id="ipt-nova-categoria"
+            name="nome"
+            [(ngModel)]="valNovaCategoria"
+            required
+            minlength="2"
+            maxlength="30"
+            #novaRef="ngModel"
+            [invalid]="novaRef.invalid && (novaRef.touched || formNova.submitted)"
+            fluid
+            autocomplete="off"
+            data-cy="input-nova-categoria"
+          />
+          <label for="ipt-nova-categoria">Nova categoria</label>
+        </p-float-label>
+        <p-button
+          type="submit"
+          label="Criar"
+          [disabled]="mutationCadastrar.isPending()"
+          data-cy="btn-criar-categoria"
+        />
+      </div>
+
+      @if (novaRef.invalid && (novaRef.touched || formNova.submitted)) {
+        <p-message severity="error" size="small" variant="simple">
+          @if (novaRef.errors?.['required']) {
+            Nome é obrigatório
+          } @else if (novaRef.errors?.['minlength']) {
+            O nome precisa ter no mínimo 2 letras
+          } @else if (novaRef.errors?.['custom']) {
+            {{ novaRef.errors?.['custom'] }}
+          }
+        </p-message>
+      }
+    </form>
+
+    @if (queryCategorias.isPending()) {
+      <p-progressspinner class="my-4 h-12 w-12 text-black opacity-10" strokeWidth="8" />
+    } @else {
+      <!-- personalizadas -->
+      <div class="flex flex-col gap-2">
+        <h3 class="font-semibold text-gray-600">Personalizadas</h3>
+        @for (categoria of categoriasPersonalizadas(); track categoria.id) {
+          <div class="flex items-center gap-3 rounded-xl border border-black/10 p-3">
+            <app-icon-categoria [categoria]="categoria.nome" />
+            <p class="text-color-emphasis flex-1 font-medium break-all">{{ categoria.nome }}</p>
+            <button
+              pButton
+              class="flex items-center justify-center rounded-full p-2"
+              size="small"
+              severity="danger"
+              (click)="excluir(categoria)"
+              data-cy="btn-excluir-categoria"
+            >
+              <svg lucideTrash2></svg>
+            </button>
+            <button
+              pButton
+              class="flex items-center justify-center rounded-full p-2"
+              size="small"
+              severity="secondary"
+              (click)="abrirEditar(categoria)"
+              data-cy="btn-editar-categoria"
+            >
+              <svg lucidePencil></svg>
+            </button>
+          </div>
+        } @empty {
+          <p class="text-sm text-gray-500">Você ainda não criou nenhuma categoria.</p>
+        }
+      </div>
+
+      <!-- padrão -->
+      <div class="flex flex-col gap-2">
+        <h3 class="font-semibold text-gray-600">Padrão</h3>
+        @for (categoria of categoriasPadrao(); track categoria.id) {
+          <div class="flex items-center gap-3 rounded-xl border border-black/10 p-3">
+            <app-icon-categoria [categoria]="categoria.nome" />
+            <p class="text-color-emphasis flex-1 font-medium">{{ nomeExibicao(categoria.nome) }}</p>
+            <p-tag value="Padrão" severity="secondary" />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- popup de editar categoria -->
+<p-dialog
+  [modal]="true"
+  [(visible)]="popupEditar"
+  [draggable]="false"
+  styleClass="w-full mx-4"
+  header="Editar categoria"
+  (onHide)="formEditar.resetForm()"
+>
+  <form
+    #formEditar="ngForm"
+    (ngSubmit)="onSubmitEditar(formEditar)"
+    class="mt-2 flex flex-col gap-4"
+    novalidate
+  >
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <input
+          pInputText
+          id="ipt-editar-categoria"
+          name="nome"
+          [(ngModel)]="valNomeEdit"
+          required
+          minlength="2"
+          maxlength="30"
+          #editRef="ngModel"
+          [invalid]="editRef.invalid && (editRef.touched || formEditar.submitted)"
+          fluid
+          autocomplete="off"
+        />
+        <label for="ipt-editar-categoria">Nome</label>
+      </p-float-label>
+
+      @if (editRef.invalid && (editRef.touched || formEditar.submitted)) {
+        <p-message severity="error" size="small" variant="simple">
+          @if (editRef.errors?.['required']) {
+            Nome é obrigatório
+          } @else if (editRef.errors?.['minlength']) {
+            O nome precisa ter no mínimo 2 letras
+          } @else if (editRef.errors?.['custom']) {
+            {{ editRef.errors?.['custom'] }}
+          }
+        </p-message>
+      }
+    </div>
+
+    <button pButton type="submit" severity="primary" [disabled]="mutationAtualizar.isPending()">
+      @if (mutationAtualizar.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else {
+        Salvar
+      }
+    </button>
+  </form>
+</p-dialog>
+
+<p-confirmdialog [draggable]="false" styleClass="mx-4" />

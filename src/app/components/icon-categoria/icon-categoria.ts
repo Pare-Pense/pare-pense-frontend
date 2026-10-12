@@ -7,6 +7,7 @@ import {
   LucidePizza,
   LucideReceipt,
   LucideShoppingCart,
+  LucideTag,
 } from '@lucide/angular';
 
 @Component({
@@ -30,8 +31,9 @@ export class IconCategoria {
       case 'CONTAS':
         return LucideReceipt;
       case 'OUTROS':
-      default:
         return LucideLayers;
+      default:
+        return LucideTag;
     }
   });
 }

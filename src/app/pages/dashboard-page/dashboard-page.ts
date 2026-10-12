@@ -17,6 +17,7 @@ import { UsuarioService } from '../../services/usuario-service';
 import { DecimalPipe } from '@angular/common';
 import { TopBar } from '../../components/top-bar/top-bar';
 import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
+import { injectQueryCategorias } from '../../services/categoria-service';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -54,17 +55,30 @@ export class DashboardPage {
     () => (['semanal', 'mensal', 'anual'] as const)[this.periodoIdx()],
   );
 
-  queryGastos = injectQuery(() => ({
-    queryKey: ['despesas', 'gastos', this.authService.getUsuarioId(), this.periodoStr()],
-    queryFn: () =>
-      lastValueFrom(
-        this.despesaService.recuperarGastosCategoria(
-          this.authService.getUsuarioId()!,
-          this.periodoStr(),
+  queryCategorias = injectQueryCategorias();
+
+  queryGastos = injectQuery(() => {
+    const categorias = this.queryCategorias.data();
+    return {
+      queryKey: [
+        'despesas',
+        'gastos',
+        this.authService.getUsuarioId(),
+        this.periodoStr(),
+        categorias,
+      ],
+      queryFn: () =>
+        lastValueFrom(
+          this.despesaService.recuperarGastosCategoria(
+            this.authService.getUsuarioId()!,
+            this.periodoStr(),
+            categorias!,
+          ),
         ),
-      ),
-    staleTime: 10000,
-  }));
+      enabled: !!categorias,
+      staleTime: 10000,
+    };
+  });
 
   protected modalDespesaVisible = signal(false);
 
@@ -79,7 +93,7 @@ export class DashboardPage {
   clickCategoria(id: string) {
     this.router.navigate(['despesas'], {
       queryParams: {
-        categoria: id,
+        idCategoria: id,
         periodo: this.periodoStr(),
       },
     });
