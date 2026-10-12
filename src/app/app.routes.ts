@@ -5,6 +5,8 @@ import { authGuard } from './auth/auth-guard';
 import { PerfilPage } from './pages/perfil-page/perfil-page';
 import { FinancasPage } from './pages/financas-page/financas-page';
 import { RegisterPage } from './pages/register-page/register-page';
+import { CategoriasPage } from './pages/categorias-page/categorias-page';
+import { RecorrentesPage } from './pages/recorrentes-page/recorrentes-page';
 
 export const routes: Routes = [
   {
@@ -42,6 +44,18 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Receitas - Pare & Pense',
     data: { isDespesa: false },
+  },
+  {
+    path: 'categorias',
+    component: CategoriasPage,
+    canActivate: [authGuard],
+    title: 'Categorias - Pare & Pense',
+  },
+  {
+    path: 'recorrentes',
+    component: RecorrentesPage,
+    canActivate: [authGuard],
+    title: 'Despesas recorrentes - Pare & Pense',
   },
   {
     path: 'register',

@@ -9,7 +9,7 @@
         <div class="flex flex-1 flex-col gap-1">
           <p class="font-medium">Categoria</p>
           <p-select
-            [options]="categorias"
+            [options]="categorias()"
             optionLabel="label"
             optionValue="value"
             [ngModel]="categoriaSelecionada()"
@@ -35,6 +35,19 @@
         <div class="flex-1"></div>
       }
     </div>
+
+    @if (isDespesa) {
+      <a
+        pButton
+        routerLink="/recorrentes"
+        severity="secondary"
+        class="flex items-center justify-center gap-2"
+        data-cy="btn-recorrentes"
+      >
+        <svg lucideRepeat class="h-4"></svg>
+        Despesas recorrentes
+      </a>
+    }
 
     <div class="chart-card flex h-87.5 w-full flex-col gap-2 rounded-xl bg-white p-3 shadow-md">
       <p-chart type="line" [data]="chartData()" [options]="chartOptions" class="h-full w-full" />
@@ -73,8 +86,11 @@
               <p class="text-color-emphasis text-lg font-semibold">
                 {{ item.nome }}
               </p>
-              <p class="text-sm text-gray-500">
+              <p class="flex items-center gap-1 text-sm text-gray-500">
                 {{ formatarData(item.data) }}
+                @if ('idDespesaRecorrente' in item && item.idDespesaRecorrente) {
+                  <svg lucideRepeat class="h-3.5" aria-label="Despesa recorrente"></svg>
+                }
               </p>
             </div>
 

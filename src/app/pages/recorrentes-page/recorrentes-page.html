@@ -1,0 +1,269 @@
+<div
+  class="fundo-secondary flex min-h-screen w-screen flex-col items-center gap-4 px-4 pt-12 pb-24"
+>
+  <a routerLink="/despesas" class="absolute top-0 left-0 p-2">
+    <svg lucideChevronLeft></svg>
+  </a>
+
+  <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow">
+    <div>
+      <h2 class="text-2xl font-bold">Despesas recorrentes</h2>
+      <p class="text-sm text-gray-500">
+        Despesas que são lançadas automaticamente na data de cada cobrança.
+      </p>
+    </div>
+
+    @if (queryRecorrentes.isPending()) {
+      <p-progressspinner class="my-4 h-12 w-12 text-black opacity-10" strokeWidth="8" />
+    } @else {
+      @for (recorrente of queryRecorrentes.data(); track recorrente.id) {
+        <div
+          class="flex flex-col gap-3 rounded-xl border border-black/10 p-3"
+          [class.opacity-60]="!recorrente.ativa"
+        >
+          <div class="flex items-center gap-3">
+            <app-icon-categoria [categoria]="nomeCategoria(recorrente.idCategoria)" />
+            <div class="min-w-0 flex-1">
+              <p class="text-color-emphasis truncate text-lg font-semibold">
+                {{ recorrente.nome }}
+              </p>
+              <p class="text-sm text-gray-500">{{ descreverRegra(recorrente) }}</p>
+            </div>
+            <h3 class="text-color-emphasis font-bold">{{ recorrente.valor | fmtReal }}</h3>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="flex flex-1 flex-col text-xs text-gray-500">
+              <span>Desde {{ formatarData(recorrente.dataInicio) }}</span>
+              @if (recorrente.dataFim) {
+                <span>Até {{ formatarData(recorrente.dataFim) }}</span>
+              }
+            </div>
+            @if (!recorrente.ativa) {
+              <p-tag value="Pausada" severity="warn" />
+            }
+            <button
+              pButton
+              class="flex items-center justify-center rounded-full p-2"
+              size="small"
+              severity="secondary"
+              [attr.aria-label]="recorrente.ativa ? 'Pausar' : 'Reativar'"
+              [disabled]="mutationAtivacao.isPending()"
+              (click)="alternarAtivacao(recorrente)"
+              data-cy="btn-ativacao-recorrente"
+            >
+              @if (recorrente.ativa) {
+                <svg lucidePause></svg>
+              } @else {
+                <svg lucidePlay></svg>
+              }
+            </button>
+            <button
+              pButton
+              class="flex items-center justify-center rounded-full p-2"
+              size="small"
+              severity="secondary"
+              aria-label="Editar"
+              (click)="abrirEditar(recorrente)"
+              data-cy="btn-editar-recorrente"
+            >
+              <svg lucidePencil></svg>
+            </button>
+            <button
+              pButton
+              class="flex items-center justify-center rounded-full p-2"
+              size="small"
+              severity="danger"
+              aria-label="Excluir"
+              (click)="excluir(recorrente)"
+              data-cy="btn-excluir-recorrente"
+            >
+              <svg lucideTrash2></svg>
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <p class="text-center text-gray-500">
+          Nenhuma despesa recorrente cadastrada.<br />
+          Use o botão <b>+</b> para criar uma.
+        </p>
+      }
+    }
+  </div>
+</div>
+
+<!-- botão de + -->
+<div class="pointer-events-none fixed bottom-0 z-10 flex w-screen flex-col">
+  <div class="flex justify-end p-4">
+    <button
+      pButton
+      rounded="true"
+      severity="primary"
+      class="pointer-events-auto"
+      aria-label="Nova despesa recorrente"
+      data-cy="btn-nova-recorrente"
+      (click)="modalNovaVisible.set(true)"
+    >
+      <svg pButtonIcon lucidePlus></svg>
+    </button>
+  </div>
+</div>
+
+<app-modal-despesa [(visible)]="modalNovaVisible" [repetirInicial]="true" />
+
+<!-- popup de editar recorrência -->
+<p-dialog
+  [modal]="true"
+  [(visible)]="popupEditar"
+  [draggable]="false"
+  styleClass="w-full mx-4"
+  header="Editar recorrência"
+>
+  <form
+    #formEditar="ngForm"
+    (ngSubmit)="onSubmitEditar(formEditar)"
+    class="mt-2 flex flex-col gap-4"
+    novalidate
+  >
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <input
+          pInputText
+          id="ipt-rec-nome"
+          name="nome"
+          [(ngModel)]="valEdit.nome"
+          required
+          #nomeRef="ngModel"
+          [invalid]="nomeRef.invalid && (nomeRef.touched || formEditar.submitted)"
+          fluid
+          autocomplete="off"
+        />
+        <label for="ipt-rec-nome">Nome</label>
+      </p-float-label>
+      @if (nomeRef.invalid && (nomeRef.touched || formEditar.submitted)) {
+        <p-message severity="error" size="small" variant="simple">
+          @if (nomeRef.errors?.['required']) {
+            Nome é obrigatório
+          } @else if (nomeRef.errors?.['custom']) {
+            {{ nomeRef.errors?.['custom'] }}
+          }
+        </p-message>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <p-select
+          inputId="ipt-rec-categoria"
+          name="idCategoria"
+          [(ngModel)]="valEdit.idCategoria"
+          [options]="categorias()"
+          optionLabel="label"
+          optionValue="value"
+          required
+          fluid
+          appendTo="body"
+        />
+        <label for="ipt-rec-categoria">Categoria</label>
+      </p-float-label>
+    </div>
+
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <p-iconfield>
+          <p-inputnumber
+            [(ngModel)]="valEdit.valor"
+            inputId="ipt-rec-valor"
+            name="valor"
+            required
+            #valorRef="ngModel"
+            [invalid]="valorRef.invalid && (valorRef.touched || formEditar.submitted)"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            fluid
+          />
+          <p-inputicon>
+            <svg lucideDollarSign class="h-4"></svg>
+          </p-inputicon>
+        </p-iconfield>
+        <label for="ipt-rec-valor">Valor</label>
+      </p-float-label>
+      @if (valorRef.invalid && (valorRef.touched || formEditar.submitted)) {
+        <p-message severity="error" size="small" variant="simple">
+          @if (valorRef.errors?.['required']) {
+            Valor é obrigatório
+          } @else if (valorRef.errors?.['custom']) {
+            {{ valorRef.errors?.['custom'] }}
+          }
+        </p-message>
+      }
+    </div>
+
+    <div class="flex flex-col">
+      <p-float-label variant="on">
+        <p-select
+          inputId="ipt-rec-frequencia"
+          name="frequencia"
+          [(ngModel)]="valEdit.frequencia"
+          [options]="frequencias"
+          optionLabel="label"
+          optionValue="value"
+          required
+          fluid
+          appendTo="body"
+        />
+        <label for="ipt-rec-frequencia">Frequência</label>
+      </p-float-label>
+    </div>
+
+    <div class="flex gap-4">
+      <p-float-label variant="on" class="flex-1">
+        <p-datepicker
+          [(ngModel)]="valEdit.dataInicio"
+          inputId="ipt-rec-inicio"
+          name="dataInicio"
+          required
+          iconDisplay="input"
+          fluid
+          appendTo="body"
+          [readonlyInput]="true"
+        />
+        <label for="ipt-rec-inicio">Primeira cobrança</label>
+      </p-float-label>
+      <p-float-label variant="on" class="flex-1">
+        <p-datepicker
+          [(ngModel)]="valEdit.dataFim"
+          inputId="ipt-rec-fim"
+          name="dataFim"
+          [minDate]="valEdit.dataInicio"
+          iconDisplay="input"
+          fluid
+          appendTo="body"
+          [readonlyInput]="true"
+        />
+        <label for="ipt-rec-fim">Até (opcional)</label>
+      </p-float-label>
+    </div>
+    @if (formEditar.controls['dataInicio']?.errors?.['custom']) {
+      <p-message severity="error" size="small" variant="simple">
+        {{ formEditar.controls['dataInicio'].errors?.['custom'] }}
+      </p-message>
+    }
+    @if (formEditar.controls['dataFim']?.errors?.['custom']) {
+      <p-message severity="error" size="small" variant="simple">
+        {{ formEditar.controls['dataFim'].errors?.['custom'] }}
+      </p-message>
+    }
+
+    <button pButton type="submit" severity="primary" [disabled]="mutationAtualizar.isPending()">
+      @if (mutationAtualizar.isPending()) {
+        <p-progressspinner class="h-6 w-6" strokeWidth="8" />
+      } @else {
+        Salvar
+      }
+    </button>
+  </form>
+</p-dialog>
+
+<p-confirmdialog [draggable]="false" styleClass="mx-4" />

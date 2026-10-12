@@ -2,45 +2,44 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export const CATEGORIA_NOMES = {
-  ALIMENTACAO: 'Alimentação',
-  LAZER: 'Lazer',
-  TRANSPORTE: 'Transporte',
-  COMPRAS: 'Compras',
-  CONTAS: 'Contas',
-  OUTROS: 'Outros',
-} as const;
-
-export type Categoria = keyof typeof CATEGORIA_NOMES;
+import { Categoria, nomeExibicaoCategoria } from './categoria-service';
 
 export interface Despesa {
   id: string;
   nome: string;
-  categoria: Categoria;
+  idCategoria: string;
+  categoria: string;
   data: string;
   valor: number;
   idUsuario: string;
+  idDespesaRecorrente: string | null;
 }
 
 export interface CadastroDespesa {
   nome: string;
-  categoria: Categoria | undefined;
+  idCategoria: string;
   data: Date;
   valor: number;
   idUsuario: string;
 }
 
 export interface AtualizarDespesa {
-  nome: string | undefined;
-  categoria: Categoria | undefined;
-  data: Date | undefined;
-  valor: number | undefined;
+  nome?: string;
+  idCategoria?: string;
+  data?: Date;
+  valor?: number;
 }
 
 export interface GastosCategoriaDTO {
-  id: Categoria;
+  id: string;
   nome: string;
+  nomeOriginal: string;
+  valor: number;
+}
+
+interface SomaGastosCategoria {
+  idCategoria: string;
+  categoria: string;
   valor: number;
 }
 
@@ -62,18 +61,20 @@ export class DespesaService {
     return this.http.get<Despesa>(`${this.url}/${idUsuario}/${idDespesa}`);
   }
 
-  public recuperarGastosCategoria(idUsuario: string, periodo: 'anual' | 'mensal' | 'semanal') {
-    return this.http.get<any[]>(`${this.url}/media/${idUsuario}/${periodo}`).pipe(
-      map((obj) => {
-        const valores = Object.keys(CATEGORIA_NOMES).map((k) => ({
-          id: k,
-          nome: CATEGORIA_NOMES[k as Categoria],
-          valor: 0,
+  public recuperarGastosCategoria(
+    idUsuario: string,
+    periodo: 'anual' | 'mensal' | 'semanal',
+    categorias: Categoria[],
+  ): Observable<GastosCategoriaDTO[]> {
+    return this.http.get<SomaGastosCategoria[]>(`${this.url}/media/${idUsuario}/${periodo}`).pipe(
+      map((gastos) => {
+        const valorPorCategoria = new Map(gastos.map((g) => [g.idCategoria, g.valor]));
+        return categorias.map((categoria) => ({
+          id: categoria.id,
+          nome: nomeExibicaoCategoria(categoria.nome),
+          nomeOriginal: categoria.nome,
+          valor: valorPorCategoria.get(categoria.id) ?? 0,
         }));
-        for (const x of obj) {
-          valores.find((val) => val.id === x.categoria)!.valor = x.valor;
-        }
-        return valores;
       }),
     );
   }
@@ -81,10 +82,10 @@ export class DespesaService {
   public recuperarDespesasAll(
     idUsuario: string,
     periodo?: string,
-    categoria?: Categoria,
+    idCategoria?: string,
   ): Observable<Despesa[]> {
     return this.http.get<Despesa[]>(`${this.url}/${idUsuario}`, {
-      params: { ...(periodo && { periodo }), ...(categoria && { categoria }) },
+      params: { ...(periodo && { periodo }), ...(idCategoria && { idCategoria }) },
     });
   }
 
