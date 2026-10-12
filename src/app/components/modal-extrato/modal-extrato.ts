@@ -1,4 +1,14 @@
-import { Component, effect, inject, input, model, output, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LucideDollarSign, LucideScrollText, LucideUpload } from '@lucide/angular';
 import { QueryClient } from '@tanstack/angular-query-experimental';
@@ -17,12 +27,16 @@ import { Message } from 'primeng/message';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { SelectModule } from 'primeng/select';
 import { AuthService } from '../../auth/auth-service';
+import { Despesa, DespesaExtraida, DespesaService } from '../../services/despesa-service';
+import { injectQueryCategorias, nomeExibicaoCategoria } from '../../services/categoria-service';
 import {
-  Categoria,
-  Despesa,
-  DespesaExtraida,
-  DespesaService,
-} from '../../services/despesa-service';
+  dataParaISODate,
+  DespesaRecorrenteService,
+  Frequencia,
+  FREQUENCIAS,
+  regraAPartirDaData,
+} from '../../services/despesa-recorrente-service';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-modal-extrato',
@@ -44,6 +58,7 @@ import {
     FileUploadModule,
     LucideUpload,
     LucideScrollText,
+    ToggleSwitchModule,
   ],
   templateUrl: 'modal-extrato.html',
 })
@@ -52,6 +67,7 @@ export class ModalExtrato {
   private despesaService = inject(DespesaService);
   private messageService = inject(MessageService);
   private queryClient = inject(QueryClient);
+  private despesaRecorrenteService = inject(DespesaRecorrenteService);
 
   public visible = model(false);
 
@@ -86,13 +102,25 @@ export class ModalExtrato {
     });
   }
 
+  protected queryCategorias = injectQueryCategorias();
+  protected categorias = computed(() =>
+    (this.queryCategorias.data() ?? []).map((c) => ({
+      label: nomeExibicaoCategoria(c.nome),
+      value: c.id,
+    })),
+  );
+
+  protected readonly frequencias = FREQUENCIAS;
+  protected valDeveRepetir = signal(false);
+  protected valFrequencia: Frequencia = 'MENSAL';
+  protected valDataFim?: Date;
+
   protected valNome?: string;
   protected valExtra?: string;
   protected valCategoria?: string;
   protected valData?: Date;
   protected valHora?: Date;
   protected valValor?: number;
-  protected categorias = ['Alimentação', 'Lazer', 'Transporte', 'Compras', 'Contas', 'Outros'];
 
   loadDespesa() {
     let despesa = this.despesas()![this.despesaIndex()];
@@ -136,51 +164,55 @@ export class ModalExtrato {
 
     const transacao = {
       nome: this.valNome!,
-      categoria: this.stringToCategoria(this.valCategoria!),
+      idCategoria: this.valCategoria!,
       data: this.valData!,
       valor: this.valValor!,
       idUsuario: this.authService.getUsuarioId()!,
     };
 
-    this.despesaService.cadastrarDespesa(transacao).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Despesa cadastrada com sucesso!',
-        });
-        form.resetForm();
-        this.invalidar();
-        this.nextDespesa();
-      },
-
-      error: (err) => {
-        this.loading.set(false);
-        const msg: string | undefined = err?.error?.erro;
-        if (msg === 'Dados inválidos') {
-          for (const detail of err.error.detalhes) {
-            if (form.controls[detail.campo]) {
-              form.controls[detail.campo].setErrors({ custom: detail.mensagem });
-            }
-          }
-        }
-        console.error('Erro ao cadastrar despesa!', msg);
-      },
-    });
-  }
-
-  private stringToCategoria(valor: string) {
-    const res = {
-      Alimentação: 'ALIMENTACAO',
-      Lazer: 'LAZER',
-      Transporte: 'TRANSPORTE',
-      Compras: 'COMPRAS',
-      Contas: 'CONTAS',
-      Outros: 'OUTROS',
+    const onNext = () => {
+      this.loading.set(false);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: 'Despesa cadastrada com sucesso!',
+      });
+      form.resetForm();
+      this.invalidar();
+      this.nextDespesa();
     };
 
-    return res[valor as keyof typeof res] as Categoria;
+    const onError = (err: any) => {
+      this.loading.set(false);
+      const msg: string | undefined = err?.error?.erro;
+      if (msg === 'Dados inválidos') {
+        for (const detail of err.error.detalhes) {
+          if (form.controls[detail.campo]) {
+            form.controls[detail.campo].setErrors({ custom: detail.mensagem });
+          }
+        }
+      }
+      console.error('Erro ao cadastrar despesa!', msg);
+    };
+
+    if (!this.valDeveRepetir()) {
+      this.despesaService.cadastrarDespesa(transacao).subscribe({
+        next: onNext,
+        error: onError,
+      });
+    } else {
+      this.despesaRecorrenteService
+        .cadastrarDespesaRecorrente({
+          ...transacao,
+          ...regraAPartirDaData(this.valFrequencia, this.valData!),
+          dataInicio: dataParaISODate(this.valData!),
+          ...(this.valDataFim && { dataFim: dataParaISODate(this.valDataFim) }),
+        })
+        .subscribe({
+          next: onNext,
+          error: onError,
+        });
+    }
   }
 
   private invalidar() {
@@ -197,6 +229,9 @@ export class ModalExtrato {
     this.valData = undefined;
     this.valHora = undefined;
     this.valValor = undefined;
+    this.valDataFim = undefined;
+    this.valFrequencia = 'MENSAL';
+    this.valDeveRepetir.set(false);
     this.despesas.set(null);
     this.loading.set(false);
   }

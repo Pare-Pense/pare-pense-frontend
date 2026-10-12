@@ -89,18 +89,22 @@
         <div class="flex flex-col">
           <p-float-label variant="on">
             <p-select
-              inputId="modal-extrato-categoria"
+              inputId="modal-despesa-categoria"
               name="categoria"
               [(ngModel)]="valCategoria"
-              [options]="categorias"
+              [options]="categorias()"
+              optionLabel="label"
+              optionValue="value"
+              [loading]="queryCategorias.isPending()"
               required
               #categoriaRef="ngModel"
               [invalid]="categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)"
               class="w-full"
               data-cy="input-transacao-categoria"
               appendTo="body"
-            />
-            <label for="modal-extrato-categoria">Categoria</label>
+            >
+            </p-select>
+            <label for="modal-despesa-categoria">Categoria</label>
           </p-float-label>
 
           @if (categoriaRef.invalid && (categoriaRef.touched || transacaoForm.submitted)) {
@@ -113,6 +117,37 @@
             </p-message>
           }
         </div>
+
+        <label class="flex items-center justify-between gap-2" for="modal-despesa-repetir">
+          <span class="font-medium">Repetir automaticamente</span>
+          <p-toggleswitch
+            inputId="modal-despesa-repetir"
+            [ngModel]="valDeveRepetir()"
+            (ngModelChange)="valDeveRepetir.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            data-cy="input-transacao-repetir"
+          />
+        </label>
+
+        @if (valDeveRepetir()) {
+          <div class="flex flex-col">
+            <p-float-label variant="on">
+              <p-select
+                inputId="modal-despesa-frequencia"
+                name="frequencia"
+                [(ngModel)]="valFrequencia"
+                [options]="frequencias"
+                optionLabel="label"
+                optionValue="value"
+                required
+                class="w-full"
+                appendTo="body"
+                data-cy="input-transacao-frequencia"
+              />
+              <label for="modal-despesa-frequencia">Frequência</label>
+            </p-float-label>
+          </div>
+        }
 
         <div class="flex flex-col">
           <div class="flex gap-4">
@@ -132,24 +167,42 @@
               <label for="modal-extrato-data">Data</label>
             </p-floatlabel>
 
-            <p-floatlabel variant="on" class="flex-2">
-              <p-datepicker
-                [(ngModel)]="valHora"
-                inputId="modal-extrato-hora"
-                name="hora"
-                required
-                #horaRef="ngModel"
-                [invalid]="horaRef.invalid && (horaRef.touched || transacaoForm.submitted)"
-                iconDisplay="input"
-                [timeOnly]="true"
-                hourFormat="24"
-                class="w-full"
-                appendTo="body"
-                [readonlyInput]="true"
-                data-cy="input-transacao-hora"
-              />
-              <label for="modal-extrato-data">Hora</label>
-            </p-floatlabel>
+            @if (!valDeveRepetir()) {
+              <p-floatlabel variant="on" class="flex-2">
+                <p-datepicker
+                  [(ngModel)]="valHora"
+                  inputId="modal-extrato-hora"
+                  name="hora"
+                  required
+                  #horaRef="ngModel"
+                  [invalid]="horaRef.invalid && (horaRef.touched || transacaoForm.submitted)"
+                  iconDisplay="input"
+                  [timeOnly]="true"
+                  hourFormat="24"
+                  class="w-full"
+                  appendTo="body"
+                  [readonlyInput]="true"
+                  data-cy="input-transacao-hora"
+                />
+                <label for="modal-extrato-data">Hora</label>
+              </p-floatlabel>
+            } @else {
+              <p-floatlabel variant="on" class="flex-4">
+                <p-datepicker
+                  [(ngModel)]="valDataFim"
+                  inputId="modal-despesa-data-fim"
+                  name="dataFim"
+                  [minDate]="valData ?? null"
+                  [showClear]="true"
+                  iconDisplay="input"
+                  class="w-full"
+                  appendTo="body"
+                  [readonlyInput]="true"
+                  data-cy="input-transacao-data-fim"
+                />
+                <label for="modal-despesa-data-fim">Até (opcional)</label>
+              </p-floatlabel>
+            }
           </div>
         </div>
 
