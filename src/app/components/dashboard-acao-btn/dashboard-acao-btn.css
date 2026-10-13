@@ -1,0 +1,31 @@
+.fade-in {
+  transition-property: opacity, display;
+  transition-duration: var(--default-transition-duration);
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+  }
+
+  &[hidden] {
+    display: none;
+    opacity: 0;
+  }
+}
+
+.slide-up {
+  transition-property: opacity, transform, display;
+  transition-duration: var(--default-transition-duration);
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  &[hidden] {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}

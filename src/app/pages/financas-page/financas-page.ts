@@ -1,7 +1,16 @@
-import { Component, computed, inject, OnInit, Signal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+  untracked,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { LucideDollarSign, LucidePencil, LucideTrash2 } from '@lucide/angular';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LucideDollarSign, LucidePencil, LucideRepeat, LucideTrash2 } from '@lucide/angular';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -17,18 +26,15 @@ import { AuthService } from '../../auth/auth-service';
 import { IconCategoria } from '../../components/icon-categoria/icon-categoria';
 import { NavBottom } from '../../components/nav-bottom/nav-bottom';
 import { TopBar } from '../../components/top-bar/top-bar';
-import {
-  Categoria,
-  CATEGORIA_NOMES,
-  Despesa,
-  DespesaService,
-} from '../../services/despesa-service';
+import { Despesa, DespesaService } from '../../services/despesa-service';
+import { injectQueryCategorias, nomeExibicaoCategoria } from '../../services/categoria-service';
 import { Receita, ReceitaService } from '../../services/receita-service';
 import { FmtRealPipe } from '../../util/fmt-real-pipe';
 import { ModalDespesa } from '../../components/modal-despesa/modal-despesa';
 
 type Periodo = 'todos' | 'semanal' | 'mensal' | 'anual';
-type CategoriaFiltro = Categoria | 'TODAS';
+// id da categoria ou 'TODAS'
+type CategoriaFiltro = string;
 
 @Component({
   selector: 'app-financas-page',
@@ -50,6 +56,8 @@ type CategoriaFiltro = Categoria | 'TODAS';
     TopBar,
     IconCategoria,
     LucideDollarSign,
+    LucideRepeat,
+    RouterLink,
   ],
   templateUrl: './financas-page.html',
   styleUrl: './financas-page.css',
@@ -75,9 +83,9 @@ export class FinancasPage implements OnInit {
 
   ngOnInit() {
     const params = this.route.snapshot.queryParams;
-    let paramCategoria = params['categoria'];
+    let paramCategoria = params['idCategoria'];
     let paramPeriodo = params['periodo'];
-    if (Object.keys(CATEGORIA_NOMES).includes(paramCategoria)) {
+    if (typeof paramCategoria === 'string' && paramCategoria) {
       this.categoriaSelecionada.set(paramCategoria);
     }
     if (['todas', 'semanal', 'mensal', 'anual'].includes(paramPeriodo)) {
@@ -85,13 +93,25 @@ export class FinancasPage implements OnInit {
     }
   }
 
-  readonly categorias = [
-    { label: 'Todas', value: 'TODAS' as CategoriaFiltro },
-    ...Object.entries(CATEGORIA_NOMES).map(([key, label]) => ({
-      label,
-      value: key as CategoriaFiltro,
+  queryCategorias = injectQueryCategorias();
+
+  readonly categorias = computed(() => [
+    { label: 'Todas', value: 'TODAS' },
+    ...(this.queryCategorias.data() ?? []).map((c) => ({
+      label: nomeExibicaoCategoria(c.nome),
+      value: c.id,
     })),
-  ];
+  ]);
+
+  constructor() {
+    effect(() => {
+      const categorias = this.queryCategorias.data();
+      const selecionada = untracked(() => this.categoriaSelecionada());
+      if (categorias && selecionada !== 'TODAS' && !categorias.some((c) => c.id === selecionada)) {
+        this.categoriaSelecionada.set('TODAS');
+      }
+    });
+  }
 
   readonly periodos = [
     { label: 'Todos', value: 'todos' },
@@ -217,7 +237,11 @@ export class FinancasPage implements OnInit {
   chartData = computed(() => {
     const items = this.items();
     const periodo = this.periodoSelecionado();
-    const categoria = this.isDespesa ? this.categoriaSelecionada() : 'OUTROS';
+    const idCategoria = this.isDespesa ? this.categoriaSelecionada() : 'TODAS';
+    const categoria =
+      idCategoria === 'TODAS'
+        ? 'TODAS'
+        : (this.queryCategorias.data()?.find((c) => c.id === idCategoria)?.nome ?? 'TODAS');
     return agruparChartData(this.isDespesa, items, periodo, categoria);
   });
 
@@ -256,10 +280,10 @@ function agruparChartData(
   isDespesa: boolean,
   items: (Despesa | Receita)[],
   periodo: Periodo,
-  categoria: CategoriaFiltro,
+  categoria: string,
 ) {
   const labelsSet = new Set<string>();
-  const agrupado = new Map<Categoria, Map<string, number>>();
+  const agrupado = new Map<string, Map<string, number>>();
 
   for (const item of items) {
     const data = new Date(item.data);
@@ -304,9 +328,9 @@ function agruparChartData(
 
   const labels = Array.from(labelsSet);
 
-  if (categoria === 'TODAS') {
+  if (isDespesa && categoria === 'TODAS') {
     const datasets = Array.from(agrupado.entries()).map(([categoria, valores]) => ({
-      label: CATEGORIA_NOMES[categoria as Categoria],
+      label: nomeExibicaoCategoria(categoria),
       data: labels.map((label) => valores.get(label) ?? 0),
       tension: 0.4,
     }));
@@ -316,13 +340,13 @@ function agruparChartData(
       datasets,
     };
   } else {
-    const valores = agrupado.get(categoria);
+    const valores = isDespesa ? agrupado.get(categoria) : agrupado.get('OUTROS');
 
     return {
       labels,
       datasets: [
         {
-          label: isDespesa ? CATEGORIA_NOMES[categoria as Categoria] : 'Receitas',
+          label: isDespesa ? nomeExibicaoCategoria(categoria) : 'Receitas',
           data: labels.map((label) => valores?.get(label) ?? 0),
           tension: 0.4,
         },
