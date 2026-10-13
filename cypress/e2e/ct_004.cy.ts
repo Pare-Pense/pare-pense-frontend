@@ -18,9 +18,9 @@ describe('CT-004 - Cadastro de receita', () => {
 
     cy.goToLoginUser(userData.email, userData.senha);
 
-    cy.get('[data-cy=btn-modal-transacao]').click();
+    cy.get('[data-cy=btn-dashboard-acoes]').click();
 
-    cy.get('[data-cy=btn-receita]').click();
+    cy.get('[data-cy=btn-acao-receita]').click();
 
     cy.wait(1000);
 

@@ -117,20 +117,8 @@
 <app-nav-bottom active="home" />
 
 <!-- botão de + -->
-<div class="pointer-events-none fixed bottom-0 z-10 flex w-screen flex-col">
-  <div class="flex justify-end p-4">
-    <button
-      pButton
-      rounded="true"
-      severity="primary"
-      class="pointer-events-auto"
-      data-cy="btn-modal-transacao"
-      (click)="this.openModalAddDespesa()"
-    >
-      <svg pButtonIcon lucidePlus></svg>
-    </button>
-  </div>
-  <div class="h-nav-bottom"></div>
-</div>
+<app-dashboard-acao-btn (opcao)="this.clickAcao($event)" />
 
-<app-modal-despesa [(visible)]="modalDespesaVisible" />
+<app-modal-despesa [(visible)]="modalDespesaVisible" [(isDespesa)]="modalIsDespesa" />
+
+<app-modal-extrato [(visible)]="modalExtratoVisible" />

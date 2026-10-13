@@ -43,6 +43,13 @@ interface SomaGastosCategoria {
   valor: number;
 }
 
+export interface DespesaExtraida {
+  valor: number;
+  data: string;
+  id: string | undefined;
+  extra: string | undefined;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -96,5 +103,11 @@ export class DespesaService {
 
   public deletarDespesa(idUsuario: string, idDespesa: string) {
     return this.http.delete(`${this.url}/${idUsuario}/${idDespesa}`);
+  }
+
+  public importarExtrato(arquivo: File) {
+    const form = new FormData();
+    form.append('extrato', arquivo);
+    return this.http.post<DespesaExtraida[]>(`${this.url}/importarExtrato`, form);
   }
 }
