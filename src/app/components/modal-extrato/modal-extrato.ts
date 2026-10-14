@@ -115,10 +115,11 @@ export class ModalExtrato {
   loadDespesa() {
     let despesa = this.despesas()![this.despesaIndex()];
     if (despesa === undefined) return;
-    console.log(despesa);
     this.valValor = despesa.valor;
     this.valData = new Date(despesa.data.split('T')[0].replaceAll('-', '/'));
     this.valExtra = despesa.extra;
+    this.valDeveRepetir.set(false);
+    this.valFrequencia = 'MENSAL';
 
     let hora = 12;
     let minuto = 0;
